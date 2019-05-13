@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/chris/CLionProjects/VelocityDispersions/desmond.h
+math.h
+/Users/chris/CLionProjects/VelocityDispersions/math.h
+boost/math/special_functions/beta.hpp
+-
+boost/math/special_functions/gamma.hpp
+-
+integration.h
+/Users/chris/CLionProjects/VelocityDispersions/integration.h
+
+/Users/chris/CLionProjects/VelocityDispersions/integration.h
+iostream
+-
+stdio.h
+-
+stdlib.h
+/Users/chris/CLionProjects/VelocityDispersions/stdlib.h
+math.h
+/Users/chris/CLionProjects/VelocityDispersions/math.h
+vector
+/Users/chris/CLionProjects/VelocityDispersions/vector
+
+/Users/chris/CLionProjects/VelocityDispersions/main.cpp
+main.h
+/Users/chris/CLionProjects/VelocityDispersions/main.h
+
+/Users/chris/CLionProjects/VelocityDispersions/main.h
+iostream
+-
+integration.h
+/Users/chris/CLionProjects/VelocityDispersions/integration.h
+utillity.h
+/Users/chris/CLionProjects/VelocityDispersions/utillity.h
+desmond.h
+/Users/chris/CLionProjects/VelocityDispersions/desmond.h
+
+/Users/chris/CLionProjects/VelocityDispersions/utillity.h
+

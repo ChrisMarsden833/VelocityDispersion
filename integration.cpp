@@ -1,0 +1,135 @@
+#include "integration.h"
+
+// Structs
+
+struct RResult
+{
+    float integral;
+    float accuracy;
+};
+
+
+// Functions
+
+float SimpsonsRule(float (*f)(float, std::vector<float>), float a, float b, int N, std::vector<float> extraArguments)
+{
+    checkEven(N);
+
+    // Create a Grid
+    float * grid = (float *) malloc( (N + 1) * sizeof(float)); // Prep array
+    float h = (b - a)/((float) N); // Calculate the spacing of the grid, h
+    for(int i = 0; i <= N; i++) grid[i] = a + i*h; // fill values
+
+    // Test grid's last element is actually the end
+    if(!(grid[N] == b))
+    {
+        char buffer [50];
+        sprintf(buffer, "Last grid element (%f) does not equal the value of b (%f) - it should.", grid[N], b);
+        throw std::invalid_argument(buffer);
+    }
+
+    // Start the actual Simpsons rule
+    int N_half = N/2;
+
+    // Term 1 in the formula.
+    float sum1 = 0;
+    for(int j = 1; j <= (N_half - 1); j++)
+    {
+        sum1 += (*f)(grid[2*j], extraArguments);
+    }
+
+    // Term 2 in the formula
+    float sum2 = 0;
+    for(int j = 1; j <= N_half; j++)
+    {
+        sum2 += (*f)(grid[2*j-1], extraArguments);
+    }
+
+    // Full formula
+    float total = (h/3.0)*((*f)(a, extraArguments) + 2.0 * sum1 + 4 * sum2 + (*f)(b, extraArguments));
+    return total;
+}
+
+
+RResult RichardsonExtrapolate(float (*f)(float, std::vector<float>), float a, float b, int steps2, std::vector<float> extraArguments)
+{
+    checkEven(steps2);
+
+    // Struct for the return
+    RResult data;
+
+    // Call Simpson's rule twice with different intervals accoring to richardson extrapolation.
+    float I2n = SimpsonsRule((*f), a, b, steps2, extraArguments);
+    float In = SimpsonsRule((*f), a, b, steps2/2, extraArguments);
+
+    // Assign the value of the integral according to the formulae for the integral and it's accuracy
+    data.integral = (pow(2, 4) * I2n - In)/(pow(2, 4) - 1);
+    data.accuracy = (abs(In - I2n)/(pow(2, 4) - 1));
+    return data;
+}
+
+float AdaptiveRichardsonExtrapolate(float (*f)(float, std::vector<float>), float a, float b, float accuracy, std::vector<float> extraArguments)
+{
+    // Preliminary vector for the boundaries.
+    std::vector<float> boundaries = {a, b};
+
+    // Struct and values for iteration.
+    RResult data;
+    float integral = 0;
+    int calls = 0;
+
+    // Loop over the boundaries vector elements. Because elements are dynamically added, there remains the possibility
+    // of an infinite loop if very low accuracy is used or an unreasonable function is called.
+    for(int i = 0; i < boundaries.size()-1; i++)
+    {
+        bool loop = true; // Stopper
+        while(loop)
+        {
+            // Call Richardson Extrapolation
+            data = RichardsonExtrapolate((*f), boundaries[i], boundaries[i+1], 4, extraArguments);
+            // Calculate the acceptable local error for this region.
+            float acceptable_local_error = accuracy*abs(boundaries[i+1] - boundaries[i])/abs(b-a);
+            // Based on this, decide if we need to continue.
+            loop = (data.accuracy > acceptable_local_error);
+            if(loop)
+            {
+                // Add a new boundaries element exactly between the boundaries used above
+                float new_element = (boundaries[i] + boundaries[i+1])/2;
+                boundaries.insert(boundaries.begin() + i + 1, new_element);
+            }
+            else
+            {
+                // Append the integral value to the integral variable.
+                integral += data.integral;
+            }
+        }
+    }
+    return integral;
+}
+
+float IterativeRichardsonExtrapolate(float (*f)(float, std::vector<float>), float a, float b, float accuracy, std::vector<float> extraArguments)
+{
+    RResult data;
+
+    // Setter for the number of steps to add each time. Probably should put this as a function argument.
+    float steps = 4;
+    // Loop until accuracy is okay.
+    while(data.accuracy > accuracy)
+    {
+        data = RichardsonExtrapolate((*f), a, b, steps, extraArguments);
+        steps += 4;
+    }
+    return data.integral;
+}
+
+void checkEven(int Value)
+{
+    // Test N to make sure it is even.
+    if(Value & 1)
+    {
+        char buffer [50];
+        sprintf(buffer, "The value of N supplied (%i) to Simpson's rule is odd, and should be even.", Value);
+        throw std::invalid_argument(buffer);
+    }
+}
+
