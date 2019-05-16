@@ -3,8 +3,10 @@
 int main()
 {
 
-    float a = cumSpherMassDistro(500, 30., 2.);
-    std::cout << a << std::endl;
+
+
+    float a = cumSpherMassDistro(5, 30., 2.);
+    std::cout << a << "Hello World" << std::endl;
 
     return 0;
 }

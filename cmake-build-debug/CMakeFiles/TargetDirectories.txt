@@ -1,3 +1,4 @@
-/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/CMakeFiles/VelocityDispersions.dir
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/test.dir
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/VelocityDispersion.dir

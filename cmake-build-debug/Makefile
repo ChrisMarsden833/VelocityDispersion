@@ -48,10 +48,10 @@ RM = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/chris/CLionProjects/VelocityDispersions
+CMAKE_SOURCE_DIR = /Users/christophermarsden/Documents/Astronomy/VelocityDispersion
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -78,11 +78,22 @@ edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
+	/Applications/CLion.app/Contents/bin/cmake/mac/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+
+.PHONY : test/fast
+
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/CMakeFiles /Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,17 +122,44 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named VelocityDispersions
+# Target rules for targets named VelocityDispersion
 
 # Build rule for target.
-VelocityDispersions: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 VelocityDispersions
-.PHONY : VelocityDispersions
+VelocityDispersion: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 VelocityDispersion
+.PHONY : VelocityDispersion
 
 # fast build rule for target.
-VelocityDispersions/fast:
-	$(MAKE) -f CMakeFiles/VelocityDispersions.dir/build.make CMakeFiles/VelocityDispersions.dir/build
-.PHONY : VelocityDispersions/fast
+VelocityDispersion/fast:
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/build
+.PHONY : VelocityDispersion/fast
+
+Testing/Testing.o: Testing/Testing.cpp.o
+
+.PHONY : Testing/Testing.o
+
+# target to build an object file
+Testing/Testing.cpp.o:
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.o
+.PHONY : Testing/Testing.cpp.o
+
+Testing/Testing.i: Testing/Testing.cpp.i
+
+.PHONY : Testing/Testing.i
+
+# target to preprocess a source file
+Testing/Testing.cpp.i:
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.i
+.PHONY : Testing/Testing.cpp.i
+
+Testing/Testing.s: Testing/Testing.cpp.s
+
+.PHONY : Testing/Testing.s
+
+# target to generate assembly for a file
+Testing/Testing.cpp.s:
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.s
+.PHONY : Testing/Testing.cpp.s
 
 desmond.o: desmond.cpp.o
 
@@ -129,7 +167,7 @@ desmond.o: desmond.cpp.o
 
 # target to build an object file
 desmond.cpp.o:
-	$(MAKE) -f CMakeFiles/VelocityDispersions.dir/build.make CMakeFiles/VelocityDispersions.dir/desmond.cpp.o
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/desmond.cpp.o
 .PHONY : desmond.cpp.o
 
 desmond.i: desmond.cpp.i
@@ -138,7 +176,7 @@ desmond.i: desmond.cpp.i
 
 # target to preprocess a source file
 desmond.cpp.i:
-	$(MAKE) -f CMakeFiles/VelocityDispersions.dir/build.make CMakeFiles/VelocityDispersions.dir/desmond.cpp.i
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/desmond.cpp.i
 .PHONY : desmond.cpp.i
 
 desmond.s: desmond.cpp.s
@@ -147,7 +185,7 @@ desmond.s: desmond.cpp.s
 
 # target to generate assembly for a file
 desmond.cpp.s:
-	$(MAKE) -f CMakeFiles/VelocityDispersions.dir/build.make CMakeFiles/VelocityDispersions.dir/desmond.cpp.s
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/desmond.cpp.s
 .PHONY : desmond.cpp.s
 
 integration.o: integration.cpp.o
@@ -156,7 +194,7 @@ integration.o: integration.cpp.o
 
 # target to build an object file
 integration.cpp.o:
-	$(MAKE) -f CMakeFiles/VelocityDispersions.dir/build.make CMakeFiles/VelocityDispersions.dir/integration.cpp.o
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/integration.cpp.o
 .PHONY : integration.cpp.o
 
 integration.i: integration.cpp.i
@@ -165,7 +203,7 @@ integration.i: integration.cpp.i
 
 # target to preprocess a source file
 integration.cpp.i:
-	$(MAKE) -f CMakeFiles/VelocityDispersions.dir/build.make CMakeFiles/VelocityDispersions.dir/integration.cpp.i
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/integration.cpp.i
 .PHONY : integration.cpp.i
 
 integration.s: integration.cpp.s
@@ -174,7 +212,7 @@ integration.s: integration.cpp.s
 
 # target to generate assembly for a file
 integration.cpp.s:
-	$(MAKE) -f CMakeFiles/VelocityDispersions.dir/build.make CMakeFiles/VelocityDispersions.dir/integration.cpp.s
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/integration.cpp.s
 .PHONY : integration.cpp.s
 
 main.o: main.cpp.o
@@ -183,7 +221,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) -f CMakeFiles/VelocityDispersions.dir/build.make CMakeFiles/VelocityDispersions.dir/main.cpp.o
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -192,7 +230,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) -f CMakeFiles/VelocityDispersions.dir/build.make CMakeFiles/VelocityDispersions.dir/main.cpp.i
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -201,7 +239,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) -f CMakeFiles/VelocityDispersions.dir/build.make CMakeFiles/VelocityDispersions.dir/main.cpp.s
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 utillity.o: utillity.cpp.o
@@ -210,7 +248,7 @@ utillity.o: utillity.cpp.o
 
 # target to build an object file
 utillity.cpp.o:
-	$(MAKE) -f CMakeFiles/VelocityDispersions.dir/build.make CMakeFiles/VelocityDispersions.dir/utillity.cpp.o
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/utillity.cpp.o
 .PHONY : utillity.cpp.o
 
 utillity.i: utillity.cpp.i
@@ -219,7 +257,7 @@ utillity.i: utillity.cpp.i
 
 # target to preprocess a source file
 utillity.cpp.i:
-	$(MAKE) -f CMakeFiles/VelocityDispersions.dir/build.make CMakeFiles/VelocityDispersions.dir/utillity.cpp.i
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/utillity.cpp.i
 .PHONY : utillity.cpp.i
 
 utillity.s: utillity.cpp.s
@@ -228,7 +266,7 @@ utillity.s: utillity.cpp.s
 
 # target to generate assembly for a file
 utillity.cpp.s:
-	$(MAKE) -f CMakeFiles/VelocityDispersions.dir/build.make CMakeFiles/VelocityDispersions.dir/utillity.cpp.s
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/utillity.cpp.s
 .PHONY : utillity.cpp.s
 
 # Help Target
@@ -239,7 +277,11 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... VelocityDispersions"
+	@echo "... test"
+	@echo "... VelocityDispersion"
+	@echo "... Testing/Testing.o"
+	@echo "... Testing/Testing.i"
+	@echo "... Testing/Testing.s"
 	@echo "... desmond.o"
 	@echo "... desmond.i"
 	@echo "... desmond.s"

@@ -59,45 +59,45 @@ RM = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/chris/CLionProjects/VelocityDispersions
+CMAKE_SOURCE_DIR = /Users/christophermarsden/Documents/Astronomy/VelocityDispersion
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug
 
 #=============================================================================
-# Target rules for target CMakeFiles/VelocityDispersions.dir
+# Target rules for target CMakeFiles/VelocityDispersion.dir
 
 # All Build rule for target.
-CMakeFiles/VelocityDispersions.dir/all:
-	$(MAKE) -f CMakeFiles/VelocityDispersions.dir/build.make CMakeFiles/VelocityDispersions.dir/depend
-	$(MAKE) -f CMakeFiles/VelocityDispersions.dir/build.make CMakeFiles/VelocityDispersions.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5 "Built target VelocityDispersions"
-.PHONY : CMakeFiles/VelocityDispersions.dir/all
+CMakeFiles/VelocityDispersion.dir/all:
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/depend
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target VelocityDispersion"
+.PHONY : CMakeFiles/VelocityDispersion.dir/all
 
 # Include target in all.
-all: CMakeFiles/VelocityDispersions.dir/all
+all: CMakeFiles/VelocityDispersion.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/VelocityDispersions.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/CMakeFiles 5
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/VelocityDispersions.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/CMakeFiles 0
-.PHONY : CMakeFiles/VelocityDispersions.dir/rule
+CMakeFiles/VelocityDispersion.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles 6
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/VelocityDispersion.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles 0
+.PHONY : CMakeFiles/VelocityDispersion.dir/rule
 
 # Convenience name for target.
-VelocityDispersions: CMakeFiles/VelocityDispersions.dir/rule
+VelocityDispersion: CMakeFiles/VelocityDispersion.dir/rule
 
-.PHONY : VelocityDispersions
-
-# clean rule for target.
-CMakeFiles/VelocityDispersions.dir/clean:
-	$(MAKE) -f CMakeFiles/VelocityDispersions.dir/build.make CMakeFiles/VelocityDispersions.dir/clean
-.PHONY : CMakeFiles/VelocityDispersions.dir/clean
+.PHONY : VelocityDispersion
 
 # clean rule for target.
-clean: CMakeFiles/VelocityDispersions.dir/clean
+CMakeFiles/VelocityDispersion.dir/clean:
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/clean
+.PHONY : CMakeFiles/VelocityDispersion.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/VelocityDispersion.dir/clean
 
 .PHONY : clean
 
