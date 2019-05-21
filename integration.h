@@ -8,6 +8,7 @@
 #include "stdlib.h"
 #include "math.h"
 #include "vector"
+#include "utillity.h"
 
 // General info
 /**
@@ -23,7 +24,11 @@
  *  Accuracy - the accuracy to which the integral has been calculated.
  * Mainly used for Richardson extrapolation (see below).
  */
-struct RResult;
+struct RResult
+{
+    float integral;
+    float accuracy;
+};
 
 // Functions
 
@@ -82,11 +87,5 @@ float AdaptiveRichardsonExtrapolate(float (*f)(float, std::vector<float>), float
  * @return float, the value of the integration to the specified tolerance.
  */
 float IterativeRichardsonExtrapolate(float (*f)(float, std::vector<float>), float a, float b, float accuracy, std::vector<float> extraArguments);
-
-/** ++ IsEven ++
- * Internal function to check a value is even - error will be thrown otherwise.
- * @param Value : int, Value that will be checked
- */
-void checkEven(int Value);
 
 #endif //VELOCITYDISPERSIONS_INTEGRATION_H

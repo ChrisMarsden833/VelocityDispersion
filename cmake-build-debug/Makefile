@@ -161,6 +161,33 @@ Testing/Testing.cpp.s:
 	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.s
 .PHONY : Testing/Testing.cpp.s
 
+Testing/testing_integration.o: Testing/testing_integration.cpp.o
+
+.PHONY : Testing/testing_integration.o
+
+# target to build an object file
+Testing/testing_integration.cpp.o:
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.o
+.PHONY : Testing/testing_integration.cpp.o
+
+Testing/testing_integration.i: Testing/testing_integration.cpp.i
+
+.PHONY : Testing/testing_integration.i
+
+# target to preprocess a source file
+Testing/testing_integration.cpp.i:
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.i
+.PHONY : Testing/testing_integration.cpp.i
+
+Testing/testing_integration.s: Testing/testing_integration.cpp.s
+
+.PHONY : Testing/testing_integration.s
+
+# target to generate assembly for a file
+Testing/testing_integration.cpp.s:
+	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.s
+.PHONY : Testing/testing_integration.cpp.s
+
 desmond.o: desmond.cpp.o
 
 .PHONY : desmond.o
@@ -282,6 +309,9 @@ help:
 	@echo "... Testing/Testing.o"
 	@echo "... Testing/Testing.i"
 	@echo "... Testing/Testing.s"
+	@echo "... Testing/testing_integration.o"
+	@echo "... Testing/testing_integration.i"
+	@echo "... Testing/testing_integration.s"
 	@echo "... desmond.o"
 	@echo "... desmond.i"
 	@echo "... desmond.s"

@@ -1,20 +1,25 @@
 #include "integration.h"
 
 
-// Structs
-
-struct RResult
-{
-    float integral;
-    float accuracy;
-};
 
 
 // Functions
 
 float SimpsonsRule(float (*f)(float, std::vector<float>), float a, float b, int N, std::vector<float> extraArguments)
 {
-    checkEven(N);
+    // Test and adjustment for evenness.
+    try
+    {
+        if(!checkEven(N))
+        {
+            std::string message = std::to_string(N);
+            throw std::invalid_argument("Odd Number supplied for Simpsons Rule (" + message + ")");
+        }
+    }
+    catch (const std::invalid_argument& ia) {
+        std::cerr << ia.what() << "\n" << "Value will be incremented by one." << '\n';
+        N++;
+    }
 
     // Create a Grid
     float * grid = (float *) malloc( (N + 1) * sizeof(float)); // Prep array
@@ -22,12 +27,20 @@ float SimpsonsRule(float (*f)(float, std::vector<float>), float a, float b, int 
     for(int i = 0; i <= N; i++) grid[i] = a + i*h; // fill values
 
     // Test grid's last element is actually the end
-    if(!(grid[N] == b))
+    try
     {
-        char buffer [50];
-        sprintf(buffer, "Last grid element (%f) does not equal the value of b (%f) - it should.", grid[N], b);
-        throw std::invalid_argument(buffer);
+        if(!(grid[N] == b))
+        {
+            char buffer [50];
+            sprintf(buffer, "Last grid element (%f) does not equal the value of b (%f) - it should.", grid[N], b);
+            throw std::invalid_argument(buffer);
+        }
     }
+    catch (const std::invalid_argument& ia) {
+        std::cerr << "Critical Error in Simpsons Rule:" << ia.what() << '\n';
+        std::exit(1); // This is a critical Fail, so exit.
+    }
+
 
     // Start the actual Simpsons rule
     int N_half = N/2;
@@ -54,7 +67,20 @@ float SimpsonsRule(float (*f)(float, std::vector<float>), float a, float b, int 
 
 RResult RichardsonExtrapolate(float (*f)(float, std::vector<float>), float a, float b, int steps2, std::vector<float> extraArguments)
 {
-    checkEven(steps2);
+    // Test and adjustment for evenness.
+    try
+    {
+        if(!checkEven(steps2))
+        {
+            std::string message = std::to_string(steps2);
+            throw std::invalid_argument("Odd Number supplied for Richardson Extrapolation (" + message + ")");
+        }
+    }
+    catch (const std::invalid_argument& ia) {
+        std::cerr << ia.what() << "\n" << "Value will be incremented by one." << '\n';
+        steps2++;
+    }
+
 
     // Struct for the return
     RResult data;
@@ -122,15 +148,3 @@ float IterativeRichardsonExtrapolate(float (*f)(float, std::vector<float>), floa
     }
     return data.integral;
 }
-
-void checkEven(int Value)
-{
-    // Test N to make sure it is even.
-    if(Value & 1)
-    {
-        char buffer [50];
-        sprintf(buffer, "The value of N supplied (%i) to Simpson's rule is odd, and should be even.", Value);
-        throw std::invalid_argument(buffer);
-    }
-}
-

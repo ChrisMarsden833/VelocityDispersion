@@ -4,6 +4,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/VelocityDispersion.dir/main.cpp.o"
   "CMakeFiles/VelocityDispersion.dir/utillity.cpp.o"
   "CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.o"
+  "CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.o"
   "VelocityDispersion.pdb"
   "VelocityDispersion"
 )

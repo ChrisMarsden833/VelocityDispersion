@@ -93,6 +93,12 @@
 		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/Testing/Testing.cpp">
 			<Option target="VelocityDispersion"/>
 		</Unit>
+		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/Testing/testing_integration.cpp">
+			<Option target="VelocityDispersion"/>
+		</Unit>
+		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/Testing/testing_integration.h">
+			<Option target="VelocityDispersion"/>
+		</Unit>
 		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/desmond.cpp">
 			<Option target="VelocityDispersion"/>
 		</Unit>
