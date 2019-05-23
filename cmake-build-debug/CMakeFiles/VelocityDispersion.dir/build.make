@@ -43,10 +43,10 @@ RM = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/christophermarsden/Documents/Astronomy/VelocityDispersion
+CMAKE_SOURCE_DIR = /Users/chris/CLionProjects/VelocityDispersions
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/VelocityDispersion.dir/depend.make
@@ -59,81 +59,81 @@ include CMakeFiles/VelocityDispersion.dir/flags.make
 
 CMakeFiles/VelocityDispersion.dir/desmond.cpp.o: CMakeFiles/VelocityDispersion.dir/flags.make
 CMakeFiles/VelocityDispersion.dir/desmond.cpp.o: ../desmond.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/VelocityDispersion.dir/desmond.cpp.o"
-	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/VelocityDispersion.dir/desmond.cpp.o -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/desmond.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/VelocityDispersion.dir/desmond.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/VelocityDispersion.dir/desmond.cpp.o -c /Users/chris/CLionProjects/VelocityDispersions/desmond.cpp
 
 CMakeFiles/VelocityDispersion.dir/desmond.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/VelocityDispersion.dir/desmond.cpp.i"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/desmond.cpp > CMakeFiles/VelocityDispersion.dir/desmond.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/chris/CLionProjects/VelocityDispersions/desmond.cpp > CMakeFiles/VelocityDispersion.dir/desmond.cpp.i
 
 CMakeFiles/VelocityDispersion.dir/desmond.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/VelocityDispersion.dir/desmond.cpp.s"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/desmond.cpp -o CMakeFiles/VelocityDispersion.dir/desmond.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/chris/CLionProjects/VelocityDispersions/desmond.cpp -o CMakeFiles/VelocityDispersion.dir/desmond.cpp.s
 
 CMakeFiles/VelocityDispersion.dir/integration.cpp.o: CMakeFiles/VelocityDispersion.dir/flags.make
 CMakeFiles/VelocityDispersion.dir/integration.cpp.o: ../integration.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/VelocityDispersion.dir/integration.cpp.o"
-	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/VelocityDispersion.dir/integration.cpp.o -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/integration.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/VelocityDispersion.dir/integration.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/VelocityDispersion.dir/integration.cpp.o -c /Users/chris/CLionProjects/VelocityDispersions/integration.cpp
 
 CMakeFiles/VelocityDispersion.dir/integration.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/VelocityDispersion.dir/integration.cpp.i"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/integration.cpp > CMakeFiles/VelocityDispersion.dir/integration.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/chris/CLionProjects/VelocityDispersions/integration.cpp > CMakeFiles/VelocityDispersion.dir/integration.cpp.i
 
 CMakeFiles/VelocityDispersion.dir/integration.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/VelocityDispersion.dir/integration.cpp.s"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/integration.cpp -o CMakeFiles/VelocityDispersion.dir/integration.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/chris/CLionProjects/VelocityDispersions/integration.cpp -o CMakeFiles/VelocityDispersion.dir/integration.cpp.s
 
 CMakeFiles/VelocityDispersion.dir/main.cpp.o: CMakeFiles/VelocityDispersion.dir/flags.make
 CMakeFiles/VelocityDispersion.dir/main.cpp.o: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/VelocityDispersion.dir/main.cpp.o"
-	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/VelocityDispersion.dir/main.cpp.o -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/VelocityDispersion.dir/main.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/VelocityDispersion.dir/main.cpp.o -c /Users/chris/CLionProjects/VelocityDispersions/main.cpp
 
 CMakeFiles/VelocityDispersion.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/VelocityDispersion.dir/main.cpp.i"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/main.cpp > CMakeFiles/VelocityDispersion.dir/main.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/chris/CLionProjects/VelocityDispersions/main.cpp > CMakeFiles/VelocityDispersion.dir/main.cpp.i
 
 CMakeFiles/VelocityDispersion.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/VelocityDispersion.dir/main.cpp.s"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/main.cpp -o CMakeFiles/VelocityDispersion.dir/main.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/chris/CLionProjects/VelocityDispersions/main.cpp -o CMakeFiles/VelocityDispersion.dir/main.cpp.s
 
 CMakeFiles/VelocityDispersion.dir/utillity.cpp.o: CMakeFiles/VelocityDispersion.dir/flags.make
 CMakeFiles/VelocityDispersion.dir/utillity.cpp.o: ../utillity.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/VelocityDispersion.dir/utillity.cpp.o"
-	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/VelocityDispersion.dir/utillity.cpp.o -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/utillity.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/VelocityDispersion.dir/utillity.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/VelocityDispersion.dir/utillity.cpp.o -c /Users/chris/CLionProjects/VelocityDispersions/utillity.cpp
 
 CMakeFiles/VelocityDispersion.dir/utillity.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/VelocityDispersion.dir/utillity.cpp.i"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/utillity.cpp > CMakeFiles/VelocityDispersion.dir/utillity.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/chris/CLionProjects/VelocityDispersions/utillity.cpp > CMakeFiles/VelocityDispersion.dir/utillity.cpp.i
 
 CMakeFiles/VelocityDispersion.dir/utillity.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/VelocityDispersion.dir/utillity.cpp.s"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/utillity.cpp -o CMakeFiles/VelocityDispersion.dir/utillity.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/chris/CLionProjects/VelocityDispersions/utillity.cpp -o CMakeFiles/VelocityDispersion.dir/utillity.cpp.s
 
 CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.o: CMakeFiles/VelocityDispersion.dir/flags.make
 CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.o: ../Testing/Testing.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.o"
-	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.o -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/Testing/Testing.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.o -c /Users/chris/CLionProjects/VelocityDispersions/Testing/Testing.cpp
 
 CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.i"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/Testing/Testing.cpp > CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/chris/CLionProjects/VelocityDispersions/Testing/Testing.cpp > CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.i
 
 CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.s"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/Testing/Testing.cpp -o CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/chris/CLionProjects/VelocityDispersions/Testing/Testing.cpp -o CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.s
 
 CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.o: CMakeFiles/VelocityDispersion.dir/flags.make
 CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.o: ../Testing/testing_integration.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.o"
-	/Library/Developer/CommandLineTools/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.o -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/Testing/testing_integration.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.o -c /Users/chris/CLionProjects/VelocityDispersions/Testing/testing_integration.cpp
 
 CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.i"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/Testing/testing_integration.cpp > CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.i
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/chris/CLionProjects/VelocityDispersions/Testing/testing_integration.cpp > CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.i
 
 CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.s"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/Testing/testing_integration.cpp -o CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.s
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/chris/CLionProjects/VelocityDispersions/Testing/testing_integration.cpp -o CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.s
 
 # Object files for target VelocityDispersion
 VelocityDispersion_OBJECTS = \
@@ -161,7 +161,7 @@ VelocityDispersion: /usr/local/lib/libboost_filesystem-mt.dylib
 VelocityDispersion: /usr/local/lib/libboost_system-mt.dylib
 VelocityDispersion: /usr/local/lib/libboost_unit_test_framework-mt.dylib
 VelocityDispersion: CMakeFiles/VelocityDispersion.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable VelocityDispersion"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable VelocityDispersion"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/VelocityDispersion.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -174,6 +174,6 @@ CMakeFiles/VelocityDispersion.dir/clean:
 .PHONY : CMakeFiles/VelocityDispersion.dir/clean
 
 CMakeFiles/VelocityDispersion.dir/depend:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/christophermarsden/Documents/Astronomy/VelocityDispersion /Users/christophermarsden/Documents/Astronomy/VelocityDispersion /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/VelocityDispersion.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/chris/CLionProjects/VelocityDispersions /Users/chris/CLionProjects/VelocityDispersions /Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug /Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug /Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/CMakeFiles/VelocityDispersion.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/VelocityDispersion.dir/depend
 

@@ -1,6 +1,6 @@
 # CMake generated Testfile for 
-# Source directory: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion
-# Build directory: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug
+# Source directory: /Users/chris/CLionProjects/VelocityDispersions
+# Build directory: /Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.

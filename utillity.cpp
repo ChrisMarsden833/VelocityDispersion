@@ -21,3 +21,9 @@ bool checkEven(int Value)
 
 }
 
+float incompleteBeta(float a, float b, float z)
+{
+    float value = pow(-1., a) * boost::math::ibeta(a, 1 - a - b, z/(z-1));
+    return value;
+}
+

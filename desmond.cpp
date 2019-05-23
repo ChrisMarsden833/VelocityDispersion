@@ -2,7 +2,7 @@
 
 float MassDensityProfile(float r, float SersicIndex, float Half_Light_radius)
 {
-    float Sigma_e = 1.;
+    float Sigma_e = 1e10;
     float b_value = b_n(SersicIndex);
     float power = 0.;
     float internal_term = 0.;
@@ -91,5 +91,11 @@ float cumSpherRho(float R, std::vector<float> args)
 float cumSpherMassDistro(float R, float Half_Light_radius, float SersicIndex)
 {
     std::vector<float> args = {Half_Light_radius, SersicIndex};
-    return AdaptiveRichardsonExtrapolate(cumSpherRho, 0.0, R, .0001, args);
+    return AdaptiveRichardsonExtrapolate(cumSpherRho, 0.0, R, 1e4, args);
+}
+
+float K_Kernel_DW(float u)
+{
+
+    return 0;
 }

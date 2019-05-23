@@ -69,6 +69,12 @@ float cumSpherRho(float R, std::vector<float> args);
  */
 float cumSpherMassDistro(float R, float Half_Light_radius, float SersicIndex);
 
+/** ++ K_Kernel_DW ++
+ * Equation (9), P284, The Kernel function 'u'.
+ * @param u : float, the argument for the function
+ */
+float K_Kernel_DW(float u);
+
 
 
 

@@ -8,122 +8,124 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug"/>
+				<Option working_dir="/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug"/>
+				<Option working_dir="/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug"/>
+				<Option working_dir="/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="test">
-				<Option working_dir="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug"/>
+				<Option working_dir="/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 test"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 test"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="VelocityDispersion">
-				<Option output="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/VelocityDispersion" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir=""/>
+				<Option output="/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/VelocityDispersion" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.1/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/10.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/usr/include"/>
 					<Add directory="/System/Library/Frameworks"/>
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 VelocityDispersion"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 VelocityDispersion"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="VelocityDispersion/fast">
-				<Option output="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/VelocityDispersion" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir=""/>
+				<Option output="/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/VelocityDispersion" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.1/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/10.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/usr/include"/>
 					<Add directory="/System/Library/Frameworks"/>
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 VelocityDispersion/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 VelocityDispersion/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/chris/CLionProjects/VelocityDispersions/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/Testing/Testing.cpp">
+		<Unit filename="/Users/chris/CLionProjects/VelocityDispersions/Testing/Testing.cpp">
 			<Option target="VelocityDispersion"/>
 		</Unit>
-		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/Testing/testing_integration.cpp">
+		<Unit filename="/Users/chris/CLionProjects/VelocityDispersions/Testing/testing_integration.cpp">
 			<Option target="VelocityDispersion"/>
 		</Unit>
-		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/Testing/testing_integration.h">
+		<Unit filename="/Users/chris/CLionProjects/VelocityDispersions/Testing/testing_integration.h">
 			<Option target="VelocityDispersion"/>
 		</Unit>
-		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/desmond.cpp">
+		<Unit filename="/Users/chris/CLionProjects/VelocityDispersions/desmond.cpp">
 			<Option target="VelocityDispersion"/>
 		</Unit>
-		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/desmond.h">
+		<Unit filename="/Users/chris/CLionProjects/VelocityDispersions/desmond.h">
 			<Option target="VelocityDispersion"/>
 		</Unit>
-		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/integration.cpp">
+		<Unit filename="/Users/chris/CLionProjects/VelocityDispersions/integration.cpp">
 			<Option target="VelocityDispersion"/>
 		</Unit>
-		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/integration.h">
+		<Unit filename="/Users/chris/CLionProjects/VelocityDispersions/integration.h">
 			<Option target="VelocityDispersion"/>
 		</Unit>
-		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/main.cpp">
+		<Unit filename="/Users/chris/CLionProjects/VelocityDispersions/main.cpp">
 			<Option target="VelocityDispersion"/>
 		</Unit>
-		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/main.h">
+		<Unit filename="/Users/chris/CLionProjects/VelocityDispersions/main.h">
 			<Option target="VelocityDispersion"/>
 		</Unit>
-		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/utillity.cpp">
+		<Unit filename="/Users/chris/CLionProjects/VelocityDispersions/utillity.cpp">
 			<Option target="VelocityDispersion"/>
 		</Unit>
-		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/utillity.h">
+		<Unit filename="/Users/chris/CLionProjects/VelocityDispersions/utillity.h">
 			<Option target="VelocityDispersion"/>
 		</Unit>
-		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/CMakeLists.txt">
+		<Unit filename="/Users/chris/CLionProjects/VelocityDispersions/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>

@@ -3,10 +3,16 @@
 
 int main()
 {
-    bool val = test_RE_exception();
 
-    float a = cumSpherMassDistro(5, 30., 2.);
-    std::cout << a << "Hello World" << std::endl;
+
+    float a, b;
+
+    a = boost::math::ibeta(0.1, 0.2, 0.2);
+
+    std::cout << "Boost: " << a << std::endl;
+
+    b = incompleteBeta(0.1, 0.2, 0.2);
+    std::cout << "Identity: " << b << std::endl;
 
     return 0;
 }

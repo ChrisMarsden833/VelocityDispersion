@@ -6,6 +6,7 @@
 #include "stdlib.h"
 #include "math.h"
 #include "vector"
+#include <boost/math/special_functions/beta.hpp>
 
 /** ++ factorial ++
  * Simple recursive function to return the factorial of an integer
@@ -19,5 +20,15 @@ int factorial(int n);
  * @param Value : int, Value that will be checked
  */
 bool checkEven(int Value);
+
+/** ++ incompleteBeta ++
+ * Wrapper function to parameterize the incomplete beta
+ * @param a : float, the value of a
+ * @param b : float, the value of b
+ * @param z : float, the value of z
+ * @return float, the value of the function.
+ */
+float incompleteBeta(float a, float b, float z);
+
 
 #endif //VELOCITYDISPERSIONS_UTILLITY_H

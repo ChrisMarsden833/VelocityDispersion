@@ -1,8 +1,5 @@
 #include "integration.h"
 
-
-
-
 // Functions
 
 float SimpsonsRule(float (*f)(float, std::vector<float>), float a, float b, int N, std::vector<float> extraArguments)
@@ -61,6 +58,9 @@ float SimpsonsRule(float (*f)(float, std::vector<float>), float a, float b, int 
 
     // Full formula
     float total = (h/3.0)*((*f)(a, extraArguments) + 2.0 * sum1 + 4 * sum2 + (*f)(b, extraArguments));
+
+    free(grid);
+
     return total;
 }
 
@@ -100,10 +100,17 @@ float AdaptiveRichardsonExtrapolate(float (*f)(float, std::vector<float>), float
     // Preliminary vector for the boundaries.
     std::vector<float> boundaries = {a, b};
 
+    // Maximum (sane) number of subdivisions).
+    int max_subdivisions = 1000000;
+    float minimum_acceptable_subdivision_size = abs(b-a)/max_subdivisions;
+
     // Struct and values for iteration.
     RResult data;
     float integral = 0;
     int calls = 0;
+
+    float new_element;
+    float acceptable_local_error;
 
     // Loop over the boundaries vector elements. Because elements are dynamically added, there remains the possibility
     // of an infinite loop if very low accuracy is used or an unreasonable function is called.
@@ -115,13 +122,35 @@ float AdaptiveRichardsonExtrapolate(float (*f)(float, std::vector<float>), float
             // Call Richardson Extrapolation
             data = RichardsonExtrapolate((*f), boundaries[i], boundaries[i+1], 4, extraArguments);
             // Calculate the acceptable local error for this region.
-            float acceptable_local_error = accuracy*abs(boundaries[i+1] - boundaries[i])/abs(b-a);
+            acceptable_local_error = accuracy*abs(boundaries[i+1] - boundaries[i])/abs(b-a);
             // Based on this, decide if we need to continue.
             loop = (data.accuracy > acceptable_local_error);
+            // Work out the size of the new element
+            new_element = (boundaries[i] + boundaries[i+1])/2;
+
+            if (new_element - boundaries[i] < minimum_acceptable_subdivision_size and loop)
+            {
+                // Get the hell out of dodge
+                loop = false;
+
+                try
+                {
+                    throw std::invalid_argument(" ++ Woah, go easy on the accuracy there; maximum subdivision size reached ++ ");
+                }
+                catch (const std::invalid_argument& ia) {
+                    std::cerr << ia.what() << "\n" << "Integral will move on, but maximum acceptable (local) accuracy was defined as "
+                    << acceptable_local_error << " whereas the accuracy of this element is only " << data.accuracy
+                    << ". This may or not be a problem for you." << std::endl;
+                }
+                // We are loosing some accuracy here in these extreme cases. TODO: Parameterize this, for the user.
+            }
+
             if(loop)
             {
                 // Add a new boundaries element exactly between the boundaries used above
-                float new_element = (boundaries[i] + boundaries[i+1])/2;
+
+
+
                 boundaries.insert(boundaries.begin() + i + 1, new_element);
             }
             else
