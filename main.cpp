@@ -3,16 +3,12 @@
 
 int main()
 {
+    float a = -1;
+    float b = 0.5;
+    float z = 0.001;
 
-
-    float a, b;
-
-    a = boost::math::ibeta(0.1, 0.2, 0.2);
-
-    std::cout << "Boost: " << a << std::endl;
-
-    b = incompleteBeta(0.1, 0.2, 0.2);
-    std::cout << "Identity: " << b << std::endl;
+    float mine = incompleteBeta(a, b, z);
+    std::cout << "Mine : " << mine << std::endl;
 
     return 0;
 }
