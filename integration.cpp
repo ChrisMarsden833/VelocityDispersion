@@ -101,7 +101,7 @@ float AdaptiveRichardsonExtrapolate(float (*f)(float, std::vector<float>), float
     std::vector<float> boundaries = {a, b};
 
     // Maximum (sane) number of subdivisions).
-    int max_subdivisions = 1000000;
+    int max_subdivisions = 10000000;
     float minimum_acceptable_subdivision_size = abs(b-a)/max_subdivisions;
 
     // Struct and values for iteration.

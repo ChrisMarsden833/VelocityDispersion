@@ -9,12 +9,22 @@
 #include <boost/math/special_functions/beta.hpp>
 #include <boost/math/special_functions/factorials.hpp>
 
+#define PI 3.14159265
+#define EU 2.71828182
+
 /** ++ factorial ++
  * Simple recursive function to return the factorial of an integer
  * @param n : template, value
  * @return template, the factorial of value.
  */
 template <typename T> T factorial(T n);
+
+/** ++ LargeFactorial ++
+ * A more meaty function for safe calculation of large factorials
+ * @param n : int, value
+ * @return template, the factorial value in log10.
+ */
+int largeFactoraial(int n);
 
 /** ++ IsEven ++
  * Internal function to check a value is even - error will be thrown otherwise.
@@ -55,5 +65,7 @@ float hyperGeometricSeries(float a, float b, float c, float z);
  * @return : float, 1 or -1
  */
 float getSign(float argument);
+
+
 
 #endif //VELOCITYDISPERSIONS_UTILLITY_H

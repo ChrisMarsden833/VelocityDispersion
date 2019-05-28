@@ -9,6 +9,14 @@ T factorial(T n)
         return n * factorial(n-1); // recursive case
 }
 
+int largeFactorial(int n)
+{
+    if (n == 0)
+        return 1; // base case
+    else
+        return n * factorial(n-1); // recursive case
+}
+
 
 bool checkEven(int Value)
 {
@@ -49,6 +57,16 @@ double pochhammer(double q, int n)
     {
         return 1.;
     }
+    else if(n > 100)
+    {
+        float top = (float) q + (float) n - 1.;
+        float factorial_term_top = log10(pow(2*PI*(double) top, 0.5)) + (double) top * log10((double) n / EU);
+
+        float bottom = (float) q - 1.;
+        float factorial_term_bottom = log10(pow(2*PI*(double) bottom, 0.5)) + (double) bottom * log10((double) n / EU);
+
+        return factorial_term_top - factorial_term_bottom;
+    }
     else
     {
         double value = 1.;
@@ -56,7 +74,7 @@ double pochhammer(double q, int n)
         {
             value *= q + (double) i;
         }
-        return value;
+        return log10(value);
     }
 }
 
@@ -97,24 +115,34 @@ float hyperGeometricSeries(float a, float b, float c, float z)
           term3,
           problem_term,
           sign,
-          factorial_term,
+          factorial_term_l10,
           power_term;
 
 
     for(int n = 0; n < number_of_iterations; n++)
     {
         oldvalue = value;
-        term1 = pochhammer((double) a, n);
-        term2 = pochhammer((double) b, n);
-        term3 = pochhammer((double) c, n);
-        factorial_term = boost::math::factorial<double>(n);
+
+        term1 = pochhammer((double) abs(a), n);
+        term2 = pochhammer((double) abs(b), n);
+        term3 = pochhammer((double) abs(c), n);
+
+        if(n < 100)
+        {
+            factorial_term_l10 = log10(boost::math::factorial<double>(n));
+        }
+        else
+        {
+            factorial_term_l10 = log10(pow(2*PI*(double) n, 0.5)) + (double) n * log10((double) n / EU);
+        }
+
+
+
         power_term = pow(z, n);
 
-        //value += (term1 * term2 * power_term) / (term3 * factorial_term);
+        sign = getSign(a) * getSign(b) * getSign(c);
 
-        sign = getSign(term1) * getSign(term2) * getSign(term3);
-
-        problem_term = log10(abs(term1)) + log10(abs(term2)) + log10(power_term) - log10(abs(term3)) - log10(factorial_term);
+        problem_term = term1 + term2 + log10(power_term) - term3 - factorial_term_l10;
 
         value += sign * pow(10, problem_term);
 
@@ -137,7 +165,6 @@ float getSign(float argument)
     {
         return 1.;
     }
-
 }
 
 
