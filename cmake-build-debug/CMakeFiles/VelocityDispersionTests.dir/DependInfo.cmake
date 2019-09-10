@@ -5,12 +5,14 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/Testing/test1.cpp" "/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/VelocityDispersionTests.dir/Testing/test1.cpp.o"
+  "/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/utillity.cpp" "/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/VelocityDispersionTests.dir/src/utillity.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/usr/local/include"
+  "../src"
   )
 
 # Targets to which this target links.

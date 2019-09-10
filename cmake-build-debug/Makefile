@@ -261,6 +261,7 @@ src/utillity.o: src/utillity.cpp.o
 
 # target to build an object file
 src/utillity.cpp.o:
+	$(MAKE) -f CMakeFiles/VelocityDispersionTests.dir/build.make CMakeFiles/VelocityDispersionTests.dir/src/utillity.cpp.o
 	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/src/utillity.cpp.o
 .PHONY : src/utillity.cpp.o
 
@@ -270,6 +271,7 @@ src/utillity.i: src/utillity.cpp.i
 
 # target to preprocess a source file
 src/utillity.cpp.i:
+	$(MAKE) -f CMakeFiles/VelocityDispersionTests.dir/build.make CMakeFiles/VelocityDispersionTests.dir/src/utillity.cpp.i
 	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/src/utillity.cpp.i
 .PHONY : src/utillity.cpp.i
 
@@ -279,6 +281,7 @@ src/utillity.s: src/utillity.cpp.s
 
 # target to generate assembly for a file
 src/utillity.cpp.s:
+	$(MAKE) -f CMakeFiles/VelocityDispersionTests.dir/build.make CMakeFiles/VelocityDispersionTests.dir/src/utillity.cpp.s
 	$(MAKE) -f CMakeFiles/VelocityDispersion.dir/build.make CMakeFiles/VelocityDispersion.dir/src/utillity.cpp.s
 .PHONY : src/utillity.cpp.s
 

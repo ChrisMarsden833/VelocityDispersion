@@ -204,9 +204,6 @@ float hyperGeometricSeries_2(float a, float b, float c, float z)
 
         j++;
     }
-
-
-
     return 0;
 }
 

@@ -76,6 +76,51 @@ float hyperGeometricSeries_2(float a, float b, float c, float z);
  */
 float getSign(float argument);
 
+/** ++ linspace ++
+ * Simple function to mimic numpy's linspace function. This creates
+ * a linearly spaced vector of values.
+ * @param a : the value at the start of the array
+ * @param b : the value at the end of the array
+ * @param N : the number of values in the array.
+ * @return
+ */
+template<typename T>
+std::vector<T> linspace(T start_in, T end_in, int num)
+{
+    std::vector<T> linspaced;
 
+    T start = static_cast<T>(start_in);
+    T end = static_cast<T>(end_in);
+    //T num = static_cast<T>(num_in);
+
+    if (num == 0) { return linspaced; }
+    if (num == 1)
+    {
+        linspaced.push_back(start);
+        return linspaced;
+    }
+
+    T delta = (end - start) / (num - 1);
+
+    for(int i=0; i < num-1; ++i)
+    {
+        linspaced.push_back(start + delta * i);
+    }
+    linspaced.push_back(end); // I want to ensure that start and end
+    // are exactly the same as the input
+    return linspaced;
+}
+
+/** ++AreSame++
+ * A simple function to test that float like variables are the same
+ * @param a, first value
+ * @param b, second value
+ * @return bool, the same or not.
+ */
+template<typename T>
+bool AreSame(T a, T b)
+{
+    return fabs(a - b) <= fabs(a) * 0.0001;
+}
 
 #endif //VELOCITYDISPERSIONS_UTILLITY_H

@@ -8,6 +8,8 @@ set(CMAKE_CXX_STANDARD 14)
 
 #LINK_DIRECTORIES ( ${Boost_LIBRARY_DIRS} )
 
+include_directories(src)
+
 add_executable(VelocityDispersion
         src/desmond.cpp
         src/desmond.h
@@ -18,7 +20,10 @@ add_executable(VelocityDispersion
         src/utillity.cpp
         src/utillity.h)
 
-add_executable(VelocityDispersionTests Testing/test1.cpp)
+add_executable(VelocityDispersionTests
+        Testing/test1.cpp
+        src/utillity.h
+        src/utillity.cpp)
 
 TARGET_LINK_LIBRARIES(VelocityDispersion LINK_PUBLIC
         ${Boost_LIBRARIES}

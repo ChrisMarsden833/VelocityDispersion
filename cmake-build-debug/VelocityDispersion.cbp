@@ -55,6 +55,7 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/usr/local/include"/>
+					<Add directory="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.1/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
@@ -76,6 +77,7 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/usr/local/include"/>
+					<Add directory="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.1/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
@@ -97,6 +99,7 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/usr/local/include"/>
+					<Add directory="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.1/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
@@ -118,6 +121,7 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/usr/local/include"/>
+					<Add directory="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.1/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
@@ -154,9 +158,11 @@
 			<Option target="VelocityDispersion"/>
 		</Unit>
 		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/utillity.cpp">
+			<Option target="VelocityDispersionTests"/>
 			<Option target="VelocityDispersion"/>
 		</Unit>
 		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/utillity.h">
+			<Option target="VelocityDispersionTests"/>
 			<Option target="VelocityDispersion"/>
 		</Unit>
 		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/CMakeLists.txt">
