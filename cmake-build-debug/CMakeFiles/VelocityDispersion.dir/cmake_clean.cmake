@@ -1,11 +1,8 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/VelocityDispersion.dir/desmond.cpp.o"
-  "CMakeFiles/VelocityDispersion.dir/integration.cpp.o"
-  "CMakeFiles/VelocityDispersion.dir/main.cpp.o"
-  "CMakeFiles/VelocityDispersion.dir/utillity.cpp.o"
-  "CMakeFiles/VelocityDispersion.dir/Testing/Testing.cpp.o"
-  "CMakeFiles/VelocityDispersion.dir/Testing/testing_integration.cpp.o"
-  "CMakeFiles/VelocityDispersion.dir/Testing/testing_utillity.cpp.o"
+  "CMakeFiles/VelocityDispersion.dir/src/desmond.cpp.o"
+  "CMakeFiles/VelocityDispersion.dir/src/integration.cpp.o"
+  "CMakeFiles/VelocityDispersion.dir/src/main.cpp.o"
+  "CMakeFiles/VelocityDispersion.dir/src/utillity.cpp.o"
   "VelocityDispersion.pdb"
   "VelocityDispersion"
 )
