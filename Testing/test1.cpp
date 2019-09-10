@@ -38,11 +38,31 @@ BOOST_AUTO_TEST_CASE(IBeta)
 {
     // All comparisons are from Wolfram Alpha
 
-    float ib = incompleteBeta(0.5, 0.5, 0.1);
-    float ib_wolfram = 0.643501;
-    BOOST_CHECK(AreSame(ib, ib_wolfram));
+    // Compare varying values of u, for a = 0.5, b = 0.5
+    int length = 5;
+    std::vector<float> z_test_values = linspace((float) 1., (float) 10000., 5);
+    for(int i = 0; i < length; i++)
+    {
+        z_test_values[i] = 1/(z_test_values[i]*z_test_values[i]);
+    }
+    z_test_values.push_back(0.); // Also test when zero
+    length++;
+    // 'correct' results from Wolfram Alpha.
+    std::vector<float> res_wolfram{3.141592653589793, 0.000799759985303, 0.00039996000066, 0.000266657833977, 0.000200000000333, 0.0};
+    float res;
+    for(int i = 0; i < length; i++)
+    {
+        res = incompleteBeta(0.5, 0.5, z_test_values[i]);
+        std::cout << "iteration:" << i << " " << res;
+        BOOST_CHECK(AreSame(res, res_wolfram[i]));
+    }
 
-    ib = incompleteBeta(0.5, 0.5, 0.1);
+
+    //float ib = incompleteBeta(0.5, 0.5, 0.1);
+    //float ib_wolfram = 0.643501;
+    //BOOST_CHECK(AreSame(ib, ib_wolfram));
+
+    //ib = incompleteBeta(0.5, 0.5, 0.1);
 
 
 }
