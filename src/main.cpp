@@ -12,7 +12,7 @@ int main()
 
     clock_t start = clock();
 
-    mine = incompleteBeta(0.5, 0.5, 1);
+    mine = incompleteBeta(-1.0, 0.5, 0.01);
 
     clock_t end = clock();
 

@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE(IBeta)
 {
     // All comparisons are from Wolfram Alpha
 
-    // Compare varying values of u, for a = 0.5, b = 0.5
+    // Compare varying values of z, for a = 0.5, b = 0.5
     int length = 5;
     std::vector<float> z_test_values = linspace((float) 1., (float) 10000., 5);
     for(int i = 0; i < length; i++)
@@ -48,7 +48,7 @@ BOOST_AUTO_TEST_CASE(IBeta)
     z_test_values.push_back(0.); // Also test when zero
     length++;
     // 'correct' results from Wolfram Alpha.
-    std::vector<float> res_wolfram{3.141592653589793, 0.000799759985303, 0.00039996000066, 0.000266657833977, 0.000200000000333, 0.0};
+    std::vector<float> res_wolfram{3.141592653589793, 0.000799759985303, 0.00039996000066, 0.000266657833977, 0.000200000000333, 0.};
     float res;
     for(int i = 0; i < length; i++)
     {
@@ -57,12 +57,16 @@ BOOST_AUTO_TEST_CASE(IBeta)
         BOOST_CHECK(AreSame(res, res_wolfram[i]));
     }
 
+    // Compare varying values for a, for z = 0.01, b = 0.5
+    length = 7;
+    std::vector<float> a_test_values = linspace((float) -2., (float) 2., length);
+    std::vector<float> res_wolfram_2{-355.05534932486480, -31.992746308364349285};
+    for(float a : a_test_values)
+    {
+        std::cout << a << std::endl;
+    }
 
-    //float ib = incompleteBeta(0.5, 0.5, 0.1);
-    //float ib_wolfram = 0.643501;
-    //BOOST_CHECK(AreSame(ib, ib_wolfram));
-
-    //ib = incompleteBeta(0.5, 0.5, 0.1);
+    //std::vector<float> res_wolfram_a{};
 
 
 }
