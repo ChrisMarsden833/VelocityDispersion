@@ -21,9 +21,15 @@ add_executable(VelocityDispersion
         src/utillity.h)
 
 add_executable(VelocityDispersionTests
-        Testing/test1.cpp
+        Testing/testmain.cpp
         src/utillity.h
-        src/utillity.cpp)
+        src/utillity.cpp
+        src/Integration.h
+        src/Integration.cpp
+        Testing/testutil.cpp
+        Testing/testutil.h
+        Testing/testinteg.cpp
+        Testing/testinteg.h)
 
 TARGET_LINK_LIBRARIES(VelocityDispersion LINK_PUBLIC
         ${Boost_LIBRARIES}

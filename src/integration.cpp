@@ -5,39 +5,44 @@
 float SimpsonsRule(float (*f)(float, std::vector<float>), float a, float b, int N, std::vector<float> extraArguments)
 {
     // Test and adjustment for evenness.
-    try
+    CheckAndMaybeIncrementN(&N);
+
+    float * grid;
+    float h;
+    fastLinspace(grid, &h, a, b, N);
+
+    int N_half = N/2;
+    // Term 1 in the formula.
+    float sum1 = 0;
+    for(int j = 1; j <= (N_half - 1); j++)
     {
-        if(!checkEven(N))
-        {
-            std::string message = std::to_string(N);
-            throw std::invalid_argument("Odd Number supplied for Simpsons Rule (" + message + ")");
-        }
+        sum1 += (*f)(grid[2*j], extraArguments);
     }
-    catch (const std::invalid_argument& ia) {
-        std::cerr << ia.what() << "\n" << "Value will be incremented by one." << '\n';
-        N++;
+    // Term 2 in the formula
+    float sum2 = 0;
+    for(int j = 1; j <= N_half; j++)
+    {
+        sum2 += (*f)(grid[2*j-1], extraArguments);
     }
+    // Full formula
+    float total = (h/3.0)*((*f)(a, extraArguments) + 2.0 * sum1 + 4 * sum2 + (*f)(b, extraArguments));
+    free(grid);
+    return total;
+}
+
+float SimpsonsRule(float (*f)(float), float a, float b, int N)
+{
+    // Test and adjustment for evenness.
+    CheckAndMaybeIncrementN(&N);
 
     // Create a Grid
-    float * grid = (float *) malloc( (N + 1) * sizeof(float)); // Prep array
-    float h = (b - a)/((float) N); // Calculate the spacing of the grid, h
-    for(int i = 0; i <= N; i++) grid[i] = a + i*h; // fill values
+    //float * grid = (float *) malloc( (N + 1) * sizeof(float)); // Prep array
+    //float h = (b - a)/((float) N); // Calculate the spacing of the grid, h
+    //for(int i = 0; i <= N; i++) grid[i] = a + i*h; // fill values
 
-    // Test grid's last element is actually the end
-    try
-    {
-        if(!(grid[N] == b))
-        {
-            char buffer [50];
-            sprintf(buffer, "Last grid element (%f) does not equal the value of b (%f) - it should.", grid[N], b);
-            throw std::invalid_argument(buffer);
-        }
-    }
-    catch (const std::invalid_argument& ia) {
-        std::cerr << "Critical Error in Simpsons Rule:" << ia.what() << '\n';
-        std::exit(1); // This is a critical Fail, so exit.
-    }
-
+    float * grid;
+    float h;
+    fastLinspace(grid, &h, a, b, N);
 
     // Start the actual Simpsons rule
     int N_half = N/2;
@@ -46,23 +51,22 @@ float SimpsonsRule(float (*f)(float, std::vector<float>), float a, float b, int 
     float sum1 = 0;
     for(int j = 1; j <= (N_half - 1); j++)
     {
-        sum1 += (*f)(grid[2*j], extraArguments);
+        sum1 += (*f)(grid[2*j]);
     }
 
     // Term 2 in the formula
     float sum2 = 0;
     for(int j = 1; j <= N_half; j++)
     {
-        sum2 += (*f)(grid[2*j-1], extraArguments);
+        sum2 += (*f)(grid[2*j-1]);
     }
 
     // Full formula
-    float total = (h/3.0)*((*f)(a, extraArguments) + 2.0 * sum1 + 4 * sum2 + (*f)(b, extraArguments));
-
+    float total = (h/3.0)*((*f)(a) + 2.0 * sum1 + 4 * sum2 + (*f)(b));
     free(grid);
-
     return total;
 }
+
 
 
 RResult RichardsonExtrapolate(float (*f)(float, std::vector<float>), float a, float b, int steps2, std::vector<float> extraArguments)
@@ -161,19 +165,4 @@ float AdaptiveRichardsonExtrapolate(float (*f)(float, std::vector<float>), float
         }
     }
     return integral;
-}
-
-float IterativeRichardsonExtrapolate(float (*f)(float, std::vector<float>), float a, float b, float accuracy, std::vector<float> extraArguments)
-{
-    RResult data;
-
-    // Setter for the number of steps to add each time. Probably should put this as a function argument.
-    float steps = 4;
-    // Loop until accuracy is okay.
-    while(data.accuracy > accuracy)
-    {
-        data = RichardsonExtrapolate((*f), a, b, steps, extraArguments);
-        steps += 4;
-    }
-    return data.integral;
 }

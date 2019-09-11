@@ -1,9 +1,36 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/christophermarsden/Documents/Astronomy/VelocityDispersion
--- Boost version: 1.69.0
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Volumes/Files/Astronomy/VelocityDispersion
+CMake Warning at /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:880 (message):
+  New Boost version may have incorrect or missing dependencies and imported
+  targets
+Call Stack (most recent call first):
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:1002 (_Boost_COMPONENT_DEPENDENCIES)
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:1670 (_Boost_MISSING_DEPENDENCIES)
+  CMakeLists.txt:4 (FIND_PACKAGE)
+
+
+CMake Warning at /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:880 (message):
+  New Boost version may have incorrect or missing dependencies and imported
+  targets
+Call Stack (most recent call first):
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:1002 (_Boost_COMPONENT_DEPENDENCIES)
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:1670 (_Boost_MISSING_DEPENDENCIES)
+  CMakeLists.txt:4 (FIND_PACKAGE)
+
+
+CMake Warning at /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:880 (message):
+  New Boost version may have incorrect or missing dependencies and imported
+  targets
+Call Stack (most recent call first):
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:1002 (_Boost_COMPONENT_DEPENDENCIES)
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:1670 (_Boost_MISSING_DEPENDENCIES)
+  CMakeLists.txt:4 (FIND_PACKAGE)
+
+
+-- Boost version: 1.70.0
 -- Found the following Boost libraries:
 --   system
 --   filesystem
 --   unit_test_framework
 -- Configuring done
 -- Generating done
--- Build files have been written to: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug
+-- Build files have been written to: /Volumes/Files/Astronomy/VelocityDispersion/cmake-build-debug

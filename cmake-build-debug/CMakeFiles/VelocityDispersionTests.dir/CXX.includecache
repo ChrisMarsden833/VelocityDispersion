@@ -6,21 +6,35 @@
 
 #IncludeRegexTransform: 
 
-/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/utillity.cpp
-utillity.h
-/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/utillity.h
+/Volumes/Files/Astronomy/VelocityDispersion/src/integration.cpp
+integration.h
+/Volumes/Files/Astronomy/VelocityDispersion/src/integration.h
 
-/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/utillity.h
+/Volumes/Files/Astronomy/VelocityDispersion/src/integration.h
 iostream
 -
 stdio.h
 -
 stdlib.h
-/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/stdlib.h
+/Volumes/Files/Astronomy/VelocityDispersion/src/stdlib.h
 math.h
-/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/math.h
+/Volumes/Files/Astronomy/VelocityDispersion/src/math.h
 vector
-/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/vector
+/Volumes/Files/Astronomy/VelocityDispersion/src/vector
+utillity.h
+/Volumes/Files/Astronomy/VelocityDispersion/src/utillity.h
+
+/Volumes/Files/Astronomy/VelocityDispersion/src/utillity.h
+iostream
+-
+stdio.h
+-
+stdlib.h
+/Volumes/Files/Astronomy/VelocityDispersion/src/stdlib.h
+math.h
+/Volumes/Files/Astronomy/VelocityDispersion/src/math.h
+vector
+/Volumes/Files/Astronomy/VelocityDispersion/src/vector
 boost/math/special_functions/beta.hpp
 -
 boost/math/special_functions/factorials.hpp
@@ -879,6 +893,8 @@ unistd.h
 -
 sys/types.h
 -
+cygwin/version.h
+-
 pthread.h
 -
 boost/config/detail/posix_features.hpp
@@ -1049,6 +1065,8 @@ cstddef
 -
 
 /usr/local/include/boost/core/checked_delete.hpp
+boost/config.hpp
+-
 
 /usr/local/include/boost/core/enable_if.hpp
 boost/config.hpp
@@ -1077,6 +1095,8 @@ algorithm
 -
 cstddef
 -
+
+/usr/local/include/boost/core/use_default.hpp
 
 /usr/local/include/boost/cstdint.hpp
 boost/config.hpp
@@ -4127,6 +4147,8 @@ boost/iterator/detail/config_undef.hpp
 -
 
 /usr/local/include/boost/iterator/detail/facade_iterator_category.hpp
+boost/core/use_default.hpp
+-
 boost/iterator/iterator_categories.hpp
 -
 boost/mpl/or.hpp
@@ -4180,6 +4202,8 @@ boost/iterator/detail/config_undef.hpp
 
 /usr/local/include/boost/iterator/iterator_adaptor.hpp
 boost/static_assert.hpp
+-
+boost/core/use_default.hpp
 -
 boost/iterator/iterator_categories.hpp
 -
@@ -4279,7 +4303,7 @@ boost/iterator/detail/enable_if.hpp
 -
 boost/static_assert.hpp
 -
-boost/utility/addressof.hpp
+boost/core/addressof.hpp
 -
 boost/type_traits/is_same.hpp
 -
@@ -5163,7 +5187,7 @@ boost/type_traits/is_complex.hpp
 /usr/local/include/boost/math/tools/config.hpp
 boost/config.hpp
 -
-boost/predef.h
+boost/predef/architecture/x86.h
 -
 boost/cstdint.hpp
 -
@@ -5739,6 +5763,12 @@ boost/math/tools/config.hpp
 -
 
 /usr/local/include/boost/math/tools/roots.hpp
+boost/multiprecision/detail/number_base.hpp
+-
+boost/type_traits/is_complex.hpp
+-
+iostream
+-
 utility
 -
 boost/config/no_tr1/cmath.hpp
@@ -8710,6 +8740,20 @@ boost/mpl/aux_/config/workaround.hpp
 boost/mpl/aux_/adl_barrier.hpp
 -
 
+/usr/local/include/boost/multiprecision/detail/number_base.hpp
+limits
+-
+boost/utility/enable_if.hpp
+-
+boost/type_traits/is_convertible.hpp
+-
+boost/type_traits/is_constructible.hpp
+-
+boost/type_traits/decay.hpp
+-
+boost/lexical_cast.hpp
+-
+
 /usr/local/include/boost/next_prior.hpp
 iterator
 -
@@ -9943,8 +9987,6 @@ boost/predef/os/aix.h
 -
 boost/predef/os/amigaos.h
 -
-boost/predef/os/android.h
--
 boost/predef/os/beos.h
 -
 boost/predef/os/bsd.h
@@ -9974,6 +10016,8 @@ boost/predef/os/unix.h
 boost/predef/os/vms.h
 -
 boost/predef/os/windows.h
+-
+boost/predef/os/android.h
 -
 
 /usr/local/include/boost/predef/os/aix.h
@@ -10263,6 +10307,8 @@ boost/predef/detail/test.h
 -
 
 /usr/local/include/boost/predef/platform.h
+boost/predef/platform/android.h
+-
 boost/predef/platform/cloudabi.h
 -
 boost/predef/platform/mingw.h
@@ -10286,6 +10332,16 @@ boost/predef/platform/windows_system.h
 boost/predef/platform/windows_runtime.h
 -
 boost/predef/platform/ios.h
+-
+
+/usr/local/include/boost/predef/platform/android.h
+boost/predef/version_number.h
+-
+boost/predef/make.h
+-
+boost/predef/detail/platform_detected.h
+-
+boost/predef/detail/test.h
 -
 
 /usr/local/include/boost/predef/platform/cloudabi.h
@@ -12000,6 +12056,20 @@ boost/type_traits/remove_volatile.hpp
 boost/type_traits/remove_cv.hpp
 -
 
+/usr/local/include/boost/type_traits/decay.hpp
+boost/type_traits/is_array.hpp
+-
+boost/type_traits/is_function.hpp
+-
+boost/type_traits/remove_bounds.hpp
+-
+boost/type_traits/add_pointer.hpp
+-
+boost/type_traits/remove_reference.hpp
+-
+boost/type_traits/remove_cv.hpp
+-
+
 /usr/local/include/boost/type_traits/declval.hpp
 boost/config.hpp
 -
@@ -12732,6 +12802,10 @@ boost/static_assert.hpp
 boost/config.hpp
 -
 
+/usr/local/include/boost/type_traits/remove_bounds.hpp
+boost/type_traits/remove_extent.hpp
+-
+
 /usr/local/include/boost/type_traits/remove_const.hpp
 boost/config.hpp
 -
@@ -12754,6 +12828,14 @@ boost/config.hpp
 boost/type_traits/remove_cv.hpp
 -
 boost/type_traits/remove_reference.hpp
+-
+
+/usr/local/include/boost/type_traits/remove_extent.hpp
+boost/config.hpp
+-
+boost/detail/workaround.hpp
+-
+cstddef
 -
 
 /usr/local/include/boost/type_traits/remove_pointer.hpp
@@ -13026,10 +13108,6 @@ boost/core/enable_if.hpp
 boost/core/checked_delete.hpp
 -
 boost/core/noncopyable.hpp
--
-
-/usr/local/include/boost/utility/addressof.hpp
-boost/core/addressof.hpp
 -
 
 /usr/local/include/boost/utility/base_from_member.hpp

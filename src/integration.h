@@ -45,6 +45,17 @@ struct RResult
  */
 float SimpsonsRule(float (*f)(float, std::vector<float>), float a, float b, int N, std::vector<float> extraArguments);
 
+/** ++ SimpsonsRule (overload) ++
+ * Overload of the SimpsonsRule function for the case where there are not additional arguments
+ * @param f : pointer, to the function in question. The argument of this function must be the variable over which
+           the integration will be performed.
+ * @param a : float, the lower limit of the integration.
+ * @param b : float, the upper limit of the integration.
+ * @param N : int, the number of intervals to perform the integration over, or the 'resolution' of the pass.
+ * @return float, the value of the integration.
+ */
+float SimpsonsRule(float (*f)(float), float a, float b, int N);
+
 /** ++ RichardsonExtrapolate ++
  * Performs Richardson Extrapolation for the specified function using Simpsons rule.
  * @param f : pointer, to the function in question. The first argument of this function must be the variable over which
@@ -73,19 +84,6 @@ RResult RichardsonExtrapolate(float (*f)(float, std::vector<float>), float a, fl
  */
 float AdaptiveRichardsonExtrapolate(float (*f)(float, std::vector<float>), float a, float b, float accuracy, std::vector<float> extraArguments);
 
-/** ++ IterativeRichardsonExtrapolation ++
- * Performs Iterative Richardson Extrapolation for the specified function using Simpsons rule. This is a slightly more
- * 'brute force' approach to Richardson Extrapolation, just increasing the spacing until the error reaches it's desired
- * value.
- * @param f : pointer, to the function in question. The first argument of this function must be the variable over which
-           the integration will be performed, the second must accept an array containing any additional arguments. If
-           this is a problem, place function in wrapper function and pass that.
- * @param a : float, the lower limit of the integration.
- * @param b : float, the upper limit of the integration.
- * @param accuracy : float, the required tolerance of the integration.
- * @param extraArguments : vector<float>, containing any extra arguments for f that might be required.
- * @return float, the value of the integration to the specified tolerance.
- */
-float IterativeRichardsonExtrapolate(float (*f)(float, std::vector<float>), float a, float b, float accuracy, std::vector<float> extraArguments);
+
 
 #endif //VELOCITYDISPERSIONS_INTEGRATION_H

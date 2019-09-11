@@ -143,5 +143,4 @@ float sigma_apature_internals(float r, std::vector<float> args);
 float sigma_aperture(float R_ap, float beta, float Half_Light_radius, float SersicIndex);
 
 
-
 #endif //VELOCITYDISPERSIONS_DESMOND_H

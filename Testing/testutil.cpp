@@ -1,13 +1,12 @@
-#define BOOST_TEST_MODULE My Test
-#define BOOST_TEST_DYN_LINK
-#include <boost/test/unit_test.hpp>
-#include "vector"
-#include "utillity.h"
-#include "stdlib.h"
-#include "stdio.h"
+#include "testutil.h"
 
+void test_util(void)
+{
+   test_linspace();
+   test_ibeta();
+}
 
-BOOST_AUTO_TEST_CASE(Linspace)
+void test_linspace(void)
 {
     float start = 0.;
     float stop = 1.;
@@ -34,7 +33,7 @@ BOOST_AUTO_TEST_CASE(Linspace)
     }
 }
 
-BOOST_AUTO_TEST_CASE(IBeta)
+void test_ibeta(void)
 {
     // All comparisons are from Wolfram Alpha
 
@@ -48,25 +47,33 @@ BOOST_AUTO_TEST_CASE(IBeta)
     z_test_values.push_back(0.); // Also test when zero
     length++;
     // 'correct' results from Wolfram Alpha.
-    std::vector<float> res_wolfram{3.141592653589793, 0.000799759985303, 0.00039996000066, 0.000266657833977, 0.000200000000333, 0.};
+    std::vector<float> res_wolfram{3.14159265358979,
+                                   0.00079975998530,
+                                   0.00039996000066,
+                                   0.00026665783397,
+                                   0.00020000000033,
+                                   0.};
     float res;
     for(int i = 0; i < length; i++)
     {
         res = incompleteBeta(0.5, 0.5, z_test_values[i]);
-        std::cout << "iteration:" << i << " " << res;
         BOOST_CHECK(AreSame(res, res_wolfram[i]));
     }
 
     // Compare varying values for a, for z = 0.01, b = 0.5
-    length = 7;
-    std::vector<float> a_test_values = linspace((float) -2., (float) 2., length);
-    std::vector<float> res_wolfram_2{-355.05534932486480, -31.992746308364349285};
-    for(float a : a_test_values)
+    // We need to avoid the singularities, which occur at zero and negative integers.
+    length = 6;
+    std::vector<float> a_test_values = linspace((float) -2.1, (float) 2.5, length);
+    std::vector<float> res_wolfram_2{-7625.08886337438196511846,
+                                     -200.49433167596152234321,
+                                     -12.71336689572775970392,
+                                     0.07266455552386126564,
+                                     0.00043921575518787742,
+                                     4.0143696200406766891e-6};
+    for(int i = 0; i < length; i++)
     {
-        std::cout << a << std::endl;
+        res = incompleteBeta(a_test_values[i], 0.5, 0.01);
+        BOOST_CHECK(AreSame(res, res_wolfram_2[i]));
     }
-
-    //std::vector<float> res_wolfram_a{};
-
-
 }
+
