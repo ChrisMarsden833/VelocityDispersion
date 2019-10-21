@@ -7,9 +7,9 @@ float SimpsonsRule(float (*f)(float, std::vector<float>), float a, float b, int 
     // Test and adjustment for evenness.
     CheckAndMaybeIncrementN(&N);
 
-    float * grid;
+    float * grid = NULL;
     float h;
-    fastLinspace(grid, &h, a, b, N);
+    fastLinspace(grid, h, a, b, N);
 
     int N_half = N/2;
     // Term 1 in the formula.
@@ -40,9 +40,9 @@ float SimpsonsRule(float (*f)(float), float a, float b, int N)
     //float h = (b - a)/((float) N); // Calculate the spacing of the grid, h
     //for(int i = 0; i <= N; i++) grid[i] = a + i*h; // fill values
 
-    float * grid;
+    float * grid = NULL;
     float h;
-    fastLinspace(grid, &h, a, b, N);
+    fastLinspace(grid, h, a, b, N);
 
     // Start the actual Simpsons rule
     int N_half = N/2;

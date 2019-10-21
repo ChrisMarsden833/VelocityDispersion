@@ -55,11 +55,11 @@ void CheckAndMaybeIncrementN(int * N, std::string fname)
     }
 }
 
-void fastLinspace(float * grid, float * h, float a, float b, int N = 100)
+void fastLinspace(float * &grid, float &h, float a, float b, int N)
 {
     grid = (float *) malloc( (N + 1) * sizeof(float)); // Prep array
-    *h = (b - a)/((float) N); // Calculate the spacing of the grid, h
-    for(int i = 0; i <= N; i++) grid[i] = a + *h * (float) i; // fill values
+    h = (b - a)/((float) N); // Calculate the spacing of the grid, h
+    for(int i = 0; i <= N; i++) grid[i] = a + h * (float) i; // fill values
 }
 
 

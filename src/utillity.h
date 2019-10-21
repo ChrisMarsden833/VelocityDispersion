@@ -89,7 +89,7 @@ bool AreSame(T a, T b)
 void CheckAndMaybeIncrementN(int * N, std::string fname = "Richardson Extrapolation");
 
 
-void fastLinspace(float * grid, float * spacing, float a, float b, int N);
+void fastLinspace(float * &grid, float &h, float a, float b, int N = 100);
 
 
 #endif //VELOCITYDISPERSIONS_UTILLITY_H

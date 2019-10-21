@@ -3,26 +3,18 @@
 
 int main()
 {
-    float mine;
 
-    float R_ap = 500;
-    float beta = 1.;
-    float Half_Light_radius = 15000;
-    float SersicIndex = 4;
+   float r = 10;
+   float HLR = 30;
+   float beta = 0.1;
+   float sersic_index = 2.;
+   float stellar_mass = 10e7;
+   float halo_mass = 10e8;
+   float halo_size = 2. * HLR;
 
-    clock_t start = clock();
+   float res = rho(r, HLR, sersic_index, stellar_mass, halo_mass, halo_size);
 
-    mine = incompleteBeta(-1.0, 0.5, 0.01);
-
-    clock_t end = clock();
-
-
-    double time = (double) (end-start) / CLOCKS_PER_SEC;
-
-    std::cout << "Time : " << time << std::endl;
-
-
-    std::cout << "Result :" << mine << std::endl;
+   std::cout << res;
 
     return 0;
 }

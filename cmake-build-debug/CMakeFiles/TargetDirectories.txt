@@ -1,5 +1,11 @@
-/Volumes/Files/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Volumes/Files/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Volumes/Files/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/test.dir
-/Volumes/Files/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/VelocityDispersionTests.dir
-/Volumes/Files/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/VelocityDispersion.dir
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/src/CMakeFiles/rebuild_cache.dir
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/src/CMakeFiles/edit_cache.dir
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/src/CMakeFiles/DirectExecution.dir
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Testing/CMakeFiles/rebuild_cache.dir
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Testing/CMakeFiles/edit_cache.dir
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Testing/CMakeFiles/TestModule.dir
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/rebuild_cache.dir
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/edit_cache.dir
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/foo.dir

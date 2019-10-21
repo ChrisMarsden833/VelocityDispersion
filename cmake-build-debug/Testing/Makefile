@@ -78,17 +78,6 @@ edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
 
-# Special rule for the target test
-test:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
-	/Applications/CLion.app/Contents/bin/cmake/mac/bin/ctest --force-new-ctest-process $(ARGS)
-.PHONY : test
-
-# Special rule for the target test
-test/fast: test
-
-.PHONY : test/fast
-
 # The main all target
 all: cmake_check_build_system
 	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_progress_start /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Testing/CMakeFiles/progress.marks
@@ -122,46 +111,154 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-Testing/CMakeFiles/Testing_run.dir/rule:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f CMakeFiles/Makefile2 Testing/CMakeFiles/Testing_run.dir/rule
-.PHONY : Testing/CMakeFiles/Testing_run.dir/rule
+Testing/CMakeFiles/TestModule.dir/rule:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f CMakeFiles/Makefile2 Testing/CMakeFiles/TestModule.dir/rule
+.PHONY : Testing/CMakeFiles/TestModule.dir/rule
 
 # Convenience name for target.
-Testing_run: Testing/CMakeFiles/Testing_run.dir/rule
+TestModule: Testing/CMakeFiles/TestModule.dir/rule
 
-.PHONY : Testing_run
+.PHONY : TestModule
 
 # fast build rule for target.
-Testing_run/fast:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/Testing_run.dir/build.make Testing/CMakeFiles/Testing_run.dir/build
-.PHONY : Testing_run/fast
+TestModule/fast:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/TestModule.dir/build.make Testing/CMakeFiles/TestModule.dir/build
+.PHONY : TestModule/fast
 
-Testing.o: Testing.cpp.o
+__/src/Integration.o: __/src/Integration.cpp.o
 
-.PHONY : Testing.o
+.PHONY : __/src/Integration.o
 
 # target to build an object file
-Testing.cpp.o:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/Testing_run.dir/build.make Testing/CMakeFiles/Testing_run.dir/Testing.cpp.o
-.PHONY : Testing.cpp.o
+__/src/Integration.cpp.o:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/TestModule.dir/build.make Testing/CMakeFiles/TestModule.dir/__/src/Integration.cpp.o
+.PHONY : __/src/Integration.cpp.o
 
-Testing.i: Testing.cpp.i
+__/src/Integration.i: __/src/Integration.cpp.i
 
-.PHONY : Testing.i
+.PHONY : __/src/Integration.i
 
 # target to preprocess a source file
-Testing.cpp.i:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/Testing_run.dir/build.make Testing/CMakeFiles/Testing_run.dir/Testing.cpp.i
-.PHONY : Testing.cpp.i
+__/src/Integration.cpp.i:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/TestModule.dir/build.make Testing/CMakeFiles/TestModule.dir/__/src/Integration.cpp.i
+.PHONY : __/src/Integration.cpp.i
 
-Testing.s: Testing.cpp.s
+__/src/Integration.s: __/src/Integration.cpp.s
 
-.PHONY : Testing.s
+.PHONY : __/src/Integration.s
 
 # target to generate assembly for a file
-Testing.cpp.s:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/Testing_run.dir/build.make Testing/CMakeFiles/Testing_run.dir/Testing.cpp.s
-.PHONY : Testing.cpp.s
+__/src/Integration.cpp.s:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/TestModule.dir/build.make Testing/CMakeFiles/TestModule.dir/__/src/Integration.cpp.s
+.PHONY : __/src/Integration.cpp.s
+
+__/src/utillity.o: __/src/utillity.cpp.o
+
+.PHONY : __/src/utillity.o
+
+# target to build an object file
+__/src/utillity.cpp.o:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/TestModule.dir/build.make Testing/CMakeFiles/TestModule.dir/__/src/utillity.cpp.o
+.PHONY : __/src/utillity.cpp.o
+
+__/src/utillity.i: __/src/utillity.cpp.i
+
+.PHONY : __/src/utillity.i
+
+# target to preprocess a source file
+__/src/utillity.cpp.i:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/TestModule.dir/build.make Testing/CMakeFiles/TestModule.dir/__/src/utillity.cpp.i
+.PHONY : __/src/utillity.cpp.i
+
+__/src/utillity.s: __/src/utillity.cpp.s
+
+.PHONY : __/src/utillity.s
+
+# target to generate assembly for a file
+__/src/utillity.cpp.s:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/TestModule.dir/build.make Testing/CMakeFiles/TestModule.dir/__/src/utillity.cpp.s
+.PHONY : __/src/utillity.cpp.s
+
+testinteg.o: testinteg.cpp.o
+
+.PHONY : testinteg.o
+
+# target to build an object file
+testinteg.cpp.o:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/TestModule.dir/build.make Testing/CMakeFiles/TestModule.dir/testinteg.cpp.o
+.PHONY : testinteg.cpp.o
+
+testinteg.i: testinteg.cpp.i
+
+.PHONY : testinteg.i
+
+# target to preprocess a source file
+testinteg.cpp.i:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/TestModule.dir/build.make Testing/CMakeFiles/TestModule.dir/testinteg.cpp.i
+.PHONY : testinteg.cpp.i
+
+testinteg.s: testinteg.cpp.s
+
+.PHONY : testinteg.s
+
+# target to generate assembly for a file
+testinteg.cpp.s:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/TestModule.dir/build.make Testing/CMakeFiles/TestModule.dir/testinteg.cpp.s
+.PHONY : testinteg.cpp.s
+
+testmain.o: testmain.cpp.o
+
+.PHONY : testmain.o
+
+# target to build an object file
+testmain.cpp.o:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/TestModule.dir/build.make Testing/CMakeFiles/TestModule.dir/testmain.cpp.o
+.PHONY : testmain.cpp.o
+
+testmain.i: testmain.cpp.i
+
+.PHONY : testmain.i
+
+# target to preprocess a source file
+testmain.cpp.i:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/TestModule.dir/build.make Testing/CMakeFiles/TestModule.dir/testmain.cpp.i
+.PHONY : testmain.cpp.i
+
+testmain.s: testmain.cpp.s
+
+.PHONY : testmain.s
+
+# target to generate assembly for a file
+testmain.cpp.s:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/TestModule.dir/build.make Testing/CMakeFiles/TestModule.dir/testmain.cpp.s
+.PHONY : testmain.cpp.s
+
+testutil.o: testutil.cpp.o
+
+.PHONY : testutil.o
+
+# target to build an object file
+testutil.cpp.o:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/TestModule.dir/build.make Testing/CMakeFiles/TestModule.dir/testutil.cpp.o
+.PHONY : testutil.cpp.o
+
+testutil.i: testutil.cpp.i
+
+.PHONY : testutil.i
+
+# target to preprocess a source file
+testutil.cpp.i:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/TestModule.dir/build.make Testing/CMakeFiles/TestModule.dir/testutil.cpp.i
+.PHONY : testutil.cpp.i
+
+testutil.s: testutil.cpp.s
+
+.PHONY : testutil.s
+
+# target to generate assembly for a file
+testutil.cpp.s:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f Testing/CMakeFiles/TestModule.dir/build.make Testing/CMakeFiles/TestModule.dir/testutil.cpp.s
+.PHONY : testutil.cpp.s
 
 # Help Target
 help:
@@ -171,11 +268,22 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... test"
-	@echo "... Testing_run"
-	@echo "... Testing.o"
-	@echo "... Testing.i"
-	@echo "... Testing.s"
+	@echo "... TestModule"
+	@echo "... __/src/Integration.o"
+	@echo "... __/src/Integration.i"
+	@echo "... __/src/Integration.s"
+	@echo "... __/src/utillity.o"
+	@echo "... __/src/utillity.i"
+	@echo "... __/src/utillity.s"
+	@echo "... testinteg.o"
+	@echo "... testinteg.i"
+	@echo "... testinteg.s"
+	@echo "... testmain.o"
+	@echo "... testmain.i"
+	@echo "... testmain.s"
+	@echo "... testutil.o"
+	@echo "... testutil.i"
+	@echo "... testutil.s"
 .PHONY : help
 
 

@@ -1,7 +1,7 @@
 #ifndef VELOCITYDISPERSION_TESTINTEG_H
 #define VELOCITYDISPERSION_TESTINTEG_H
 
-#import "integration.h"
+#import "../src/integration.h"
 #include <math.h>
 #include <boost/test/unit_test.hpp>
 #include "vector"

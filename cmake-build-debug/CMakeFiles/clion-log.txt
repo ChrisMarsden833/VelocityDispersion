@@ -1,36 +1,121 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Volumes/Files/Astronomy/VelocityDispersion
-CMake Warning at /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:880 (message):
-  New Boost version may have incorrect or missing dependencies and imported
-  targets
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/christophermarsden/Documents/Astronomy/VelocityDispersion
+CMake Warning at /usr/local/lib/cmake/boost_system-1.71.0/libboost_system-variant-shared.cmake:59 (message):
+  Target Boost::system already has an imported location
+  '/usr/local/lib/libboost_system-mt.dylib', which will be overwritten with
+  '/usr/local/lib/libboost_system.dylib'
 Call Stack (most recent call first):
-  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:1002 (_Boost_COMPONENT_DEPENDENCIES)
-  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:1670 (_Boost_MISSING_DEPENDENCIES)
-  CMakeLists.txt:4 (FIND_PACKAGE)
+  /usr/local/lib/cmake/boost_system-1.71.0/boost_system-config.cmake:43 (include)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:117 (find_package)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:182 (boost_find_component)
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.14/Modules/FindBoost.cmake:266 (find_package)
+  src/CMakeLists.txt:6 (FIND_PACKAGE)
 
 
-CMake Warning at /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:880 (message):
-  New Boost version may have incorrect or missing dependencies and imported
-  targets
+CMake Warning at /usr/local/lib/cmake/boost_filesystem-1.71.0/libboost_filesystem-variant-shared.cmake:59 (message):
+  Target Boost::filesystem already has an imported location
+  '/usr/local/lib/libboost_filesystem-mt.dylib', which will be overwritten
+  with '/usr/local/lib/libboost_filesystem.dylib'
 Call Stack (most recent call first):
-  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:1002 (_Boost_COMPONENT_DEPENDENCIES)
-  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:1670 (_Boost_MISSING_DEPENDENCIES)
-  CMakeLists.txt:4 (FIND_PACKAGE)
+  /usr/local/lib/cmake/boost_filesystem-1.71.0/boost_filesystem-config.cmake:43 (include)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:117 (find_package)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:182 (boost_find_component)
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.14/Modules/FindBoost.cmake:266 (find_package)
+  src/CMakeLists.txt:6 (FIND_PACKAGE)
 
 
-CMake Warning at /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:880 (message):
-  New Boost version may have incorrect or missing dependencies and imported
-  targets
+CMake Warning at /usr/local/lib/cmake/boost_unit_test_framework-1.71.0/libboost_unit_test_framework-variant-shared.cmake:59 (message):
+  Target Boost::unit_test_framework already has an imported location
+  '/usr/local/lib/libboost_unit_test_framework-mt.dylib', which will be
+  overwritten with '/usr/local/lib/libboost_unit_test_framework.dylib'
 Call Stack (most recent call first):
-  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:1002 (_Boost_COMPONENT_DEPENDENCIES)
-  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.13/Modules/FindBoost.cmake:1670 (_Boost_MISSING_DEPENDENCIES)
-  CMakeLists.txt:4 (FIND_PACKAGE)
+  /usr/local/lib/cmake/boost_unit_test_framework-1.71.0/boost_unit_test_framework-config.cmake:43 (include)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:117 (find_package)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:182 (boost_find_component)
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.14/Modules/FindBoost.cmake:266 (find_package)
+  src/CMakeLists.txt:6 (FIND_PACKAGE)
 
 
--- Boost version: 1.70.0
--- Found the following Boost libraries:
---   system
---   filesystem
---   unit_test_framework
+-- Boost  found.
+-- Found Boost components:
+   system;filesystem;unit_test_framework
+CMake Warning at /usr/local/lib/cmake/boost_system-1.71.0/libboost_system-variant-shared.cmake:59 (message):
+  Target Boost::system already has an imported location
+  '/usr/local/lib/libboost_system-mt.dylib', which will be overwritten with
+  '/usr/local/lib/libboost_system.dylib'
+Call Stack (most recent call first):
+  /usr/local/lib/cmake/boost_system-1.71.0/boost_system-config.cmake:43 (include)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:117 (find_package)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:182 (boost_find_component)
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.14/Modules/FindBoost.cmake:266 (find_package)
+  Testing/CMakeLists.txt:6 (FIND_PACKAGE)
+
+
+CMake Warning at /usr/local/lib/cmake/boost_filesystem-1.71.0/libboost_filesystem-variant-shared.cmake:59 (message):
+  Target Boost::filesystem already has an imported location
+  '/usr/local/lib/libboost_filesystem-mt.dylib', which will be overwritten
+  with '/usr/local/lib/libboost_filesystem.dylib'
+Call Stack (most recent call first):
+  /usr/local/lib/cmake/boost_filesystem-1.71.0/boost_filesystem-config.cmake:43 (include)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:117 (find_package)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:182 (boost_find_component)
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.14/Modules/FindBoost.cmake:266 (find_package)
+  Testing/CMakeLists.txt:6 (FIND_PACKAGE)
+
+
+CMake Warning at /usr/local/lib/cmake/boost_unit_test_framework-1.71.0/libboost_unit_test_framework-variant-shared.cmake:59 (message):
+  Target Boost::unit_test_framework already has an imported location
+  '/usr/local/lib/libboost_unit_test_framework-mt.dylib', which will be
+  overwritten with '/usr/local/lib/libboost_unit_test_framework.dylib'
+Call Stack (most recent call first):
+  /usr/local/lib/cmake/boost_unit_test_framework-1.71.0/boost_unit_test_framework-config.cmake:43 (include)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:117 (find_package)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:182 (boost_find_component)
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.14/Modules/FindBoost.cmake:266 (find_package)
+  Testing/CMakeLists.txt:6 (FIND_PACKAGE)
+
+
+-- Boost  found.
+-- Found Boost components:
+   system;filesystem;unit_test_framework
+CMake Warning at /usr/local/lib/cmake/boost_system-1.71.0/libboost_system-variant-shared.cmake:59 (message):
+  Target Boost::system already has an imported location
+  '/usr/local/lib/libboost_system-mt.dylib', which will be overwritten with
+  '/usr/local/lib/libboost_system.dylib'
+Call Stack (most recent call first):
+  /usr/local/lib/cmake/boost_system-1.71.0/boost_system-config.cmake:43 (include)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:117 (find_package)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:182 (boost_find_component)
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.14/Modules/FindBoost.cmake:266 (find_package)
+  lib/CMakeLists.txt:6 (FIND_PACKAGE)
+
+
+CMake Warning at /usr/local/lib/cmake/boost_filesystem-1.71.0/libboost_filesystem-variant-shared.cmake:59 (message):
+  Target Boost::filesystem already has an imported location
+  '/usr/local/lib/libboost_filesystem-mt.dylib', which will be overwritten
+  with '/usr/local/lib/libboost_filesystem.dylib'
+Call Stack (most recent call first):
+  /usr/local/lib/cmake/boost_filesystem-1.71.0/boost_filesystem-config.cmake:43 (include)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:117 (find_package)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:182 (boost_find_component)
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.14/Modules/FindBoost.cmake:266 (find_package)
+  lib/CMakeLists.txt:6 (FIND_PACKAGE)
+
+
+CMake Warning at /usr/local/lib/cmake/boost_unit_test_framework-1.71.0/libboost_unit_test_framework-variant-shared.cmake:59 (message):
+  Target Boost::unit_test_framework already has an imported location
+  '/usr/local/lib/libboost_unit_test_framework-mt.dylib', which will be
+  overwritten with '/usr/local/lib/libboost_unit_test_framework.dylib'
+Call Stack (most recent call first):
+  /usr/local/lib/cmake/boost_unit_test_framework-1.71.0/boost_unit_test_framework-config.cmake:43 (include)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:117 (find_package)
+  /usr/local/lib/cmake/Boost-1.71.0/BoostConfig.cmake:182 (boost_find_component)
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.14/Modules/FindBoost.cmake:266 (find_package)
+  lib/CMakeLists.txt:6 (FIND_PACKAGE)
+
+
+-- Boost  found.
+-- Found Boost components:
+   system;filesystem;unit_test_framework
 -- Configuring done
 -- Generating done
--- Build files have been written to: /Volumes/Files/Astronomy/VelocityDispersion/cmake-build-debug
+-- Build files have been written to: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug

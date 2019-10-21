@@ -17,9 +17,10 @@
  * @param r : float, the radius
  * @param SersicIndex : float, the Sersic Index
  * @param Half_Light_radius : float, half light radius.
+ * @param stellar_mass : float, stellar mass
  * @return
  */
-float MassDensityProfile(float r, float SersicIndex, float Half_Light_radius);
+float MassDensityProfile(float r, float SersicIndex, float Half_Light_radius, float stellar_mass);
 
 /** ++ MassDensityProfile_wrapper ++
  * Equation (1). P824. For integrating MassDensityProfile x r, WRT r.
@@ -41,17 +42,21 @@ float b_n(float SersicIndex);
  * @param r : float, the radius
  * @param Half_Light_radius : float, the half light radius
  * @param SersicIndex : float, the Sersic Index
+ * @param stellar_mass : float, the stellar mass
+ * @param dm_rho0 : float, the dark matter characteristic mass
+ * @param dm_rs : float, the dark matter characteristic radius.
  * @return float, the value of the density.
  */
-float rho(float r, float Half_Light_radius, float SersicIndex);
+float rho(float r, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rho0, float dm_rs);
 
 /** ++ rho_0 ++
  * Equation (4), P824, Factor for the de-projected volume density.
  * @param Half_Light_radius : float, the half light radius.
  * @param SersicIndex : float, the Sersic Index
+ * @param stellar_mass : float, the stellar mass
  * @return float, the value of rho_0
  */
-float rho_0(float Half_Light_radius, float SersicIndex);
+float rho_0(float Half_Light_radius, float SersicIndex, float stellar_mass);
 
 
 /** ++ p_n ++
@@ -75,9 +80,10 @@ float cumSpherRho(float R, std::vector<float> args);
  * @param R : float, the radius.
  * @param Half_Light_radius : float, the half light radius.
  * @param SersicIndex : float, the Sersic Index
+ * @param stellar_mass : float, the stellar mass
  * @return float, the value of the cumulative spherical mass distribution.
  */
-float cumSpherMassDistro(float R, float Half_Light_radius, float SersicIndex);
+float cumSpherMassDistro(float R, float Half_Light_radius, float SersicIndex, float stellar_mass);
 
 /** ++ K_Kernel_DW ++
  * Equation (9), P824, The Kernel function 'u'.
@@ -94,9 +100,12 @@ float K_Kernel_DW(float u, float beta);
  * @param beta : float, the anisotropy profile.
  * @param Half_Light_radius : float, the Half_Light_radius.
  * @param SersicIndex : float, the Sersic Index.
+ * @param stellar_mass : float, the stellar mass.
+ * @param dm_rho0 : float, the dark matter characteristic mass
+ * @param dm_rs : float, the dark matter characteristic radius
  * @return float, the returned value.
  */
-float full_sigma_integral_internals(float r, float R, float beta, float Half_Light_radius, float SersicIndex);
+float full_sigma_integral_internals(float r, float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rho0, float dm_rs);
 
 /** ++ sigma_internals_wrapper ++
  * Wrapper function to make sure formatting works for sigma integration
@@ -112,9 +121,12 @@ float sigma_internals_wrapper(float r, std::vector<float> args);
  * @param beta : float, the anisotropy parameter
  * @param Half_Light_radius : float, the half light radius of the galaxy
  * @param SersicIndex : float, the sersic index of the galaxy.
+ * @param stellar_mass : float, the stellar mass.
+ * @param dm_rho0 : float, the dark matter characteristic mass
+ * @param dm_rs : float the dark matter characteristic radius
  * @return float, the velocity dispersion.
  */
-float sigma_los(float R, float beta, float Half_Light_radius, float SersicIndex);
+float sigma_los(float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rho0, float dm_rs);
 
 /** ++ sigma_los_wrapper ++
  * Wrapper function to ensure formatting works for integration.
@@ -138,9 +150,19 @@ float sigma_apature_internals(float r, std::vector<float> args);
  * @param beta : float, the anisotropy profile.
  * @param Half_Light_radius : float, the half light radius.
  * @param SersicIndex : float, the sersic index.
+ * @param stellar_mass : float, the stellar mass.
  * @return float, the value of sigma.
  */
-float sigma_aperture(float R_ap, float beta, float Half_Light_radius, float SersicIndex);
+float sigma_aperture(float R_ap, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass);
+
+/** ++ NFW_profile ++
+ * Navarro–Frenk–White (NFW) profile is a spatial mass distribution of dark matter fitted to dark matter halos.
+ * @param r
+ * @param rho0
+ * @param Rs
+ * @return
+ */
+float NFW_profile(float r, float rho0, float Rs);
 
 
 #endif //VELOCITYDISPERSIONS_DESMOND_H

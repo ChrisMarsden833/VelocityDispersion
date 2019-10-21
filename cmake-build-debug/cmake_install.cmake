@@ -1,4 +1,4 @@
-# Install script for directory: /Volumes/Files/Astronomy/VelocityDispersion
+# Install script for directory: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -32,6 +32,14 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
   set(CMAKE_CROSSCOMPILING "FALSE")
 endif()
 
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for each subdirectory.
+  include("/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/src/cmake_install.cmake")
+  include("/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/Testing/cmake_install.cmake")
+  include("/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/lib/cmake_install.cmake")
+
+endif()
+
 if(CMAKE_INSTALL_COMPONENT)
   set(CMAKE_INSTALL_MANIFEST "install_manifest_${CMAKE_INSTALL_COMPONENT}.txt")
 else()
@@ -40,5 +48,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Volumes/Files/Astronomy/VelocityDispersion/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
