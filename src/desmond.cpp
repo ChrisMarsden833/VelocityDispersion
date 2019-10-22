@@ -41,7 +41,7 @@ float b_n(float SersicIndex)
     return 2. * SersicIndex - (1./3.) + (.009876/SersicIndex);
 }
 
-float rho(float r, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rho0, float dm_rs)
+float rho(float r, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H)
 {
     // Rho Zero
     float rho_0_term = rho_0(Half_Light_radius, SersicIndex, stellar_mass);
@@ -77,7 +77,8 @@ float rho(float r, float Half_Light_radius, float SersicIndex, float stellar_mas
 
     float exp_term = exp(b_n_term * exp_power_term);
 
-    return rho_0_term * power_term * exp_term + NFW_profile(r, dm_rho0, dm_rs);
+
+    return rho_0_term * power_term * exp_term + NFW_profile(r, dm_rs, dm_c, omega_m, H);
 }
 
 float rho_0(float Half_Light_radius, float SersicIndex, float stellar_mass)
@@ -99,17 +100,18 @@ float p_n(float SersicIndex)
 
 float cumSpherRho(float R, std::vector<float> args)
 {
-    return 4.*PI*R*R*rho(R, args[0], args[1], args[2], args[3], args[4]);
+    return 4.*PI*R*R*rho(R, args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
 }
 
-float cumSpherMassDistro(float R, float Half_Light_radius, float SersicIndex, float stellar_mass)
+float cumSpherMassDistro(float R, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m,  float H)
 {
-    std::vector<float> args = {Half_Light_radius, SersicIndex, stellar_mass};
+    std::vector<float> args = {Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c, omega_m, H };
 
-    float accuracy = SimpsonsRule(cumSpherRho, 0.0, R, Prepass_Subdivisions, args)/10000;
+    float accuracy = SimpsonsRule(cumSpherRho, 0.0001, R, Prepass_Subdivisions, args)/10000;
 
-    return AdaptiveRichardsonExtrapolate(cumSpherRho, 0.0, R, accuracy, args);
+    return AdaptiveRichardsonExtrapolate(cumSpherRho, 0.0001, R, accuracy, args);
 }
+
 
 float K_Kernel_DW(float u, float beta)
 {
@@ -117,14 +119,14 @@ float K_Kernel_DW(float u, float beta)
     {
         return 0.;
     }
-    float prefactor = 0.5 * pow(u, (2* beta - 1));
+    float prefactor = 0.5 * pow(u, (2.* beta - 1.));
     float term1 = ((3./2.) - beta) * pow(PI, 0.5) * boost::math::tgamma(beta - 0.5) / boost::math::tgamma(beta);
     float term2 = beta * incompleteBeta(beta + 0.5, 0.5, 1./(u*u));
     float term3 = -incompleteBeta(beta - 0.5, 0.5, 1./(u*u));
     return prefactor * (term1 + term2 + term3);
 }
 
-float full_sigma_integral_internals(float r, float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rho0, float dm_rs)
+float full_sigma_integral_internals(float r, float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H)
 {
     if(r == 0.)
     {
@@ -143,20 +145,22 @@ float full_sigma_integral_internals(float r, float R, float beta, float Half_Lig
     }
 
     float Kernal = K_Kernel_DW(ratio, beta);
-    float density = rho(r, Half_Light_radius, SersicIndex, stellar_mass, dm_rho0, dm_rs);
-    float Mass = cumSpherMassDistro(R, Half_Light_radius, SersicIndex, stellar_mass);
+    float density = rho(r, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c, omega_m, H);
+    float Mass = cumSpherMassDistro(R, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c, omega_m, H);
 
     return Kernal * density * Mass / r;
 }
 
+
+/*
 float sigma_internals_wrapper(float r, std::vector<float> args)
 {
-    return full_sigma_integral_internals(r, args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+    return full_sigma_integral_internals(r, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
 }
 
-float sigma_los(float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rho0, float dm_rs)
+float sigma_los(float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H)
 {
-    std::vector<float> args = {R, beta, Half_Light_radius, SersicIndex, stellar_mass, dm_rho0, dm_rs};
+    std::vector<float> args = {R, beta, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c, omega_m, H};
 
     float upper_limit = 1000*R;
 
@@ -173,12 +177,12 @@ float sigma_los(float R, float beta, float Half_Light_radius, float SersicIndex,
 
 float sigma_los_wrapper(float R, std::vector<float> args)
 {
-    return sigma_los(R, args[0], args[1], args[2], args[3], args[4], args[5]);
+    return sigma_los(R, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
 }
 
 float sigma_apature_internals(float r, std::vector<float> args)
 {
-    float sigma = sigma_los(r, args[0], args[1], args[2], args[3], args[4], args[5]);
+    float sigma = sigma_los(r, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
     return MassDensityProfile(r, args[1], args[2], args[3]) * sigma * sigma * r;
 }
 
@@ -201,11 +205,4 @@ float sigma_aperture(float R_ap, float beta, float Half_Light_radius, float Sers
     return pow(numerator/denominator, 0.5);
 }
 
-float NFW_profile(float r, float rho0, float Rs)
-{
-    return rho0/((r/Rs)*(1+(r/Rs))*(1+(r/Rs)));
-}
-
-
-
-
+*/

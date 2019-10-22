@@ -3,6 +3,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/DirectExecution.dir/integration.cpp.o"
   "CMakeFiles/DirectExecution.dir/main.cpp.o"
   "CMakeFiles/DirectExecution.dir/utillity.cpp.o"
+  "CMakeFiles/DirectExecution.dir/dark_matter.cpp.o"
   "DirectExecution.pdb"
   "DirectExecution"
 )

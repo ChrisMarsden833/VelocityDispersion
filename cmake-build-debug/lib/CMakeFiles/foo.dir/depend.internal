@@ -1287,7 +1287,11 @@ lib/CMakeFiles/foo.dir/__/src/Integration.cpp.o
  /usr/local/include/boost/utility/result_of.hpp
  /usr/local/include/boost/utility/swap.hpp
  /usr/local/include/boost/version.hpp
+lib/CMakeFiles/foo.dir/__/src/dark_matter.cpp.o
+ /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/dark_matter.cpp
+ /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/dark_matter.h
 lib/CMakeFiles/foo.dir/__/src/desmond.cpp.o
+ /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/dark_matter.h
  /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/desmond.cpp
  /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/desmond.h
  /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/integration.h
@@ -3861,6 +3865,7 @@ lib/CMakeFiles/foo.dir/__/src/utillity.cpp.o
  /usr/local/include/boost/version.hpp
 lib/CMakeFiles/foo.dir/external.cpp.o
  /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/lib/external.cpp
+ /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/dark_matter.h
  /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/desmond.h
  /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/integration.h
  /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/utillity.h

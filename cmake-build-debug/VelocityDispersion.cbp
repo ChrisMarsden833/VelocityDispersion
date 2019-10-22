@@ -212,6 +212,14 @@
 			<Option target="TestModule"/>
 			<Option target="foo"/>
 		</Unit>
+		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/dark_matter.cpp">
+			<Option target="DirectExecution"/>
+			<Option target="foo"/>
+		</Unit>
+		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/dark_matter.h">
+			<Option target="DirectExecution"/>
+			<Option target="foo"/>
+		</Unit>
 		<Unit filename="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/desmond.cpp">
 			<Option target="DirectExecution"/>
 			<Option target="foo"/>

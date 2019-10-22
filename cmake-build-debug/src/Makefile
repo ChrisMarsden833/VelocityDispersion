@@ -125,6 +125,33 @@ DirectExecution/fast:
 	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f src/CMakeFiles/DirectExecution.dir/build.make src/CMakeFiles/DirectExecution.dir/build
 .PHONY : DirectExecution/fast
 
+dark_matter.o: dark_matter.cpp.o
+
+.PHONY : dark_matter.o
+
+# target to build an object file
+dark_matter.cpp.o:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f src/CMakeFiles/DirectExecution.dir/build.make src/CMakeFiles/DirectExecution.dir/dark_matter.cpp.o
+.PHONY : dark_matter.cpp.o
+
+dark_matter.i: dark_matter.cpp.i
+
+.PHONY : dark_matter.i
+
+# target to preprocess a source file
+dark_matter.cpp.i:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f src/CMakeFiles/DirectExecution.dir/build.make src/CMakeFiles/DirectExecution.dir/dark_matter.cpp.i
+.PHONY : dark_matter.cpp.i
+
+dark_matter.s: dark_matter.cpp.s
+
+.PHONY : dark_matter.s
+
+# target to generate assembly for a file
+dark_matter.cpp.s:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f src/CMakeFiles/DirectExecution.dir/build.make src/CMakeFiles/DirectExecution.dir/dark_matter.cpp.s
+.PHONY : dark_matter.cpp.s
+
 desmond.o: desmond.cpp.o
 
 .PHONY : desmond.o
@@ -242,6 +269,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... DirectExecution"
+	@echo "... dark_matter.o"
+	@echo "... dark_matter.i"
+	@echo "... dark_matter.s"
 	@echo "... desmond.o"
 	@echo "... desmond.i"
 	@echo "... desmond.s"

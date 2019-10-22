@@ -15,6 +15,8 @@ set (lib_SOURCES
         ../src/Integration.cpp
         ../src/desmond.h
         ../src/desmond.cpp
+        ../src/dark_matter.h
+        ../src/dark_matter.cpp
         external.cpp)
 
 add_library(foo MODULE ${lib_SOURCES})

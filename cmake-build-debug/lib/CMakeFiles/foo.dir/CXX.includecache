@@ -6,9 +6,17 @@
 
 #IncludeRegexTransform: 
 
-/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/desmond.cpp
-desmond.h
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/lib/external.cpp
+iostream
+-
+math.h
+-
+../src/desmond.h
 /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/desmond.h
+
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/dark_matter.h
+math.h
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/math.h
 
 /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/desmond.h
 math.h
@@ -19,6 +27,8 @@ boost/math/special_functions/gamma.hpp
 -
 integration.h
 /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/integration.h
+dark_matter.h
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/dark_matter.h
 
 /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/integration.h
 iostream

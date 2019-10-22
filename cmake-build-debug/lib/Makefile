@@ -152,6 +152,33 @@ __/src/Integration.cpp.s:
 	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/Integration.cpp.s
 .PHONY : __/src/Integration.cpp.s
 
+__/src/dark_matter.o: __/src/dark_matter.cpp.o
+
+.PHONY : __/src/dark_matter.o
+
+# target to build an object file
+__/src/dark_matter.cpp.o:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/dark_matter.cpp.o
+.PHONY : __/src/dark_matter.cpp.o
+
+__/src/dark_matter.i: __/src/dark_matter.cpp.i
+
+.PHONY : __/src/dark_matter.i
+
+# target to preprocess a source file
+__/src/dark_matter.cpp.i:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/dark_matter.cpp.i
+.PHONY : __/src/dark_matter.cpp.i
+
+__/src/dark_matter.s: __/src/dark_matter.cpp.s
+
+.PHONY : __/src/dark_matter.s
+
+# target to generate assembly for a file
+__/src/dark_matter.cpp.s:
+	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/dark_matter.cpp.s
+.PHONY : __/src/dark_matter.cpp.s
+
 __/src/desmond.o: __/src/desmond.cpp.o
 
 .PHONY : __/src/desmond.o
@@ -245,6 +272,9 @@ help:
 	@echo "... __/src/Integration.o"
 	@echo "... __/src/Integration.i"
 	@echo "... __/src/Integration.s"
+	@echo "... __/src/dark_matter.o"
+	@echo "... __/src/dark_matter.i"
+	@echo "... __/src/dark_matter.s"
 	@echo "... __/src/desmond.o"
 	@echo "... __/src/desmond.i"
 	@echo "... __/src/desmond.s"

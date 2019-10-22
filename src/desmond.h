@@ -5,6 +5,7 @@
 #include <boost/math/special_functions/beta.hpp>
 #include <boost/math/special_functions/gamma.hpp>
 #include "integration.h"
+#include "dark_matter.h"
 
 #define PI 3.14159265
 #define GR 4.3009125e-3
@@ -43,11 +44,11 @@ float b_n(float SersicIndex);
  * @param Half_Light_radius : float, the half light radius
  * @param SersicIndex : float, the Sersic Index
  * @param stellar_mass : float, the stellar mass
- * @param dm_rho0 : float, the dark matter characteristic mass
- * @param dm_rs : float, the dark matter characteristic radius.
+ * @param dm_rs : float, the dark matter scale radius
+ * @param dm_c : float, the dark matter concentration parameter.
  * @return float, the value of the density.
  */
-float rho(float r, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rho0, float dm_rs);
+float rho(float r, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H);
 
 /** ++ rho_0 ++
  * Equation (4), P824, Factor for the de-projected volume density.
@@ -67,6 +68,7 @@ float rho_0(float Half_Light_radius, float SersicIndex, float stellar_mass);
  */
 float p_n(float SersicIndex);
 
+
 /** ++ cumSpherRho ++
  * Guts of the cumulative spherical distribution, used internally for it's integration.
  * @param R : float, Radius
@@ -77,18 +79,21 @@ float cumSpherRho(float R, std::vector<float> args);
 
 /** ++ cumSpherMassDistro ++
  * The Cumulative Spherical Mass distribution
- * @param R : float, the radius.
- * @param Half_Light_radius : float, the half light radius.
- * @param SersicIndex : float, the Sersic Index
- * @param stellar_mass : float, the stellar mass
- * @return float, the value of the cumulative spherical mass distribution.
+ * @param R : float, the radius. (kpc)
+ * @param Half_Light_radius : float, the half light radius. (kpc)
+ * @param SersicIndex : float, the Sersic Index (dimensionless)
+ * @param stellar_mass : float, the stellar mass (M_sun)
+ * @param dm_rs : float, the scale radius r_s of the halo, for a NFW profile (kpc)
+ * @param dm_c : float, the NFW halo concentration parameter, c (dimensionless)
+ * @param omega_m : float, mass_density cosmological parameter (dimensionless)
+ * @return float, the value of the cumulative spherical mass distribution (M_sun)
  */
-float cumSpherMassDistro(float R, float Half_Light_radius, float SersicIndex, float stellar_mass);
+float cumSpherMassDistro(float R, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m,  float H);
 
 /** ++ K_Kernel_DW ++
  * Equation (9), P824, The Kernel function 'u'.
- * @param u : float, the argument for the function.
- * @param beta: float, the anisotropy profile.
+ * @param u : float, the argument for the function (dimensionless).
+ * @param beta: float, the anisotropy profile (dimensionless).
  * @return float, the value of the Kernel.
  */
 float K_Kernel_DW(float u, float beta);
@@ -105,7 +110,7 @@ float K_Kernel_DW(float u, float beta);
  * @param dm_rs : float, the dark matter characteristic radius
  * @return float, the returned value.
  */
-float full_sigma_integral_internals(float r, float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rho0, float dm_rs);
+float full_sigma_integral_internals(float r, float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H);
 
 /** ++ sigma_internals_wrapper ++
  * Wrapper function to make sure formatting works for sigma integration
@@ -113,7 +118,7 @@ float full_sigma_integral_internals(float r, float R, float beta, float Half_Lig
  * @param args : vector of floats containing the other parameters (R, beta, Half_Light_radius and SersicIndex)
  * @return the value of the function an r.
  */
-float sigma_internals_wrapper(float r, std::vector<float> args);
+//float sigma_internals_wrapper(float r, std::vector<float> args);
 
 /** ++ function to calculate the LOS velocity dispersion
  * This is equation (8), P824.
@@ -126,7 +131,7 @@ float sigma_internals_wrapper(float r, std::vector<float> args);
  * @param dm_rs : float the dark matter characteristic radius
  * @return float, the velocity dispersion.
  */
-float sigma_los(float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rho0, float dm_rs);
+//float sigma_los(float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H);
 
 /** ++ sigma_los_wrapper ++
  * Wrapper function to ensure formatting works for integration.
@@ -134,7 +139,7 @@ float sigma_los(float R, float beta, float Half_Light_radius, float SersicIndex,
  * @param args : vector of floats containing the other parameters (beta, Half_Light_radius and SersicIndex).
  * @return float, the value of the function at R.
  */
-float sigma_los_wrapper(float R, std::vector<float> args);
+//float sigma_los_wrapper(float R, std::vector<float> args);
 
 /** ++ sigma_apature_internals ++
  * Wrapper function for the top integral in equation 10.
@@ -142,7 +147,7 @@ float sigma_los_wrapper(float R, std::vector<float> args);
  * @param args : vector of floats, the arguments
  * @return the value of the function at R.
  */
-float sigma_apature_internals(float r, std::vector<float> args);
+//float sigma_apature_internals(float r, std::vector<float> args);
 
 /** ++ sigma_aperture ++
  * This is equation (10), P824
@@ -153,16 +158,9 @@ float sigma_apature_internals(float r, std::vector<float> args);
  * @param stellar_mass : float, the stellar mass.
  * @return float, the value of sigma.
  */
-float sigma_aperture(float R_ap, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass);
+//float sigma_aperture(float R_ap, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass);
 
-/** ++ NFW_profile ++
- * Navarro–Frenk–White (NFW) profile is a spatial mass distribution of dark matter fitted to dark matter halos.
- * @param r
- * @param rho0
- * @param Rs
- * @return
- */
-float NFW_profile(float r, float rho0, float Rs);
+
 
 
 #endif //VELOCITYDISPERSIONS_DESMOND_H
