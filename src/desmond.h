@@ -6,10 +6,11 @@
 #include <boost/math/special_functions/gamma.hpp>
 #include "integration.h"
 #include "dark_matter.h"
+#include <iostream>
 
 #define PI 3.14159265
-#define GR 4.3009125e-3
-#define Prepass_Subdivisions 5
+#define GR 4.3009125e-6 // In units of kpc M_sun^-1 (km/s)^2
+#define Prepass_Subdivisions 6
 
 // Formulae from Desmond and Wechsler 2017
 
@@ -118,7 +119,15 @@ float full_sigma_integral_internals(float r, float R, float beta, float Half_Lig
  * @param args : vector of floats containing the other parameters (R, beta, Half_Light_radius and SersicIndex)
  * @return the value of the function an r.
  */
-//float sigma_internals_wrapper(float r, std::vector<float> args);
+float sigma_internals_wrapper(float r, std::vector<float> args);
+
+/** ++ sigma_internals_wrapper_transformed ++
+ * Wrapper function to make sure formatting works for sigma integration, but with transformed coords for integration to +inf
+ * @param t : float, the transformed argument
+ * @param args : vector of floats containing the other parameters (R, beta, Half_Light_radius and SersicIndex)
+ * @return the value of the function an r.
+ */
+float sigma_internals_wrapper_transformed(float t, std::vector<float> args);
 
 /** ++ function to calculate the LOS velocity dispersion
  * This is equation (8), P824.
@@ -131,7 +140,7 @@ float full_sigma_integral_internals(float r, float R, float beta, float Half_Lig
  * @param dm_rs : float the dark matter characteristic radius
  * @return float, the velocity dispersion.
  */
-//float sigma_los(float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H);
+float sigma_los(float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H);
 
 /** ++ sigma_los_wrapper ++
  * Wrapper function to ensure formatting works for integration.
@@ -139,7 +148,7 @@ float full_sigma_integral_internals(float r, float R, float beta, float Half_Lig
  * @param args : vector of floats containing the other parameters (beta, Half_Light_radius and SersicIndex).
  * @return float, the value of the function at R.
  */
-//float sigma_los_wrapper(float R, std::vector<float> args);
+float sigma_los_wrapper(float R, std::vector<float> args);
 
 /** ++ sigma_apature_internals ++
  * Wrapper function for the top integral in equation 10.
@@ -147,7 +156,7 @@ float full_sigma_integral_internals(float r, float R, float beta, float Half_Lig
  * @param args : vector of floats, the arguments
  * @return the value of the function at R.
  */
-//float sigma_apature_internals(float r, std::vector<float> args);
+float sigma_apature_internals(float r, std::vector<float> args);
 
 /** ++ sigma_aperture ++
  * This is equation (10), P824
@@ -158,7 +167,7 @@ float full_sigma_integral_internals(float r, float R, float beta, float Half_Lig
  * @param stellar_mass : float, the stellar mass.
  * @return float, the value of sigma.
  */
-//float sigma_aperture(float R_ap, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass);
+float sigma_aperture(float R_ap, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H);
 
 
 

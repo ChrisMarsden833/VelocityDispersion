@@ -5,7 +5,9 @@
 float SimpsonsRule(float (*f)(float, std::vector<float>), float a, float b, int N, std::vector<float> extraArguments)
 {
     // Test and adjustment for evenness.
-    CheckAndMaybeIncrementN(&N);
+    //std::cout << "Simpsons rule overloaded N: " << N << std::endl;
+
+    CheckAndMaybeIncrementN(&N, "Simpsons Rule Overloaded");
 
     float * grid = NULL;
     float h;
@@ -33,7 +35,9 @@ float SimpsonsRule(float (*f)(float, std::vector<float>), float a, float b, int 
 float SimpsonsRule(float (*f)(float), float a, float b, int N)
 {
     // Test and adjustment for evenness.
-    CheckAndMaybeIncrementN(&N);
+    //std::cout << "Simpsons rule N: " << N << std::endl;
+
+    CheckAndMaybeIncrementN(&N, "Simpsons Rule, basic");
 
     // Create a Grid
     //float * grid = (float *) malloc( (N + 1) * sizeof(float)); // Prep array
@@ -71,27 +75,12 @@ float SimpsonsRule(float (*f)(float), float a, float b, int N)
 
 RResult RichardsonExtrapolate(float (*f)(float, std::vector<float>), float a, float b, int steps2, std::vector<float> extraArguments)
 {
-    // Test and adjustment for evenness.
-    try
-    {
-        if(!checkEven(steps2))
-        {
-            std::string message = std::to_string(steps2);
-            throw std::invalid_argument("Odd Number supplied for Richardson Extrapolation (" + message + ")");
-        }
-    }
-    catch (const std::invalid_argument& ia) {
-        std::cerr << ia.what() << "\n" << "Value will be incremented by one." << '\n';
-        steps2++;
-    }
-
-
     // Struct for the return
     RResult data;
 
     // Call Simpson's rule twice with different intervals accoring to richardson extrapolation.
-    float I2n = SimpsonsRule((*f), a, b, steps2, extraArguments);
-    float In = SimpsonsRule((*f), a, b, steps2/2, extraArguments);
+    float I2n = SimpsonsRule((*f), a, b, 2*steps2, extraArguments);
+    float In = SimpsonsRule((*f), a, b, steps2, extraArguments);
 
     // Assign the value of the integral according to the formulae for the integral and it's accuracy
     data.integral = (pow(2, 4) * I2n - In)/(pow(2, 4) - 1);
@@ -105,7 +94,7 @@ float AdaptiveRichardsonExtrapolate(float (*f)(float, std::vector<float>), float
     std::vector<float> boundaries = {a, b};
 
     // Maximum (sane) number of subdivisions).
-    int max_subdivisions = 10000000;
+    int max_subdivisions = 1000;
     float minimum_acceptable_subdivision_size = abs(b-a)/max_subdivisions;
 
     // Struct and values for iteration.
@@ -124,7 +113,7 @@ float AdaptiveRichardsonExtrapolate(float (*f)(float, std::vector<float>), float
         while(loop)
         {
             // Call Richardson Extrapolation
-            data = RichardsonExtrapolate((*f), boundaries[i], boundaries[i+1], 4, extraArguments);
+            data = RichardsonExtrapolate((*f), boundaries[i], boundaries[i+1], 2, extraArguments);
             // Calculate the acceptable local error for this region.
             acceptable_local_error = accuracy*abs(boundaries[i+1] - boundaries[i])/abs(b-a);
             // Based on this, decide if we need to continue.
@@ -137,6 +126,7 @@ float AdaptiveRichardsonExtrapolate(float (*f)(float, std::vector<float>), float
                 // Get the hell out of dodge
                 loop = false;
 
+                /*
                 try
                 {
                     throw std::invalid_argument(" ++ Woah, go easy on the accuracy there; maximum subdivision size reached ++ ");
@@ -146,6 +136,7 @@ float AdaptiveRichardsonExtrapolate(float (*f)(float, std::vector<float>), float
                     << acceptable_local_error << " whereas the accuracy of this element is only " << data.accuracy
                     << ". This may or not be a problem for you." << std::endl;
                 }
+                 */
                 // We are loosing some accuracy here in these extreme cases. TODO: Parameterize this, for the user.
             }
 

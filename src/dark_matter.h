@@ -4,7 +4,7 @@
 #include "math.h"
 
 #define PI 3.14159265
-#define GR 4.3009125e-3
+#define GR 4.3009125e-6
 
 /** ++ delta_vir ++
  * Function defining delta virial, the average overdensity.

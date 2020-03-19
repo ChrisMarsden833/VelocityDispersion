@@ -3,13 +3,35 @@
 // Equation 1 - just a sersic profile
 float MassDensityProfile(float r, float SersicIndex, float Half_Light_radius, float stellar_mass)
 {
-    float Sigma_e = stellar_mass/(PI * Half_Light_radius * Half_Light_radius);
     float b_value = b_n(SersicIndex);
+
+    float x = b_value * pow((r/Half_Light_radius), 1./SersicIndex);
+
+
+    float gamma = boost::math::tgamma_lower(2*SersicIndex, x);
+
+    if (gamma == 0)
+    {
+        gamma = 0.0000001;
+    }
+
+    float Sigma_e = stellar_mass/(Half_Light_radius * Half_Light_radius * PI); //* 2. * SersicIndex * exp(b_value) * gamma / pow(b_value, 2*SersicIndex) );
+
 
     if(r == 0.)
     {
+        float result = Sigma_e * exp(b_value);
+
+        if(std::isinf(result))
+        {
+            printf("-- Triggered inf condition: %f\n", result);
+            printf("-- Sigma_e: %f\n", Sigma_e);
+            printf("-- b_value: %f\n", b_value);
+            printf("-- Sersic Index: %f\n", SersicIndex);
+            printf("-- gamma: %f\n", gamma);
+        }
         // Save a small amount of computations, as this will mostly be called at zero.
-        return Sigma_e * exp(b_value);
+        return result;
     }
 
     float power = 0.;
@@ -23,7 +45,10 @@ float MassDensityProfile(float r, float SersicIndex, float Half_Light_radius, fl
     {
         internal_term = r/Half_Light_radius;
     }
-    return Sigma_e * exp(-b_value * (pow(internal_term, power) - 1.));
+    float result = Sigma_e * exp(-b_value * (pow(internal_term, power) - 1.));
+
+    return result;
+
 }
 
 float MassDensityProfile_wrapper(float r, std::vector<float> args)
@@ -107,7 +132,7 @@ float cumSpherMassDistro(float R, float Half_Light_radius, float SersicIndex, fl
 {
     std::vector<float> args = {Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c, omega_m, H };
 
-    float accuracy = SimpsonsRule(cumSpherRho, 0.0001, R, Prepass_Subdivisions, args)/10000;
+    float accuracy = SimpsonsRule(cumSpherRho, 0.0001, R, Prepass_Subdivisions, args)/1000;
 
     return AdaptiveRichardsonExtrapolate(cumSpherRho, 0.0001, R, accuracy, args);
 }
@@ -146,34 +171,50 @@ float full_sigma_integral_internals(float r, float R, float beta, float Half_Lig
 
     float Kernal = K_Kernel_DW(ratio, beta);
     float density = rho(r, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c, omega_m, H);
-    float Mass = cumSpherMassDistro(R, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c, omega_m, H);
+    float Mass = cumSpherMassDistro(r, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c, omega_m, H);
+    float res;
 
-    return Kernal * density * Mass / r;
+    res = Kernal * density * Mass / r;
+
+    return res;
 }
 
 
-/*
 float sigma_internals_wrapper(float r, std::vector<float> args)
 {
     return full_sigma_integral_internals(r, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
 }
 
+float sigma_internals_wrapper_transformed(float t, std::vector<float> args)
+{
+    float argument = args[0] - t/(1.+t);
+    float denominator = (1.-t)*(1.-t);
+    return full_sigma_integral_internals(argument, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8])/denominator;
+}
+
+
 float sigma_los(float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H)
 {
     std::vector<float> args = {R, beta, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c, omega_m, H};
 
-    float upper_limit = 1000*R;
+    float upper_limit = 100*R;
 
-    float accuracy = SimpsonsRule(sigma_internals_wrapper, R, upper_limit, Prepass_Subdivisions, args)/10000;
+    float accuracy = SimpsonsRule(sigma_internals_wrapper, R, upper_limit, Prepass_Subdivisions, args)/1000.;
 
     float numerator = 2 * GR * AdaptiveRichardsonExtrapolate(sigma_internals_wrapper, R, upper_limit, accuracy, args);
     float denominator = MassDensityProfile(R, SersicIndex, Half_Light_radius, stellar_mass);
+
+    if(isnan(accuracy)){std::cout << "accuracy is nan" << std::endl;}
+
+
     if(denominator == 0. || numerator == 0.)
     {
         return 0.;
     }
+
     return pow(numerator/denominator, 0.5);
 }
+
 
 float sigma_los_wrapper(float R, std::vector<float> args)
 {
@@ -183,19 +224,25 @@ float sigma_los_wrapper(float R, std::vector<float> args)
 float sigma_apature_internals(float r, std::vector<float> args)
 {
     float sigma = sigma_los(r, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
-    return MassDensityProfile(r, args[1], args[2], args[3]) * sigma * sigma * r;
+
+    float MDP = MassDensityProfile(r, args[2], args[1], args[3]);
+
+    return MDP * sigma * sigma * r;
 }
 
-float sigma_aperture(float R_ap, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass)
-{
-    std::vector<float> args = {beta, Half_Light_radius, SersicIndex, stellar_mass};
-    std::vector<float> args2 = {Half_Light_radius, SersicIndex, stellar_mass};
 
-    float accuracy = SimpsonsRule(sigma_apature_internals, 0., R_ap, Prepass_Subdivisions, args)/10000;
+float sigma_aperture(float R_ap, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H)
+{
+    std::vector<float> args = {beta, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c, omega_m, H};
+    std::vector<float> args2 = {SersicIndex, Half_Light_radius, stellar_mass};
+
+    float accuracy = SimpsonsRule(sigma_apature_internals, 0., R_ap, Prepass_Subdivisions, args)/1000;
     float numerator = AdaptiveRichardsonExtrapolate(sigma_apature_internals, 0., R_ap, accuracy, args);
 
-    accuracy = SimpsonsRule(MassDensityProfile_wrapper, 0, R_ap, Prepass_Subdivisions, args2);
-    float denominator = AdaptiveRichardsonExtrapolate(MassDensityProfile_wrapper, 0, R_ap, accuracy, args);
+    accuracy = SimpsonsRule(MassDensityProfile_wrapper, 0., R_ap, Prepass_Subdivisions, args2)/1000;
+    float denominator = AdaptiveRichardsonExtrapolate(MassDensityProfile_wrapper, 0., R_ap, accuracy, args2);
+
+
 
     if(denominator == 0. || numerator == 0.)
     {
@@ -204,5 +251,3 @@ float sigma_aperture(float R_ap, float beta, float Half_Light_radius, float Sers
 
     return pow(numerator/denominator, 0.5);
 }
-
-*/
