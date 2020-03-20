@@ -5,17 +5,16 @@ float MassDensityProfile(float r, float SersicIndex, float Half_Light_radius, fl
 {
     float b_value = b_n(SersicIndex);
 
-    float x = b_value * pow((r/Half_Light_radius), 1./SersicIndex);
+    //float x = b_value * pow((r/Half_Light_radius), 1./SersicIndex);
 
-
-    float gamma = boost::math::tgamma_lower(2*SersicIndex, x);
+    float gamma = boost::math::tgamma_lower(2*SersicIndex, b_value);
 
     if (gamma == 0)
     {
         gamma = 0.0000001;
     }
 
-    float Sigma_e = stellar_mass/(Half_Light_radius * Half_Light_radius * PI); //* 2. * SersicIndex * exp(b_value) * gamma / pow(b_value, 2*SersicIndex) );
+    float Sigma_e = stellar_mass / (Half_Light_radius * Half_Light_radius * PI * 2.);// * SersicIndex * exp(b_value) * gamma / pow(b_value, 2*SersicIndex) );
 
 
     if(r == 0.)
