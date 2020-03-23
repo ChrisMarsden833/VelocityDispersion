@@ -14,7 +14,7 @@ float MassDensityProfile(float r, float SersicIndex, float Half_Light_radius, fl
         gamma = 0.0000001;
     }
 
-    float Sigma_e = stellar_mass / (Half_Light_radius * Half_Light_radius * PI * 2.);// * SersicIndex * exp(b_value) * gamma / pow(b_value, 2*SersicIndex) );
+    float Sigma_e = stellar_mass / (Half_Light_radius * Half_Light_radius * PI * 2. * 2. * SersicIndex * exp(b_value) * gamma / pow(b_value, 2*SersicIndex) );
 
 
     if(r == 0.)
@@ -102,7 +102,7 @@ float rho(float r, float Half_Light_radius, float SersicIndex, float stellar_mas
     float exp_term = exp(b_n_term * exp_power_term);
 
 
-    return rho_0_term * power_term * exp_term + NFW_profile(r, dm_rs, dm_c, omega_m, H);
+    return rho_0_term * power_term * exp_term;// + NFW_profile(r, dm_rs, dm_c, omega_m, H);
 }
 
 float rho_0(float Half_Light_radius, float SersicIndex, float stellar_mass)
