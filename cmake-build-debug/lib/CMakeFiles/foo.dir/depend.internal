@@ -5151,3 +5151,4 @@ lib/CMakeFiles/foo.dir/external.cpp.o
  /usr/local/include/boost/utility/result_of.hpp
  /usr/local/include/boost/utility/swap.hpp
  /usr/local/include/boost/version.hpp
+ /usr/local/include/omp.h

@@ -119,3 +119,13 @@ Call Stack (most recent call first):
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug
+
+Cannot get compiler information:
+	Compiler exited with error code 1: /Library/Developer/CommandLineTools/usr/bin/c++ -xc++ -Dfoo_EXPORTS -I/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src -I/usr/local/include -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -fPIC -fopenmp=libomp -Wno-unused-command-line-argument -std=gnu++14 -fpch-preprocess -v -dD -E
+	Apple LLVM version 10.0.1 (clang-1001.0.46.4)
+	Target: x86_64-apple-darwin18.7.0
+	Thread model: posix
+	InstalledDir: /Library/Developer/CommandLineTools/usr/bin
+	clang: error: unsupported argument 'libomp' to option 'fopenmp='
+	
+	

@@ -1,0 +1,276 @@
+Detecting C OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_8cad4/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_8cad4.dir/build.make CMakeFiles/cmTC_8cad4.dir/build
+Building C object CMakeFiles/cmTC_8cad4.dir/OpenMPCheckVersion.c.o
+/Library/Developer/CommandLineTools/usr/bin/cc   -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_8cad4.dir/OpenMPCheckVersion.c.o   -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.c
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_8cad4.dir/OpenMPCheckVersion.c.o] Error 1
+make: *** [cmTC_8cad4/fast] Error 2
+
+
+Detecting CXX OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_13874/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_13874.dir/build.make CMakeFiles/cmTC_13874.dir/build
+Building CXX object CMakeFiles/cmTC_13874.dir/OpenMPCheckVersion.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/c++    -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_13874.dir/OpenMPCheckVersion.cpp.o -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.cpp
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_13874.dir/OpenMPCheckVersion.cpp.o] Error 1
+make: *** [cmTC_13874/fast] Error 2
+
+
+Detecting C OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_8f5e1/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_8f5e1.dir/build.make CMakeFiles/cmTC_8f5e1.dir/build
+Building C object CMakeFiles/cmTC_8f5e1.dir/OpenMPCheckVersion.c.o
+/Library/Developer/CommandLineTools/usr/bin/cc   -fopenmp=libomp -Wno-unused-command-line-argument -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_8f5e1.dir/OpenMPCheckVersion.c.o   -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.c
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_8f5e1.dir/OpenMPCheckVersion.c.o] Error 1
+make: *** [cmTC_8f5e1/fast] Error 2
+
+
+Detecting CXX OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_79a5f/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_79a5f.dir/build.make CMakeFiles/cmTC_79a5f.dir/build
+Building CXX object CMakeFiles/cmTC_79a5f.dir/OpenMPCheckVersion.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/c++    -fopenmp=libomp -Wno-unused-command-line-argument -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -std=gnu++14 -o CMakeFiles/cmTC_79a5f.dir/OpenMPCheckVersion.cpp.o -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.cpp
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_79a5f.dir/OpenMPCheckVersion.cpp.o] Error 1
+make: *** [cmTC_79a5f/fast] Error 2
+
+
+Detecting C OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_b91b3/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_b91b3.dir/build.make CMakeFiles/cmTC_b91b3.dir/build
+Building C object CMakeFiles/cmTC_b91b3.dir/OpenMPCheckVersion.c.o
+/Library/Developer/CommandLineTools/usr/bin/cc   -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_b91b3.dir/OpenMPCheckVersion.c.o   -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.c
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_b91b3.dir/OpenMPCheckVersion.c.o] Error 1
+make: *** [cmTC_b91b3/fast] Error 2
+
+
+Detecting CXX OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_29db8/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_29db8.dir/build.make CMakeFiles/cmTC_29db8.dir/build
+Building CXX object CMakeFiles/cmTC_29db8.dir/OpenMPCheckVersion.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/c++    -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -std=gnu++14 -o CMakeFiles/cmTC_29db8.dir/OpenMPCheckVersion.cpp.o -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.cpp
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_29db8.dir/OpenMPCheckVersion.cpp.o] Error 1
+make: *** [cmTC_29db8/fast] Error 2
+
+
+Detecting C OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_7a35e/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_7a35e.dir/build.make CMakeFiles/cmTC_7a35e.dir/build
+Building C object CMakeFiles/cmTC_7a35e.dir/OpenMPCheckVersion.c.o
+/Library/Developer/CommandLineTools/usr/bin/cc   -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_7a35e.dir/OpenMPCheckVersion.c.o   -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.c
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_7a35e.dir/OpenMPCheckVersion.c.o] Error 1
+make: *** [cmTC_7a35e/fast] Error 2
+
+
+Detecting CXX OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_deda0/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_deda0.dir/build.make CMakeFiles/cmTC_deda0.dir/build
+Building CXX object CMakeFiles/cmTC_deda0.dir/OpenMPCheckVersion.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/c++    -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_deda0.dir/OpenMPCheckVersion.cpp.o -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.cpp
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_deda0.dir/OpenMPCheckVersion.cpp.o] Error 1
+make: *** [cmTC_deda0/fast] Error 2
+
+
+Detecting C OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_574ff/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_574ff.dir/build.make CMakeFiles/cmTC_574ff.dir/build
+Building C object CMakeFiles/cmTC_574ff.dir/OpenMPCheckVersion.c.o
+/Library/Developer/CommandLineTools/usr/bin/cc   -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_574ff.dir/OpenMPCheckVersion.c.o   -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.c
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_574ff.dir/OpenMPCheckVersion.c.o] Error 1
+make: *** [cmTC_574ff/fast] Error 2
+
+
+Detecting CXX OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_14533/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_14533.dir/build.make CMakeFiles/cmTC_14533.dir/build
+Building CXX object CMakeFiles/cmTC_14533.dir/OpenMPCheckVersion.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/c++    -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_14533.dir/OpenMPCheckVersion.cpp.o -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.cpp
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_14533.dir/OpenMPCheckVersion.cpp.o] Error 1
+make: *** [cmTC_14533/fast] Error 2
+
+
+Detecting C OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_0b623/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_0b623.dir/build.make CMakeFiles/cmTC_0b623.dir/build
+Building C object CMakeFiles/cmTC_0b623.dir/OpenMPCheckVersion.c.o
+/Library/Developer/CommandLineTools/usr/bin/cc   -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_0b623.dir/OpenMPCheckVersion.c.o   -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.c
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_0b623.dir/OpenMPCheckVersion.c.o] Error 1
+make: *** [cmTC_0b623/fast] Error 2
+
+
+Detecting CXX OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_1c54e/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_1c54e.dir/build.make CMakeFiles/cmTC_1c54e.dir/build
+Building CXX object CMakeFiles/cmTC_1c54e.dir/OpenMPCheckVersion.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/c++    -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_1c54e.dir/OpenMPCheckVersion.cpp.o -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.cpp
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_1c54e.dir/OpenMPCheckVersion.cpp.o] Error 1
+make: *** [cmTC_1c54e/fast] Error 2
+
+
+Detecting C OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_abc64/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_abc64.dir/build.make CMakeFiles/cmTC_abc64.dir/build
+Building C object CMakeFiles/cmTC_abc64.dir/OpenMPCheckVersion.c.o
+/Library/Developer/CommandLineTools/usr/bin/cc   -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_abc64.dir/OpenMPCheckVersion.c.o   -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.c
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_abc64.dir/OpenMPCheckVersion.c.o] Error 1
+make: *** [cmTC_abc64/fast] Error 2
+
+
+Detecting CXX OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_4afba/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_4afba.dir/build.make CMakeFiles/cmTC_4afba.dir/build
+Building CXX object CMakeFiles/cmTC_4afba.dir/OpenMPCheckVersion.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/c++    -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_4afba.dir/OpenMPCheckVersion.cpp.o -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.cpp
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_4afba.dir/OpenMPCheckVersion.cpp.o] Error 1
+make: *** [cmTC_4afba/fast] Error 2
+
+
+Detecting C OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_ddba9/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_ddba9.dir/build.make CMakeFiles/cmTC_ddba9.dir/build
+Building C object CMakeFiles/cmTC_ddba9.dir/OpenMPCheckVersion.c.o
+/Library/Developer/CommandLineTools/usr/bin/cc   -Xpreprocessor -fopenmp -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_ddba9.dir/OpenMPCheckVersion.c.o   -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.c
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.c:3:10: fatal error: 'omp.h' file not found
+#include <omp.h>
+         ^~~~~~~
+1 error generated.
+make[1]: *** [CMakeFiles/cmTC_ddba9.dir/OpenMPCheckVersion.c.o] Error 1
+make: *** [cmTC_ddba9/fast] Error 2
+
+
+Detecting CXX OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_a0806/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_a0806.dir/build.make CMakeFiles/cmTC_a0806.dir/build
+Building CXX object CMakeFiles/cmTC_a0806.dir/OpenMPCheckVersion.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/c++    -Xpreprocessor -fopenmp -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_a0806.dir/OpenMPCheckVersion.cpp.o -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.cpp
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.cpp:3:10: fatal error: 'omp.h' file not found
+#include <omp.h>
+         ^~~~~~~
+1 error generated.
+make[1]: *** [CMakeFiles/cmTC_a0806.dir/OpenMPCheckVersion.cpp.o] Error 1
+make: *** [cmTC_a0806/fast] Error 2
+
+
+Detecting C OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_9ec9d/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_9ec9d.dir/build.make CMakeFiles/cmTC_9ec9d.dir/build
+Building C object CMakeFiles/cmTC_9ec9d.dir/OpenMPCheckVersion.c.o
+/Library/Developer/CommandLineTools/usr/bin/cc   -Xpreprocessor -fopenmp -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_9ec9d.dir/OpenMPCheckVersion.c.o   -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.c
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.c:3:10: fatal error: 'omp.h' file not found
+#include <omp.h>
+         ^~~~~~~
+1 error generated.
+make[1]: *** [CMakeFiles/cmTC_9ec9d.dir/OpenMPCheckVersion.c.o] Error 1
+make: *** [cmTC_9ec9d/fast] Error 2
+
+
+Detecting CXX OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_effd7/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_effd7.dir/build.make CMakeFiles/cmTC_effd7.dir/build
+Building CXX object CMakeFiles/cmTC_effd7.dir/OpenMPCheckVersion.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/c++    -Xpreprocessor -fopenmp -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_effd7.dir/OpenMPCheckVersion.cpp.o -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.cpp
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.cpp:3:10: fatal error: 'omp.h' file not found
+#include <omp.h>
+         ^~~~~~~
+1 error generated.
+make[1]: *** [CMakeFiles/cmTC_effd7.dir/OpenMPCheckVersion.cpp.o] Error 1
+make: *** [cmTC_effd7/fast] Error 2
+
+
+Detecting C OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_f6577/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_f6577.dir/build.make CMakeFiles/cmTC_f6577.dir/build
+Building C object CMakeFiles/cmTC_f6577.dir/OpenMPCheckVersion.c.o
+/Library/Developer/CommandLineTools/usr/bin/cc   -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_f6577.dir/OpenMPCheckVersion.c.o   -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.c
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_f6577.dir/OpenMPCheckVersion.c.o] Error 1
+make: *** [cmTC_f6577/fast] Error 2
+
+
+Detecting CXX OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_e0f51/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_e0f51.dir/build.make CMakeFiles/cmTC_e0f51.dir/build
+Building CXX object CMakeFiles/cmTC_e0f51.dir/OpenMPCheckVersion.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/c++    -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -std=gnu++14 -o CMakeFiles/cmTC_e0f51.dir/OpenMPCheckVersion.cpp.o -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.cpp
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_e0f51.dir/OpenMPCheckVersion.cpp.o] Error 1
+make: *** [cmTC_e0f51/fast] Error 2
+
+
+Detecting C OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_3daea/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_3daea.dir/build.make CMakeFiles/cmTC_3daea.dir/build
+Building C object CMakeFiles/cmTC_3daea.dir/OpenMPCheckVersion.c.o
+/Library/Developer/CommandLineTools/usr/bin/cc   -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -o CMakeFiles/cmTC_3daea.dir/OpenMPCheckVersion.c.o   -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.c
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_3daea.dir/OpenMPCheckVersion.c.o] Error 1
+make: *** [cmTC_3daea/fast] Error 2
+
+
+Detecting CXX OpenMP version failed with the following output:
+Change Dir: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_d8dfd/fast 
+/Library/Developer/CommandLineTools/usr/bin/make -f CMakeFiles/cmTC_d8dfd.dir/build.make CMakeFiles/cmTC_d8dfd.dir/build
+Building CXX object CMakeFiles/cmTC_d8dfd.dir/OpenMPCheckVersion.cpp.o
+/Library/Developer/CommandLineTools/usr/bin/c++    -fopenmp=libomp -Wno-unused-command-line-argument -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -std=gnu++14 -o CMakeFiles/cmTC_d8dfd.dir/OpenMPCheckVersion.cpp.o -c /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/FindOpenMP/OpenMPCheckVersion.cpp
+clang: error: unsupported argument 'libomp' to option 'fopenmp='
+make[1]: *** [CMakeFiles/cmTC_d8dfd.dir/OpenMPCheckVersion.cpp.o] Error 1
+make: *** [cmTC_d8dfd/fast] Error 2
+
+

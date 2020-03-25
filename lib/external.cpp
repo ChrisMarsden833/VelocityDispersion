@@ -1,5 +1,6 @@
 #include <iostream>
 #include <math.h>
+#include "omp.h"
 #include "../src/desmond.h"
 
 extern "C"
@@ -62,4 +63,17 @@ extern "C"
         return sigma_aperture(R_ap, beta, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c, omega_m, H);
     }
 
+    void ArrayTest(float * input, int size)
+    {
+        for(int i = 0; i<size; i++)
+        {
+            printf("Element %i is %f\n", i, input[i]);
+        }
+        #pragma omp parallel
+        {
+            int id = omp_get_thread_num();
+            printf("Hello from thread %i\n", id);
+        };
+
+    }
 }
