@@ -16,9 +16,21 @@ omp.h
 ../src/desmond.h
 /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/desmond.h
 
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/Integration.cpp
+integration.h
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/integration.h
+
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/dark_matter.cpp
+dark_matter.h
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/dark_matter.h
+
 /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/dark_matter.h
 math.h
 /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/math.h
+
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/desmond.cpp
+desmond.h
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/desmond.h
 
 /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/desmond.h
 math.h
@@ -45,6 +57,10 @@ math.h
 /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/math.h
 vector
 /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/vector
+utillity.h
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/utillity.h
+
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/utillity.cpp
 utillity.h
 /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/utillity.h
 

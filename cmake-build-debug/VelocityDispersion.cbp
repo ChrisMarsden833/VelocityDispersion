@@ -150,6 +150,7 @@
 				<Compiler>
 					<Add directory="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src"/>
 					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/local/Cellar/llvm/9.0.1/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.1/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
@@ -172,6 +173,7 @@
 				<Compiler>
 					<Add directory="/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src"/>
 					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/local/Cellar/llvm/9.0.1/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.1/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>

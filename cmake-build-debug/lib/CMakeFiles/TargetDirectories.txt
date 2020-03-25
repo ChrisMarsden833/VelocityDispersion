@@ -1,0 +1,3 @@
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/rebuild_cache.dir
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/edit_cache.dir
+/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/foo.dir

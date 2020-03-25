@@ -116,16 +116,14 @@ Call Stack (most recent call first):
 -- Boost  found.
 -- Found Boost components:
    system;filesystem;unit_test_framework
--- Configuring done
--- Generating done
--- Build files have been written to: /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug
+CMake Error at /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.14/Modules/FindPackageHandleStandardArgs.cmake:137 (message):
+  Could NOT find OpenMP_C (missing: OpenMP_C_FLAGS OpenMP_C_LIB_NAMES)
+Call Stack (most recent call first):
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.14/Modules/FindPackageHandleStandardArgs.cmake:378 (_FPHSA_FAILURE_MESSAGE)
+  /Applications/CLion.app/Contents/bin/cmake/mac/share/cmake-3.14/Modules/FindOpenMP.cmake:474 (find_package_handle_standard_args)
+  lib/CMakeLists.txt:25 (find_package)
 
-Cannot get compiler information:
-	Compiler exited with error code 1: /Library/Developer/CommandLineTools/usr/bin/c++ -xc++ -Dfoo_EXPORTS -I/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src -I/usr/local/include -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -fPIC -fopenmp=libomp -Wno-unused-command-line-argument -std=gnu++14 -fpch-preprocess -v -dD -E
-	Apple LLVM version 10.0.1 (clang-1001.0.46.4)
-	Target: x86_64-apple-darwin18.7.0
-	Thread model: posix
-	InstalledDir: /Library/Developer/CommandLineTools/usr/bin
-	clang: error: unsupported argument 'libomp' to option 'fopenmp='
-	
-	
+
+-- Configuring incomplete, errors occurred!
+See also "/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeOutput.log".
+See also "/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles/CMakeError.log".
