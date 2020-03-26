@@ -69,11 +69,33 @@ extern "C"
         {
             printf("Element %i is %f\n", i, input[i]);
         }
+
         #pragma omp parallel
         {
             int id = omp_get_thread_num();
             printf("Hello from thread %i\n", id);
         };
 
+    }
+
+    float * ParallelSigma(float * Aperture,
+                       float * Beta,
+                       float * HalfLightRadius,
+                       float * SersicIndex,
+                       float * StellarMass,
+                       float * HaloRs,
+                       float * HaloC,
+                       float OmegaM,
+                       float H,
+                       int size)
+    {
+        float * res = (float *) std::malloc(sizeof(float) * size);
+
+        #pragma omp parallel for default(none) shared(size, res, Aperture, Beta, HalfLightRadius, SersicIndex, StellarMass, HaloRs, HaloC, OmegaM, H)
+        for (int i = 0; i < size; i++)
+        {
+            res[i] = sigma_aperture(Aperture[i], Beta[i], HalfLightRadius[i], SersicIndex[i], StellarMass[i], HaloRs[i], HaloC[i], OmegaM, H);
+        }
+        return res;
     }
 }

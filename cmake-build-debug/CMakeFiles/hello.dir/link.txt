@@ -1,1 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/c++ -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -bundle -Wl,-headerpad_max_install_names  -o hello.so CMakeFiles/hello.dir/PythonConnectivity/HelloWorld.cpp.o /usr/lib/libpython2.7.dylib 

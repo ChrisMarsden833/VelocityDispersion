@@ -147,7 +147,9 @@ float K_Kernel_DW(float u, float beta)
     float term1 = ((3./2.) - beta) * pow(PI, 0.5) * boost::math::tgamma(beta - 0.5) / boost::math::tgamma(beta);
     float term2 = beta * incompleteBeta(beta + 0.5, 0.5, 1./(u*u));
     float term3 = -incompleteBeta(beta - 0.5, 0.5, 1./(u*u));
-    return prefactor * (term1 + term2 + term3);
+    float res = prefactor * (term1 + term2 + term3);
+
+    return res;
 }
 
 float full_sigma_integral_internals(float r, float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H)
@@ -173,7 +175,9 @@ float full_sigma_integral_internals(float r, float R, float beta, float Half_Lig
     float Mass = cumSpherMassDistro(r, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c, omega_m, H);
     float res;
 
-    res = Kernal * density * Mass / r;
+
+
+    res = Kernal * density * Mass /   r;
 
     return res;
 }
@@ -203,15 +207,20 @@ float sigma_los(float R, float beta, float Half_Light_radius, float SersicIndex,
     float numerator = 2 * GR * AdaptiveRichardsonExtrapolate(sigma_internals_wrapper, R, upper_limit, accuracy, args);
     float denominator = MassDensityProfile(R, SersicIndex, Half_Light_radius, stellar_mass);
 
-    if(isnan(accuracy)){std::cout << "accuracy is nan" << std::endl;}
-
-
     if(denominator == 0. || numerator == 0.)
     {
         return 0.;
     }
 
-    return pow(numerator/denominator, 0.5);
+    float value = pow(numerator/denominator, 0.5);
+
+    if(isnan(value) && (numerator/denominator < 0))
+    {
+        std::cout << "sigma_los: isnan error due to sqrt of negative. Beta: " << beta << std::endl;
+        std::cout << "-- numerator: " << numerator << std::endl;
+    }
+
+    return value;
 }
 
 
@@ -225,6 +234,9 @@ float sigma_apature_internals(float r, std::vector<float> args)
     float sigma = sigma_los(r, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
 
     float MDP = MassDensityProfile(r, args[2], args[1], args[3]);
+
+    if(isnan(sigma)) std::cout << "sigma_aperture_internals: isnan fail - sigma is nan" << std::endl;
+    if(isnan(MDP))  std::cout << "sigma_aperture_internals: isnan fail - mass density profile returned nan" << std::endl;
 
     return MDP * sigma * sigma * r;
 }
@@ -241,7 +253,8 @@ float sigma_aperture(float R_ap, float beta, float Half_Light_radius, float Sers
     accuracy = SimpsonsRule(MassDensityProfile_wrapper, 0., R_ap, Prepass_Subdivisions, args2)/1000;
     float denominator = AdaptiveRichardsonExtrapolate(MassDensityProfile_wrapper, 0., R_ap, accuracy, args2);
 
-
+    if(isnan(numerator)) std::cout << "sigma_aperture: isnan fail - numerator is nan" << std::endl;
+    if(isnan(denominator)) std::cout << "sigma_aperture: isnan fail - numerator is nan" << std::endl;
 
     if(denominator == 0. || numerator == 0.)
     {

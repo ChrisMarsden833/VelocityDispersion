@@ -12,8 +12,8 @@ set(CMAKE_CXX_STANDARD 14)
 set ( Testing_SOURCES
         ../src/utillity.h
         ../src/utillity.cpp
-        ../src/Integration.h
-        ../src/Integration.cpp
+        ../src/integration.h
+        ../src/integration.cpp
         testmain.cpp
         testutil.cpp
         testutil.h

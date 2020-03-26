@@ -12,8 +12,8 @@ set(CMAKE_CXX_STANDARD 14)
 set (lib_SOURCES
         ../src/utillity.h
         ../src/utillity.cpp
-        ../src/Integration.h
-        ../src/Integration.cpp
+        ../src/integration.h
+        ../src/integration.cpp
         ../src/desmond.h
         ../src/desmond.cpp
         ../src/dark_matter.h

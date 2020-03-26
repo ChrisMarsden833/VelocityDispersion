@@ -4,13 +4,13 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/Integration.cpp" "/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/foo.dir/__/src/Integration.cpp.o"
-  "/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/dark_matter.cpp" "/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/foo.dir/__/src/dark_matter.cpp.o"
-  "/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/desmond.cpp" "/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/foo.dir/__/src/desmond.cpp.o"
-  "/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/src/utillity.cpp" "/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/foo.dir/__/src/utillity.cpp.o"
-  "/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/lib/external.cpp" "/Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/foo.dir/external.cpp.o"
+  "/home/chris/Documents/VelocityDispersion/src/dark_matter.cpp" "/home/chris/Documents/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/foo.dir/__/src/dark_matter.cpp.o"
+  "/home/chris/Documents/VelocityDispersion/src/desmond.cpp" "/home/chris/Documents/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/foo.dir/__/src/desmond.cpp.o"
+  "/home/chris/Documents/VelocityDispersion/src/integration.cpp" "/home/chris/Documents/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/foo.dir/__/src/integration.cpp.o"
+  "/home/chris/Documents/VelocityDispersion/src/utillity.cpp" "/home/chris/Documents/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/foo.dir/__/src/utillity.cpp.o"
+  "/home/chris/Documents/VelocityDispersion/lib/external.cpp" "/home/chris/Documents/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/foo.dir/external.cpp.o"
   )
-set(CMAKE_CXX_COMPILER_ID "AppleClang")
+set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Preprocessor definitions for this target.
 set(CMAKE_TARGET_DEFINITIONS_CXX
@@ -20,8 +20,6 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../src"
-  "/usr/local/include"
-  "/usr/local/Cellar/llvm/9.0.1/include"
   )
 
 # Targets to which this target links.

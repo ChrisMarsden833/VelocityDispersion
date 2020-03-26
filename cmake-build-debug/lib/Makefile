@@ -39,19 +39,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake
+CMAKE_COMMAND = /opt/clion-2019.2.2/bin/cmake/linux/bin/cmake
 
 # The command to remove a file.
-RM = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E remove -f
+RM = /opt/clion-2019.2.2/bin/cmake/linux/bin/cmake -E remove -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/christophermarsden/Documents/Astronomy/VelocityDispersion
+CMAKE_SOURCE_DIR = /home/chris/Documents/VelocityDispersion
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug
+CMAKE_BINARY_DIR = /home/chris/Documents/VelocityDispersion/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -59,7 +59,7 @@ CMAKE_BINARY_DIR = /Users/christophermarsden/Documents/Astronomy/VelocityDispers
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/opt/clion-2019.2.2/bin/cmake/linux/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
 # Special rule for the target rebuild_cache
@@ -70,7 +70,7 @@ rebuild_cache/fast: rebuild_cache
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+	/opt/clion-2019.2.2/bin/cmake/linux/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_progress_start /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/progress.marks
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f CMakeFiles/Makefile2 lib/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug/CMakeFiles 0
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_progress_start /home/chris/Documents/VelocityDispersion/cmake-build-debug/CMakeFiles /home/chris/Documents/VelocityDispersion/cmake-build-debug/lib/CMakeFiles/progress.marks
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f CMakeFiles/Makefile2 lib/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/chris/Documents/VelocityDispersion/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f CMakeFiles/Makefile2 lib/clean
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f CMakeFiles/Makefile2 lib/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f CMakeFiles/Makefile2 lib/preinstall
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f CMakeFiles/Makefile2 lib/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f CMakeFiles/Makefile2 lib/preinstall
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f CMakeFiles/Makefile2 lib/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 lib/CMakeFiles/foo.dir/rule:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f CMakeFiles/Makefile2 lib/CMakeFiles/foo.dir/rule
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f CMakeFiles/Makefile2 lib/CMakeFiles/foo.dir/rule
 .PHONY : lib/CMakeFiles/foo.dir/rule
 
 # Convenience name for target.
@@ -122,35 +122,8 @@ foo: lib/CMakeFiles/foo.dir/rule
 
 # fast build rule for target.
 foo/fast:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/build
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/build
 .PHONY : foo/fast
-
-__/src/Integration.o: __/src/Integration.cpp.o
-
-.PHONY : __/src/Integration.o
-
-# target to build an object file
-__/src/Integration.cpp.o:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/Integration.cpp.o
-.PHONY : __/src/Integration.cpp.o
-
-__/src/Integration.i: __/src/Integration.cpp.i
-
-.PHONY : __/src/Integration.i
-
-# target to preprocess a source file
-__/src/Integration.cpp.i:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/Integration.cpp.i
-.PHONY : __/src/Integration.cpp.i
-
-__/src/Integration.s: __/src/Integration.cpp.s
-
-.PHONY : __/src/Integration.s
-
-# target to generate assembly for a file
-__/src/Integration.cpp.s:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/Integration.cpp.s
-.PHONY : __/src/Integration.cpp.s
 
 __/src/dark_matter.o: __/src/dark_matter.cpp.o
 
@@ -158,7 +131,7 @@ __/src/dark_matter.o: __/src/dark_matter.cpp.o
 
 # target to build an object file
 __/src/dark_matter.cpp.o:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/dark_matter.cpp.o
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/dark_matter.cpp.o
 .PHONY : __/src/dark_matter.cpp.o
 
 __/src/dark_matter.i: __/src/dark_matter.cpp.i
@@ -167,7 +140,7 @@ __/src/dark_matter.i: __/src/dark_matter.cpp.i
 
 # target to preprocess a source file
 __/src/dark_matter.cpp.i:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/dark_matter.cpp.i
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/dark_matter.cpp.i
 .PHONY : __/src/dark_matter.cpp.i
 
 __/src/dark_matter.s: __/src/dark_matter.cpp.s
@@ -176,7 +149,7 @@ __/src/dark_matter.s: __/src/dark_matter.cpp.s
 
 # target to generate assembly for a file
 __/src/dark_matter.cpp.s:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/dark_matter.cpp.s
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/dark_matter.cpp.s
 .PHONY : __/src/dark_matter.cpp.s
 
 __/src/desmond.o: __/src/desmond.cpp.o
@@ -185,7 +158,7 @@ __/src/desmond.o: __/src/desmond.cpp.o
 
 # target to build an object file
 __/src/desmond.cpp.o:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/desmond.cpp.o
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/desmond.cpp.o
 .PHONY : __/src/desmond.cpp.o
 
 __/src/desmond.i: __/src/desmond.cpp.i
@@ -194,7 +167,7 @@ __/src/desmond.i: __/src/desmond.cpp.i
 
 # target to preprocess a source file
 __/src/desmond.cpp.i:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/desmond.cpp.i
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/desmond.cpp.i
 .PHONY : __/src/desmond.cpp.i
 
 __/src/desmond.s: __/src/desmond.cpp.s
@@ -203,8 +176,35 @@ __/src/desmond.s: __/src/desmond.cpp.s
 
 # target to generate assembly for a file
 __/src/desmond.cpp.s:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/desmond.cpp.s
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/desmond.cpp.s
 .PHONY : __/src/desmond.cpp.s
+
+__/src/integration.o: __/src/integration.cpp.o
+
+.PHONY : __/src/integration.o
+
+# target to build an object file
+__/src/integration.cpp.o:
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/integration.cpp.o
+.PHONY : __/src/integration.cpp.o
+
+__/src/integration.i: __/src/integration.cpp.i
+
+.PHONY : __/src/integration.i
+
+# target to preprocess a source file
+__/src/integration.cpp.i:
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/integration.cpp.i
+.PHONY : __/src/integration.cpp.i
+
+__/src/integration.s: __/src/integration.cpp.s
+
+.PHONY : __/src/integration.s
+
+# target to generate assembly for a file
+__/src/integration.cpp.s:
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/integration.cpp.s
+.PHONY : __/src/integration.cpp.s
 
 __/src/utillity.o: __/src/utillity.cpp.o
 
@@ -212,7 +212,7 @@ __/src/utillity.o: __/src/utillity.cpp.o
 
 # target to build an object file
 __/src/utillity.cpp.o:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/utillity.cpp.o
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/utillity.cpp.o
 .PHONY : __/src/utillity.cpp.o
 
 __/src/utillity.i: __/src/utillity.cpp.i
@@ -221,7 +221,7 @@ __/src/utillity.i: __/src/utillity.cpp.i
 
 # target to preprocess a source file
 __/src/utillity.cpp.i:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/utillity.cpp.i
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/utillity.cpp.i
 .PHONY : __/src/utillity.cpp.i
 
 __/src/utillity.s: __/src/utillity.cpp.s
@@ -230,7 +230,7 @@ __/src/utillity.s: __/src/utillity.cpp.s
 
 # target to generate assembly for a file
 __/src/utillity.cpp.s:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/utillity.cpp.s
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/__/src/utillity.cpp.s
 .PHONY : __/src/utillity.cpp.s
 
 external.o: external.cpp.o
@@ -239,7 +239,7 @@ external.o: external.cpp.o
 
 # target to build an object file
 external.cpp.o:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/external.cpp.o
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/external.cpp.o
 .PHONY : external.cpp.o
 
 external.i: external.cpp.i
@@ -248,7 +248,7 @@ external.i: external.cpp.i
 
 # target to preprocess a source file
 external.cpp.i:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/external.cpp.i
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/external.cpp.i
 .PHONY : external.cpp.i
 
 external.s: external.cpp.s
@@ -257,7 +257,7 @@ external.s: external.cpp.s
 
 # target to generate assembly for a file
 external.cpp.s:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/external.cpp.s
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(MAKE) -f lib/CMakeFiles/foo.dir/build.make lib/CMakeFiles/foo.dir/external.cpp.s
 .PHONY : external.cpp.s
 
 # Help Target
@@ -267,17 +267,17 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... edit_cache"
 	@echo "... foo"
-	@echo "... __/src/Integration.o"
-	@echo "... __/src/Integration.i"
-	@echo "... __/src/Integration.s"
+	@echo "... edit_cache"
 	@echo "... __/src/dark_matter.o"
 	@echo "... __/src/dark_matter.i"
 	@echo "... __/src/dark_matter.s"
 	@echo "... __/src/desmond.o"
 	@echo "... __/src/desmond.i"
 	@echo "... __/src/desmond.s"
+	@echo "... __/src/integration.o"
+	@echo "... __/src/integration.i"
+	@echo "... __/src/integration.s"
 	@echo "... __/src/utillity.o"
 	@echo "... __/src/utillity.i"
 	@echo "... __/src/utillity.s"
@@ -295,6 +295,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /Users/christophermarsden/Documents/Astronomy/VelocityDispersion/cmake-build-debug && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/chris/Documents/VelocityDispersion/cmake-build-debug && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 
