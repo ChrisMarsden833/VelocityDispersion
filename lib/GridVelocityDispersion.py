@@ -5,10 +5,11 @@ def GetGridVelocityDispersion(beta, size, n, stellar_mass):
     """TODO Docstring"""
     points = (beta, size, n, stellar_mass)
     n = 20
-    beta_range = np.linspace(-0.19, 0.49, n)
-    sizes_range = np.linspace(2, 100, n)
-    sersic_index_range = np.linspace(0.5, 10, n)
-    stellar_mass_range = 10**np.linspace(5, 15, n)
+    beta_range = np.linspace(-0.19, 0.49, 10)
+    sizes_range = np.linspace(0.1, 100, 20)
+    sersic_index_range = np.linspace(0.5, 10, 10)
+    stellar_mass_range = np.linspace(10**5, 10**15, 20)
+
 
     data = np.load("Grid.npy")
 
