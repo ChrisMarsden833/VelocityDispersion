@@ -19,30 +19,49 @@ def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex, Ste
     variable_names = ["Aperture Size", "Beta", "Half Light Radius", "Sersic Index", "Stellar Mass", "Halo Rs", "Halo c"]
     for i, element in enumerate(variables):
         if i != 0:
-            assert len(element) == previous_length, "Supplied Array lengths are inconsistent - {} has {} elements, wheras {} has {} elements".format(variable_names[i-1], previous_length, varaible_names[i], len(element)) 
+            assert len(element) == previous_length, "Supplied Array lengths are inconsistent - {} has {} elements, wheras {} has {} elements".format(variable_names[i-1], previous_length, variable_names[i], len(element)) 
         previous_length = len(element)
-
-    # Reserve Memory for ctype arrays
-    c_aperture = (ctypes.c_float * len(ApertureSize))()
-    c_beta = (ctypes.c_float * len(Beta))()
-    c_hlr = (ctypes.c_float * len(HalfLightRadius))()
-    c_n = (ctypes.c_float * len(SersicIndex))()
-    c_sm = (ctypes.c_float * len(StellarMass))()
-    c_rs = (ctypes.c_float * len(HaloRs))()
-    c_hc = (ctypes.c_float * len(HaloC))()
-
-    for i in range(len(ApertureSize)):
-        c_aperture[i] = ApertureSize[i]
-        c_beta[i] = Beta[i]
-        c_hlr[i] = HalfLightRadius[i]
-        c_n[i] = SersicIndex[i]
-        c_sm[i] = StellarMass[i]
-        c_rs[i] = HaloRs[i]
-        c_hc[i] = HaloC[i]
-
+        
+    length = len(StellarMass)
+        
+    print("Reserving Memory")
+    
+    c_float_p = ctypes.POINTER(ctypes.c_float)
+    
+    ApertureSize = ApertureSize.astype(np.float32)
+    c_aperture = ApertureSize.ctypes.data_as(c_float_p)
+    ApertureSize = None
+    
+    Beta = Beta.astype(np.float32)
+    c_beta = Beta.ctypes.data_as(c_float_p)
+    Beta = None
+    
+    HalfLightRadius = HalfLightRadius.astype(np.float32)
+    c_hlr = HalfLightRadius.ctypes.data_as(c_float_p)
+    HalfLightRadius = None
+    
+    SersicIndex = SersicIndex.astype(np.float32)
+    c_n = SersicIndex.ctypes.data_as(c_float_p)
+    SersicIndex = None
+    
+    StellarMass = StellarMass.astype(np.float32)
+    c_sm = StellarMass.ctypes.data_as(c_float_p)
+    StellarMass = None
+    
+    HaloRs = HaloRs.astype(np.float32)
+    c_rs = HaloRs.ctypes.data_as(c_float_p)
+    HaloRs = None
+    
+    HaloC = HaloC.astype(np.float32)
+    c_hc = HaloC.ctypes.data_as(c_float_p)
+    HaloC = None    
+   
+      
     c_om = float(OmegaM)
     c_H = float(H)
-    c_size = int(len(StellarMass))
+    c_size = int(length)
+    
+    print("Reserving restypes")
    
     ibc.ParallelSigma.argtypes = [ ctypes.POINTER(ctypes.c_float), 
                                ctypes.POINTER(ctypes.c_float),
@@ -56,16 +75,16 @@ def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex, Ste
                                ctypes.c_int32 ]
 
     ibc.ParallelSigma.restype = ctypes.POINTER(ctypes.c_float)
-
-    res = ibc.ParallelSigma(c_aperture, c_beta, c_hlr, c_n, c_sm, c_rs, c_hc, c_om, c_H, c_size)
-
-    output = np.ones_like(StellarMass)
-
-    for i  in range(len(output)):
-        output[i] = res[i]
     
-    return output 
+    print("Arrays defined, entering c section")
+    
+    res = ibc.ParallelSigma(c_aperture, c_beta, c_hlr, c_n, c_sm, c_rs, c_hc, c_om, c_H, c_size)
+    
+    b = np.ctypeslib.as_array(
+    (ctypes.c_float * length).from_address(ctypes.addressof(res.contents)))
 
+    return b
+    
 
 if __name__ == "__main__":
 
