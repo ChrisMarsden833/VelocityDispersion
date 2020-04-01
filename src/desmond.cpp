@@ -25,6 +25,8 @@ float MassDensityProfile(float r, float SersicIndex, float Half_Light_radius, fl
         {
             printf("-- Triggered inf condition: %f\n", result);
             printf("-- Sigma_e: %f\n", Sigma_e);
+            printf("---- HLR: %f\n", Half_Light_radius);
+            printf("---- SM: %f\n", stellar_mass);
             printf("-- b_value: %f\n", b_value);
             printf("-- Sersic Index: %f\n", SersicIndex);
             printf("-- gamma: %f\n", gamma);
@@ -147,6 +149,12 @@ float K_Kernel_DW(float u, float beta)
     float term1 = ((3./2.) - beta) * pow(PI, 0.5) * boost::math::tgamma(beta - 0.5) / boost::math::tgamma(beta);
     float term2 = beta * incompleteBeta(beta + 0.5, 0.5, 1./(u*u));
     float term3 = -incompleteBeta(beta - 0.5, 0.5, 1./(u*u));
+
+    if(term1 + term2 + term3 < 0)
+    {
+        return 0; // This can occur for low values of beta, and the values are typically very close to zero, so this is presumably okay.
+    }
+
     float res = prefactor * (term1 + term2 + term3);
 
     return res;
@@ -207,19 +215,8 @@ float sigma_los(float R, float beta, float Half_Light_radius, float SersicIndex,
     float numerator = 2 * GR * AdaptiveRichardsonExtrapolate(sigma_internals_wrapper, R, upper_limit, accuracy, args);
     float denominator = MassDensityProfile(R, SersicIndex, Half_Light_radius, stellar_mass);
 
-    if(denominator == 0. || numerator == 0.)
-    {
-        return 0.;
-    }
-
     float value = pow(numerator/denominator, 0.5);
-
-    if(isnan(value) && (numerator/denominator < 0))
-    {
-        std::cout << "sigma_los: isnan error due to sqrt of negative. Beta: " << beta << std::endl;
-        std::cout << "-- numerator: " << numerator << std::endl;
-    }
-
+    
     return value;
 }
 
@@ -234,9 +231,6 @@ float sigma_apature_internals(float r, std::vector<float> args)
     float sigma = sigma_los(r, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
 
     float MDP = MassDensityProfile(r, args[2], args[1], args[3]);
-
-    if(isnan(sigma)) std::cout << "sigma_aperture_internals: isnan fail - sigma is nan" << std::endl;
-    if(isnan(MDP))  std::cout << "sigma_aperture_internals: isnan fail - mass density profile returned nan" << std::endl;
 
     return MDP * sigma * sigma * r;
 }
@@ -253,11 +247,22 @@ float sigma_aperture(float R_ap, float beta, float Half_Light_radius, float Sers
     accuracy = SimpsonsRule(MassDensityProfile_wrapper, 0., R_ap, Prepass_Subdivisions, args2)/1000;
     float denominator = AdaptiveRichardsonExtrapolate(MassDensityProfile_wrapper, 0., R_ap, accuracy, args2);
 
-    if(isnan(numerator)) std::cout << "sigma_aperture: isnan fail - numerator is nan" << std::endl;
-    if(isnan(denominator)) std::cout << "sigma_aperture: isnan fail - numerator is nan" << std::endl;
+    // Error Handling
+    bool nan_fail = (isnan(numerator) + isnan(denominator));
+    bool dem_zero_fail = (denominator == 0);
+    bool neg_fail = numerator/denominator < 0.;
 
-    if(denominator == 0. || numerator == 0.)
+    if (nan_fail || dem_zero_fail || neg_fail)
     {
+        if(nan_fail) std::cout << "ERROR - Aperture Equation (10) sigma_aperture() will return NaN. Numerator:" << numerator << " denominator: " << denominator << std::endl;
+        if(dem_zero_fail) std::cout << "ERROR - Aperture Equation (10) sigma_aperture()'s denominator has evaluated to zero, causing a divide by zero error." << std::endl;
+        if(neg_fail) std::cout << "ERROR - Aperture Equation (10) sigma_aperture() has evalulated to < 0 before the square root, and complex values are not physical here." << std::endl;
+        std::cout << "-- Argument R_ap (aperture size): " << R_ap << std::endl;
+        std::cout << "-- Argument beta: " << beta << std::endl;
+        std::cout << "-- Argument Half Light Radius: " << Half_Light_radius << std::endl;
+        std::cout << "-- Argument SersicIndex: " << SersicIndex << std::endl;
+        std::cout << "-- Argument stellar mass: " << stellar_mass << std::endl;
+        std::cout << "--- Value will be returned as zero, but you should think about why this occured." << std::endl;
         return 0.;
     }
 

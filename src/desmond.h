@@ -7,6 +7,7 @@
 #include "integration.h"
 #include "dark_matter.h"
 #include <iostream>
+#include <stdlib.h>
 
 #define PI 3.14159265
 #define GR 4.3009125e-6 // In units of kpc M_sun^-1 (km/s)^2

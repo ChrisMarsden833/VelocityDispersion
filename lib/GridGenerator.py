@@ -2,7 +2,7 @@ import numpy as np
 import itertools
 from VelocityDispersionLibrary import *
 
-n = 20
+n = 2
 
 aperture = 0.5
 
