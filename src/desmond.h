@@ -50,7 +50,7 @@ float b_n(float SersicIndex);
  * @param dm_c : float, the dark matter concentration parameter.
  * @return float, the value of the density.
  */
-float rho(float r, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H);
+float rho(float r, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c);
 
 /** ++ rho_0 ++
  * Equation (4), P824, Factor for the de-projected volume density.
@@ -90,7 +90,7 @@ float cumSpherRho(float R, std::vector<float> args);
  * @param omega_m : float, mass_density cosmological parameter (dimensionless)
  * @return float, the value of the cumulative spherical mass distribution (M_sun)
  */
-float cumSpherMassDistro(float R, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m,  float H);
+float cumSpherMassDistro(float R, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c);
 
 /** ++ K_Kernel_DW ++
  * Equation (9), P824, The Kernel function 'u'.
@@ -112,7 +112,7 @@ float K_Kernel_DW(float u, float beta);
  * @param dm_rs : float, the dark matter characteristic radius
  * @return float, the returned value.
  */
-float full_sigma_integral_internals(float r, float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H);
+float full_sigma_integral_internals(float r, float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c);
 
 /** ++ sigma_internals_wrapper ++
  * Wrapper function to make sure formatting works for sigma integration
@@ -128,7 +128,7 @@ float sigma_internals_wrapper(float r, std::vector<float> args);
  * @param args : vector of floats containing the other parameters (R, beta, Half_Light_radius and SersicIndex)
  * @return the value of the function an r.
  */
-float sigma_internals_wrapper_transformed(float t, std::vector<float> args);
+//float sigma_internals_wrapper_transformed(float t, std::vector<float> args);
 
 /** ++ function to calculate the LOS velocity dispersion
  * This is equation (8), P824.
@@ -141,7 +141,7 @@ float sigma_internals_wrapper_transformed(float t, std::vector<float> args);
  * @param dm_rs : float the dark matter characteristic radius
  * @return float, the velocity dispersion.
  */
-float sigma_los(float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H);
+float sigma_los(float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c);
 
 /** ++ sigma_los_wrapper ++
  * Wrapper function to ensure formatting works for integration.
@@ -168,7 +168,7 @@ float sigma_apature_internals(float r, std::vector<float> args);
  * @param stellar_mass : float, the stellar mass.
  * @return float, the value of sigma.
  */
-float sigma_aperture(float R_ap, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H);
+float sigma_aperture(float R_ap, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c);
 
 
 

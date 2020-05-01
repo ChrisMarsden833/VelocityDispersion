@@ -13,17 +13,17 @@ extern "C"
     }
 
     // float innards(float r, float R, float HLR, float beta, float SersicIndex)
-    float density(float r, float HLR, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H)
+    float density(float r, float HLR, float SersicIndex, float stellar_mass, float dm_rs, float dm_c)
     {
         float res;
-        res = rho(r, HLR, SersicIndex, stellar_mass, dm_rs, dm_c, omega_m, H);
+        res = rho(r, HLR, SersicIndex, stellar_mass, dm_rs, dm_c);
         //* cumSpherMassDistro(R, HLR, SersicIndex) / r;
         return res;
     }
 
-    float total_mass(float R, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m,  float H)
+    float total_mass(float R, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c)
     {
-        float integral = cumSpherMassDistro(R, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c, omega_m, H);
+        float integral = cumSpherMassDistro(R, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c);
         return integral;
     }
 
@@ -32,9 +32,9 @@ extern "C"
         return K_Kernel_DW(u, beta);
     }
 
-    float first_integral_internals(float r, float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H)
+    float first_integral_internals(float r, float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c)
     {
-        return full_sigma_integral_internals(r, R, beta, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c, omega_m, H);
+        return full_sigma_integral_internals(r, R, beta, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c);
     }
 
     float sersic_profile(float r, float SersicIndex, float Half_Light_radius, float stellar_mass)
@@ -53,14 +53,14 @@ extern "C"
         return rho_0(Half_Light_radius, SersicIndex, stellar_mass);
     }
 
-    float VD_los(float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H)
+    float VD_los(float R, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c)
     {
-        return sigma_los(R, beta, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c, omega_m, H);
+        return sigma_los(R, beta, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c);
     }
 
-    float VD(float R_ap, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c, float omega_m, float H)
+    float VD(float R_ap, float beta, float Half_Light_radius, float SersicIndex, float stellar_mass, float dm_rs, float dm_c)
     {
-        return sigma_aperture(R_ap, beta, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c, omega_m, H);
+        return sigma_aperture(R_ap, beta, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c);
     }
 
     void ArrayTest(float * input, int size)
@@ -85,8 +85,6 @@ extern "C"
                        float * StellarMass,
                        float * HaloRs,
                        float * HaloC,
-                       float OmegaM,
-                       float H,
                        int size)
     {
         float * res = (float *) std::malloc(sizeof(float) * size);
@@ -95,7 +93,7 @@ extern "C"
 
         printf("Commencing parallelization of %i elements\n", size);
 
-        #pragma omp parallel for default(none) shared(size, res, Aperture, Beta, HalfLightRadius, SersicIndex, StellarMass, HaloRs, HaloC, OmegaM, H, progress, stdout)
+        #pragma omp parallel for default(none) shared(size, res, Aperture, Beta, HalfLightRadius, SersicIndex, StellarMass, HaloRs, HaloC, progress, stdout)
         for (int i = 0; i < size; i++)
         {
             int thread = omp_get_thread_num();
@@ -108,7 +106,7 @@ extern "C"
                 printf("%i, Sm: %f\n", thread, StellarMass[i]);
             }
 
-            res[i] = sigma_aperture(Aperture[i], Beta[i], HalfLightRadius[i], SersicIndex[i], StellarMass[i], HaloRs[i], HaloC[i], OmegaM, H);
+            res[i] = sigma_aperture(Aperture[i], Beta[i], HalfLightRadius[i], SersicIndex[i], StellarMass[i], HaloRs[i], HaloC[i]);
 
 
 
