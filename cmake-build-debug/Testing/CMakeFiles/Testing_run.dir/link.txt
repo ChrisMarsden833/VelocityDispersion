@@ -1,1 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/c++  -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/Testing_run.dir/Testing.cpp.o  -o Testing_run  -L/usr/local/lib -Wl,-rpath,/usr/local/lib /usr/local/lib/libboost_unit_test_framework-mt.dylib 
