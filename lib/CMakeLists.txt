@@ -18,6 +18,8 @@ set (lib_SOURCES
         ../src/desmond.cpp
         ../src/dark_matter.h
         ../src/dark_matter.cpp
+	../src/galaxy.h
+	../src/galaxy.cpp
         external.cpp)
 
 add_library(foo MODULE ${lib_SOURCES})

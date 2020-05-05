@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.10)
 
 include_directories(${VelocityDispersion_SOURCE_DIR}/src)
 link_directories(${VelocityDispersion_BINARY_DIR}/src)
@@ -18,7 +18,9 @@ set ( VelocityDispersion_SOURCES
         utillity.cpp
         utillity.h
         dark_matter.cpp
-        dark_matter.h)
+        dark_matter.h
+	Galaxy.h
+	Galaxy.cpp)
 
 set ( Executable_Name DirectExecution )
 

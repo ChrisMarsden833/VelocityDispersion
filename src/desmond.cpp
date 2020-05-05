@@ -103,7 +103,6 @@ float rho(float r, float Half_Light_radius, float SersicIndex, float stellar_mas
 
     float exp_term = exp(b_n_term * exp_power_term);
 
-
     return rho_0_term * power_term * exp_term;// + NFW_profile(r, dm_rs, dm_c, omega_m, H);
 }
 

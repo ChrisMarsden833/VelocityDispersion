@@ -56,6 +56,9 @@ float SimpsonsRule(float (*f)(float, std::vector<float>), float a, float b, int 
  */
 float SimpsonsRule(float (*f)(float), float a, float b, int N);
 
+// further overloaded version for when using std::function
+float SimpsonsRule(std::function<float (float)> fun, float a, float b, int N);
+
 /** ++ RichardsonExtrapolate ++
  * Performs Richardson Extrapolation for the specified function using Simpsons rule.
  * @param f : pointer, to the function in question. The first argument of this function must be the variable over which
@@ -69,6 +72,8 @@ float SimpsonsRule(float (*f)(float), float a, float b, int N);
  * @return RResult, the value of the integration coupled with the accuracy of the integration.
  */
 RResult RichardsonExtrapolate(float (*f)(float, std::vector<float>), float a, float b, int steps2, std::vector<float> extraArguments);
+// Overloaded version for std::function
+RResult RichardsonExtrapolate(std::function<float (float)> fun, float a, float b, int steps2);
 
 /** ++ AdaptiveRichardson Extrapolate ++
  * Performs Adaptive Richardson Extrapolation for the specified function using Simpsons rule
@@ -84,6 +89,7 @@ RResult RichardsonExtrapolate(float (*f)(float, std::vector<float>), float a, fl
  */
 float AdaptiveRichardsonExtrapolate(float (*f)(float, std::vector<float>), float a, float b, float accuracy, std::vector<float> extraArguments);
 
-
+// Overloaded version for std::function 
+float AdaptiveRichardsonExtrapolate(std::function<float (float)> fun, float a, float b, float accuracy);
 
 #endif //VELOCITYDISPERSIONS_INTEGRATION_H

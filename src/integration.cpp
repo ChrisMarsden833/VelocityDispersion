@@ -34,15 +34,7 @@ float SimpsonsRule(float (*f)(float, std::vector<float>), float a, float b, int 
 
 float SimpsonsRule(float (*f)(float), float a, float b, int N)
 {
-    // Test and adjustment for evenness.
-    //std::cout << "Simpsons rule N: " << N << std::endl;
-
     CheckAndMaybeIncrementN(&N, "Simpsons Rule, basic");
-
-    // Create a Grid
-    //float * grid = (float *) malloc( (N + 1) * sizeof(float)); // Prep array
-    //float h = (b - a)/((float) N); // Calculate the spacing of the grid, h
-    //for(int i = 0; i <= N; i++) grid[i] = a + i*h; // fill values
 
     float * grid = NULL;
     float h;
@@ -53,20 +45,39 @@ float SimpsonsRule(float (*f)(float), float a, float b, int N)
 
     // Term 1 in the formula.
     float sum1 = 0;
-    for(int j = 1; j <= (N_half - 1); j++)
-    {
-        sum1 += (*f)(grid[2*j]);
-    }
+    for(int j = 1; j <= (N_half - 1); j++) sum1 += (*f)(grid[2*j]);
 
     // Term 2 in the formula
     float sum2 = 0;
-    for(int j = 1; j <= N_half; j++)
-    {
-        sum2 += (*f)(grid[2*j-1]);
-    }
+    for(int j = 1; j <= N_half; j++) sum2 += (*f)(grid[2*j-1]);
 
     // Full formula
     float total = (h/3.0)*((*f)(a) + 2.0 * sum1 + 4 * sum2 + (*f)(b));
+    free(grid);
+    return total;
+}
+
+float SimpsonsRule(std::function<float (float)> fun, float a, float b, int N)
+{
+    CheckAndMaybeIncrementN(&N, "Simpsons Rule, basic");
+
+    float * grid = NULL;
+    float h;
+    fastLinspace(grid, h, a, b, N);
+
+    // Start the actual Simpsons rule
+    int N_half = N/2;
+
+    // Term 1 in the formula.
+    float sum1 = 0;
+    for(int j = 1; j <= (N_half - 1); j++) sum1 += fun(grid[2*j]);
+
+    // Term 2 in the formula
+    float sum2 = 0;
+    for(int j = 1; j <= N_half; j++) sum2 += fun(grid[2*j-1]);
+
+    // Full formula
+    float total = (h/3.0)*(fun(a) + 2.0 * sum1 + 4 * sum2 + fun(b));
     free(grid);
     return total;
 }
@@ -86,6 +97,21 @@ RResult RichardsonExtrapolate(float (*f)(float, std::vector<float>), float a, fl
     data.integral = (pow(2, 4) * I2n - In)/(pow(2, 4) - 1);
     data.accuracy = (abs(In - I2n)/(pow(2, 4) - 1));
     return data;
+}
+
+RResult RichardsonExtrapolate(std::function<float (float)> fun, float a, float b, int steps2)
+{
+    // Struct for the return
+    RResult data;
+
+    // Call Simpsons rule twice at different intervals according to richarson extrapolation.
+    float I2n = SimpsonsRule(fun, a, b, 2*steps2);
+    float In = SimpsonsRule(fun, a, b, steps2);
+
+    // Assign the value of the integral according to the formulae for the integral and it's accuracy.
+    data.integral = (pow(2., 4.) * I2n - In)/(pow(2., 4.) - 1); 
+    data.accuracy = abs(In - I2n)/(pow(2., 4.) - 1 );
+    return data; 
 }
 
 float AdaptiveRichardsonExtrapolate(float (*f)(float, std::vector<float>), float a, float b, float accuracy, std::vector<float> extraArguments)
@@ -156,4 +182,47 @@ float AdaptiveRichardsonExtrapolate(float (*f)(float, std::vector<float>), float
         }
     }
     return integral;
+}
+
+
+float AdaptiveRichardsonExtrapolate(std::function<float (float)> fun, float a, float b, float accuracy)
+{
+    // Preliminary vector for the boundaries.
+    std::vector<float> boundaries = {a, b};
+
+    // Maximum (sane) number of subdivisions).
+    int max_subdivisions = 1000;
+    float minimum_acceptable_subdivision_size = abs(b-a)/max_subdivisions;
+
+    // Struct and values for iteration.
+    RResult data;
+    float integral = 0;
+    int calls = 0;
+
+    float new_element;
+    float acceptable_local_error;
+
+    // Loop over the boundaries vector elements. Because elements are dynamically added, there remains the possibility
+    // of an infinite loop if very low accuracy is used or an unreasonable function is called.
+    for(int i = 0; i < boundaries.size()-1; i++)
+    {
+        bool loop = true; // Stopper
+        while(loop)
+        {
+            // Call Richardson Extrapolation
+            data = RichardsonExtrapolate(fun, boundaries[i], boundaries[i+1], 2);
+            // Calculate the acceptable local error for this region.
+            acceptable_local_error = accuracy*abs(boundaries[i+1] - boundaries[i])/abs(b-a);
+            // Based on this, decide if we need to continue.
+            loop = (data.accuracy > acceptable_local_error);
+            // Work out the size of the new element
+            new_element = (boundaries[i] + boundaries[i+1])/2;
+
+            if (new_element - boundaries[i] < minimum_acceptable_subdivision_size and loop) loop = false;
+            if(loop) boundaries.insert(boundaries.begin() + i + 1, new_element);
+            else integral += data.integral;
+        }
+    }
+    return integral;
+
 }

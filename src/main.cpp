@@ -3,12 +3,16 @@
 
 int main()
 {
-    float u = 20;
-    float beta = 0.1;
 
-    float res = K_Kernel_DW(u, beta);
+    Galaxy aGalaxy(12., 0.4, 10., 10., 4.);
 
-    std::cout << res;
+    float test = aGalaxy.cumulative_mass(10.);
+
+    std::cout << "Result: " << test << std::endl;
+
+
+    float old_test = cumSpherMassDistro(10., 10., 4., pow(10., 12.), 10., 10.);
+    std::cout << "Result2: " << old_test << std::endl;
 
     return 0;
 }
