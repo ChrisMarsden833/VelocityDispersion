@@ -10,6 +10,7 @@ Galaxy::Galaxy(float input_stellar_mass,
 	beta = input_beta;
 	half_light_radius = input_half_light_radius;
 	sersic_index = input_sersic_index;
+	aperture_size = input_aperture_size;
 	
 	dark_matter_on = false;
 
@@ -36,6 +37,8 @@ Galaxy::Galaxy(float input_stellar_mass,
 	float right = (boost::math::tgamma(2*sersic_index)/boost::math::tgamma(sersic_index*(3. - p_n)));
 	rho0 = left * right;
 
+	R = 4.;
+
 }
 
 void Galaxy::init_dark_matter(string input_profile_name,
@@ -55,13 +58,19 @@ float Galaxy::MassDensity(float r)
 	return result;
 }
 
+float Galaxy::MassDensityr(float r)
+{
+	return this->MassDensity(r) * r;
+}
+
+
 float Galaxy::rho(float r)
 {
 
     float radius_ratio = r/half_light_radius_eff;
 
     float radius_ratio_eff = radius_ratio;
-    //if(radius_ratio == 0. && -p_n <= 0) radius_ratio_eff = zero_perturbation;
+    if(radius_ratio == 0. && -p_n <= 0) radius_ratio_eff = zero_perturbation;
     float power_term = pow(radius_ratio_eff, -p_n);
 
     float inverse_n = 1./sersic_index_eff;
@@ -86,13 +95,13 @@ float Galaxy::mass_shell(float R)
 }
 
 
-float Galaxy::cumulative_mass(float R)
+float Galaxy::cumulative_mass(float R_arg)
 {
-	float accuracy = pow(10., stellar_mass-4);
+	float accuracy = pow(10., stellar_mass-precision);
 
 	auto fp = bind(&Galaxy::mass_shell, this, _1);
 
-	return AdaptiveRichardsonExtrapolate(fp, zero_perturbation, R, accuracy);
+	return AdaptiveRichardsonExtrapolate(fp, 0., R_arg, accuracy);
 }
 
 float Galaxy::K_Kernel_DW(float u)
@@ -124,7 +133,7 @@ float Galaxy::sigma_integrand(float r)
 
     float Kernal = this->K_Kernel_DW(ratio);
     float density = this->rho(r);
-    float Mass = this->cumulative_mass(R);
+    float Mass = this->cumulative_mass(r);
 	
     float res;
 
@@ -133,6 +142,53 @@ float Galaxy::sigma_integrand(float r)
     res = Kernal * density * Mass /  r;
 
     return res;
-
-
 }
+
+
+float Galaxy::sigma_los(float R_arg)
+{
+	float upper_limit = 100*R_arg;
+	R = R_arg;
+
+	float accuracy = pow(10., 17 - precision);
+
+	auto fp = bind(&Galaxy::sigma_integrand, this, _1);
+
+	float numerator = 2. * GR *  AdaptiveRichardsonExtrapolate(fp, R_arg, upper_limit, accuracy); 
+	float denominator = this->MassDensity(R_arg);
+
+	float value = pow(numerator/denominator, 0.5);
+
+	return value;
+}
+
+
+float Galaxy::sigma_ap_integrand(float R_arg)
+{
+	float sigma = this->sigma_los(R_arg);
+	float MDP = this->MassDensity(R_arg);
+
+	return MDP * sigma * sigma * R_arg;
+}
+
+
+float Galaxy::sigma_ap(void)
+{
+	auto numfp = bind(&Galaxy::sigma_ap_integrand, this, _1);
+
+	float accuracy = pow(10, 15-precision);
+
+	float numerator = AdaptiveRichardsonExtrapolate(numfp, 0., aperture_size, accuracy);
+
+	auto denfp = bind(&Galaxy::MassDensityr, this, _1);
+
+	float denominator = AdaptiveRichardsonExtrapolate(denfp, 0., aperture_size, accuracy);
+	
+
+	return pow(numerator/denominator, 0.5);	
+}
+
+
+
+
+

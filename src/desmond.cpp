@@ -132,7 +132,7 @@ float cumSpherMassDistro(float R, float Half_Light_radius, float SersicIndex, fl
 {
     std::vector<float> args = {Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c};
 
-    float accuracy = SimpsonsRule(cumSpherRho, 0.0001, R, Prepass_Subdivisions, args)/1000;
+    float accuracy = SimpsonsRule(cumSpherRho, 0.0000001, R, Prepass_Subdivisions, args)/1000.;
 
     return AdaptiveRichardsonExtrapolate(cumSpherRho, 0.0001, R, accuracy, args);
 }
@@ -180,6 +180,7 @@ float full_sigma_integral_internals(float r, float R, float beta, float Half_Lig
     float Kernal = K_Kernel_DW(ratio, beta);
     float density = rho(r, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c);
     float Mass = cumSpherMassDistro(r, Half_Light_radius, SersicIndex, stellar_mass, dm_rs, dm_c);
+
     float res;
 
 
@@ -206,6 +207,7 @@ float sigma_los(float R, float beta, float Half_Light_radius, float SersicIndex,
 
     float numerator = 2 * GR * AdaptiveRichardsonExtrapolate(sigma_internals_wrapper, R, upper_limit, accuracy, args);
     float denominator = MassDensityProfile(R, SersicIndex, Half_Light_radius, stellar_mass);
+
 
     float value = pow(numerator/denominator, 0.5);
     

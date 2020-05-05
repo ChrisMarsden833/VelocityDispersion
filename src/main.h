@@ -6,7 +6,10 @@
 #include "utillity.h"
 #include "desmond.h"
 #include "Galaxy.h"
+#include <chrono>
 #include <boost/math/special_functions/gamma.hpp>
 #include <boost/math/special_functions/beta.hpp>
+
+using namespace std::chrono;
 
 #endif //VELOCITYDISPERSIONS_MAIN_H

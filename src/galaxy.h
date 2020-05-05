@@ -11,7 +11,9 @@
 
 #define PI 3.14159265
 #define GR 4.3009125e-6 // In units of kpc M_sun^-1 (km/s)^2
-#define zero_perturbation 0.000001
+#define zero_perturbation 0.00000001
+#define precision 3
+
 
 using namespace std;
 using namespace std::placeholders;
@@ -31,6 +33,9 @@ class Galaxy
 		// Function to return the mass density at radius r - Equation (1). P824
 		float MassDensity(float r);
 
+		// Function returning the mass density * r (for integration)
+		float MassDensityr(float r);
+
 		// Function to return the de-projected density at radius r.
 		float rho(float r);
 
@@ -38,13 +43,22 @@ class Galaxy
 		float mass_shell(float R);
 
 		// Function to to return the cumulative mass at radius r.
-		float cumulative_mass(float R);
+		float cumulative_mass(float R_arg);
 
 		// Function to return the value of the K_Kernal
 		float K_Kernel_DW(float u);
 
 		// The Integrand for sigma (internals of the integral)
 		float sigma_integrand(float r);
+
+		// The value of sigma in the LOS
+		float sigma_los(float R_arg);
+
+		// The integrand of sigma aperture (numerator)
+		float sigma_ap_integrand(float R_arg);
+
+		// The velocity dispersion within the aperture
+		float sigma_ap(void);
 
 	private:
 		// Stellar Mass of the galaxy [log10 M_sun]
