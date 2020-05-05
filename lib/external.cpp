@@ -2,6 +2,7 @@
 #include <math.h>
 #include "omp.h"
 #include "../src/desmond.h"
+#include "../src/galaxy.h"
 
 extern "C"
 {
@@ -106,7 +107,7 @@ extern "C"
                 printf("%i, Sm: %f\n", thread, StellarMass[i]);
             }
 
-            res[i] = sigma_aperture(Aperture[i], Beta[i], HalfLightRadius[i], SersicIndex[i], StellarMass[i], HaloRs[i], HaloC[i]);
+            res[i] = GetVelocityDispersion(Aperture[i], Beta[i], HalfLightRadius[i], SersicIndex[i], StellarMass[i], HaloRs[i], HaloC[i]);
 
 
 
