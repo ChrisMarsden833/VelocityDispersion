@@ -22,7 +22,7 @@ Galaxy::Galaxy(float input_stellar_mass,
 	
 	// Set the value of b_n 	
 	b_n = 2.*sersic_index_eff - (1./3.) + (.009876/sersic_index_eff); 
-	
+
 	// find the gamma function used immedately in sigma_e
 	float gamma = boost::math::tgamma_lower(2*sersic_index, b_n);
 	// Sigma_e, the constant for the sersic profile.
@@ -32,8 +32,8 @@ Galaxy::Galaxy(float input_stellar_mass,
 
 	// Rho0
 	float Sigma0 = this->MassDensity(0.);
-
 	float left = Sigma0 *  pow(b_n, (sersic_index * (1. - p_n))) / (2.*half_light_radius_eff);
+
 	float right = (boost::math::tgamma(2*sersic_index)/boost::math::tgamma(sersic_index*(3. - p_n)));
 	rho0 = left * right;
 
@@ -111,6 +111,7 @@ float Galaxy::K_Kernel_DW(float u)
         return 0.;
     }
     float prefactor = 0.5 * pow(u, (2.* beta - 1.));
+
     float term1 = ((3./2.) - beta) * pow(PI, 0.5) * boost::math::tgamma(beta - 0.5) / boost::math::tgamma(beta);
     float term2 = beta * incompleteBeta(beta + 0.5, 0.5, 1./(u*u));
     float term3 = -incompleteBeta(beta - 0.5, 0.5, 1./(u*u));
@@ -188,7 +189,16 @@ float Galaxy::sigma_ap(void)
 	return pow(numerator/denominator, 0.5);	
 }
 
-
+float GetVelocityDispersion(float input_aperture_size,
+                            float input_beta,
+                            float input_half_light_radius,
+                            float input_sersic_index,
+                            float input_stellar_mass)
+{
+	
+    Galaxy aGalaxy(input_stellar_mass, input_beta, input_half_light_radius, input_aperture_size, input_sersic_index);
+    return 12.0; //aGalaxy.sigma_ap();
+}
 
 
 

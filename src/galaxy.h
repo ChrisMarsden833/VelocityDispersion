@@ -98,4 +98,10 @@ class Galaxy
 
 };
 
+float GetVelocityDispersion(float input_aperture_size,
+			    float input_beta,
+			    float input_half_light_radius,
+		   	    float input_sersic_index,
+			    float input_stellar_mass);
+
 #endif
