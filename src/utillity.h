@@ -91,5 +91,44 @@ void CheckAndMaybeIncrementN(int * N, std::string fname = "Richardson Extrapolat
 
 void fastLinspace(float * &grid, float &h, float a, float b, int N = 100);
 
+/** ++ ReadFile ++
+ * CSV reader,
+ */
+std::vector<std::vector<float>> * ReadFile(std::string path, std::vector<int> * IndexesToGrab);
+
+/* ++ InputPrechecks
+ * Function to test input indexes
+ */
+void InputPrechecks(std::vector<int> * IndexesToGrab);
+
+/* ++ checkOutpuConsistency ++ 
+ * Function to check output consistency
+ */
+void checkOutputConsistency(std::vector<int> * IndexesToGrab, std::vector<std::vector<float>> * OutputArrays);
+
+/* ++ Reduce
+ * Reduce to single values
+ */
+std::vector<float> * Reduce(std::vector <float> * input, std::vector<float> * output);
+
+/* ++ FindClosest
+ * Find the closest value from a list
+ */
+float FindClosest(float value, std::vector<float> * data);
+
+/* ++ Equals
+ * Generate a mask where the array equals the value 
+ */
+void Equals(std::vector<float> * array, float value, std::vector<bool> * mask);
+
+/* ++ MaskOut
+ * Mask out values in a vector based on a mask vector
+ */
+void MaskOut(std::vector<float> * array, std::vector<bool> * mask);
+
+/* ++ LinearInterp
+ * Linear Interpolation
+ */
+float LinearInterp(std::vector<float> * X, std::vector<float> * Y, float x);
 
 #endif //VELOCITYDISPERSIONS_UTILLITY_H

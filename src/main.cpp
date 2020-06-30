@@ -4,33 +4,40 @@
 int main()
 {
 
-    auto start = high_resolution_clock::now();
+    float z = 0.149;
+    float mass = 3.15e+08;
 
-    Galaxy aGalaxy(12., 0.4, 10., 10., 4.);
-    float test = aGalaxy.sigma_ap();
-
-    auto stop = high_resolution_clock::now(); 
-
-    std::cout << "Result: " << test << std::endl;
-
-    auto duration = duration_cast<microseconds>(stop - start);
-
-    cout << "Time taken by function: "  << duration.count() << " microseconds" << endl;
-
-
-    start = high_resolution_clock::now();
-
-    float old_test = sigma_aperture(10., 0.4, 10., 4, pow(10., 12.), 10., 10.);
-
-    stop = high_resolution_clock::now(); 
     
-    std::cout << "Result2: " << old_test << std::endl;
-   
-    duration = duration_cast<microseconds>(stop - start);
+    std::string FilePath = "/Users/chris/Desktop/cM_planck18.txt";
 
-    cout << "Time taken by function: "  << duration.count() << " microseconds" << endl;
+    std::vector<int> * IndexesToGrab = new std::vector<int>(0);
+    IndexesToGrab->push_back(0); // z
+    IndexesToGrab->push_back(2); // M200c
+    IndexesToGrab->push_back(4); // c200c
 
+    std::vector<std::vector<float>> * Extracted;
 
+    Extracted = ReadFile(FilePath, IndexesToGrab);
+
+    printf("File Read\n");
+
+    std::vector<float> * Redshift = &Extracted->at(0);
+    std::vector<float> * M200c = &Extracted->at(1);
+    std::vector<float> * c200c = &Extracted->at(2);
+
+    std::vector<float> * reduced = new std::vector<float>;
+    float closest_z = FindClosest(z,  Reduce(Redshift, reduced));
+    std::vector<bool> * mask = new std::vector<bool>;
+    Equals(Redshift, closest_z, mask);
+    
+    MaskOut(Redshift, mask);
+    MaskOut(M200c, mask);
+    MaskOut(c200c, mask);
+
+    float logc = LinearInterp(M200c, c200c, mass);
+
+    std::cout << logc << std::endl; 
+    
     return 0;
 
 

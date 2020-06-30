@@ -8,9 +8,13 @@
 #include <boost/math/special_functions/gamma.hpp>
 #include <functional>
 #include "integration.h"
+#include <random>
+
 
 #define PI 3.14159265
 #define GR 4.3009125e-6 // In units of kpc M_sun^-1 (km/s)^2
+#define h 0.69
+#define Om 0.3
 #define zero_perturbation 0.00000001
 #define precision 3
 
@@ -60,9 +64,17 @@ class Galaxy
 		// The velocity dispersion within the aperture
 		float sigma_ap(void);
 
+		// The Halo concentration
+		void GetHaloC(bool scatter);
+
+		// The Halo Radius
+		void GetHaloR(void);
+
 	private:
 		// Stellar Mass of the galaxy [log10 M_sun]
 		float stellar_mass;
+		// Redshift of the galaxy
+		float redshift;
 		// Beta (anisotropy parameter) [dimensionless]
 		float beta;
 		// Half Light Radius [kpc]
@@ -78,14 +90,18 @@ class Galaxy
 
 		// R, value to be used as part of the integral
 		float R;
-
 		// Switch if dark matter is on or not.
 		bool dark_matter_on;
 		// Dark Matter Profile Name
 		string profile_name;
+		// Halo Mass;
+		float HaloMass; // Log10
 		// Dark Matter Concentration parameter
 		float concentration;
-		
+		// Halo Radius
+		float HaloRadius; // Kpc
+
+
 		// b_n - parameter required for the density profile
 		float b_n;
 		// sigma_e - parameter required for mass density profile

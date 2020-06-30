@@ -38,7 +38,7 @@ extern "C"
             res[i] = GetVelocityDispersion(Aperture[i], Beta[i], HalfLightRadius[i], SersicIndex[i], StellarMass[i]);
 
 	    // Timer
-	    if(false)
+	    if(true)
 	    {
             	#pragma omp atomic
                 progress++;

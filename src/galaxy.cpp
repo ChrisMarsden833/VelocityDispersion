@@ -14,26 +14,37 @@ Galaxy::Galaxy(float input_stellar_mass,
 	
 	dark_matter_on = false;
 
+//	std::cout << "#############################" << std::endl;
+//	std::cout << "SM " << input_stellar_mass << std::endl;
+//	std::cout << "beta " << input_beta << std::endl;
+//	std::cout << "hlr " << input_half_light_radius << std::endl;
+//	std::cout << "ap " << input_aperture_size << std::endl;
+//	std::cout << "n " << input_sersic_index << std::endl;
+
 	// Effective constants for divide by zero errors
 	sersic_index_eff = sersic_index;
 	if(sersic_index == 0.) sersic_index_eff = zero_perturbation;
 	half_light_radius_eff = half_light_radius;
 	if(half_light_radius == 0.) half_light_radius_eff = zero_perturbation;
 	
-	// Set the value of b_n 	
+	// Set the value of b_n.	
 	b_n = 2.*sersic_index_eff - (1./3.) + (.009876/sersic_index_eff); 
 
-	// find the gamma function used immedately in sigma_e
-	float gamma = boost::math::tgamma_lower(2*sersic_index, b_n);
+	// find the gamma function used immedately in sigma_e. This is used by my defn of sigma_e.
+	// not sure this is required?
+	//float gamma = boost::math::tgamma_lower(2*sersic_index, b_n);
+
 	// Sigma_e, the constant for the sersic profile.
-	sigma_e = pow(10, stellar_mass)/( pow(half_light_radius, 2) * PI * 2.* 2.*sersic_index*exp(b_n)*gamma/pow(b_n, 2.*sersic_index));
-	// p_n 
+	sigma_e = pow(10, stellar_mass)/( pow(half_light_radius, 2) * PI * 2.);
+	//* 2.*sersic_index*exp(b_n)*gamma/pow(b_n, 2.*sersic_index)); 
+	// I'm not sure if this is correct. Literature makes this out to be just sm/(pi * re^2)
+
+	// p_n - eqn (5)
 	p_n = 1. - .6097/sersic_index_eff  + .00563/(sersic_index_eff*sersic_index_eff);
 
-	// Rho0
+	// Rho0 - eqn (4)
 	float Sigma0 = this->MassDensity(0.);
 	float left = Sigma0 *  pow(b_n, (sersic_index * (1. - p_n))) / (2.*half_light_radius_eff);
-
 	float right = (boost::math::tgamma(2*sersic_index)/boost::math::tgamma(sersic_index*(3. - p_n)));
 	rho0 = left * right;
 
@@ -85,7 +96,7 @@ float Galaxy::rho(float r)
 	    // TODO Call dark matter function
     }
    
-    return rho0 * power_term * exp_term + dark_matter_term; // + NFW_profile(r, dm_rs, dm_c, omega_m, H);
+    return rho0 * power_term * exp_term + dark_matter_term;
 }
 
 float Galaxy::mass_shell(float R)
@@ -189,6 +200,68 @@ float Galaxy::sigma_ap(void)
 	return pow(numerator/denominator, 0.5);	
 }
 
+void Galaxy::GetHaloC(bool scatter)
+{
+    // read-off c-Mh from Benedikt's files (taken from http://www.benediktdiemer.com/data/)
+    std::string FilePath = "/Users/chris/Desktop/cM_planck18.txt";
+
+    std::vector<int> * IndexesToGrab = new std::vector<int>(0);
+    IndexesToGrab->push_back(0); // z
+    IndexesToGrab->push_back(2); // M200c
+    IndexesToGrab->push_back(4); // c200c
+
+    std::vector<std::vector<float>> * Extracted;
+    Extracted = ReadFile(FilePath, IndexesToGrab);
+
+    std::vector<float> * Redshift = &Extracted->at(0);
+    std::vector<float> * M200c = &Extracted->at(1);
+    std::vector<float> * c200c = &Extracted->at(2);
+
+    std::vector<float> * reduced = new std::vector<float>;
+    float closest_z = FindClosest(redshift,  Reduce(Redshift, reduced));
+    std::vector<bool> * mask = new std::vector<bool>;
+    Equals(Redshift, closest_z, mask);
+
+    MaskOut(Redshift, mask);
+    MaskOut(M200c, mask);
+    MaskOut(c200c, mask);
+
+    // Find the concentration by linearly interpolating the data.
+    float logC = LinearInterp(M200c, c200c, pow(10., HaloMass + log10(h)));
+
+    float scatter_magnitude = 0.;
+
+    if(scatter)
+    {
+	std::default_random_engine generator;
+	std::normal_distribution<float> distribution(0., 1.0);
+	scatter_magnitude = distribution(generator) * 0.16;
+    }
+    concentration = pow(10., logC + scatter_magnitude);
+
+    // Prevent Memory Leaks
+    free(IndexesToGrab);
+    free(Extracted);
+    free(Redshift);
+    free(M200c);
+    free(c200c);
+    free(mask);
+
+}
+
+void Galaxy::GetHaloR(void)
+{
+    float OmegaL = 1. - Om;
+    float Omegaz = Om*pow((1.+redshift), 3.)/(Om*pow((1.+redshift), 3.) + OmegaL);
+    float d = Omegaz-1.;
+    float Deltac = 18.*pow(PI, 2.) + 82.*d - 39.*d*d;
+    float H0 = 100.*h; //km/s/Mpc
+    float HH = H0*pow(Om*pow((1.+redshift), 3.)+(1.-Om), 0.5);
+    float rhoc =3.*HH*HH/(8.*PI*GR);
+    float k = 4.*PI/3.;
+    HaloRadius = pow((pow(10., HaloMass)/rhoc/k/200.), (1./3.))*1000.; // kpc
+}
+
 float GetVelocityDispersion(float input_aperture_size,
                             float input_beta,
                             float input_half_light_radius,
@@ -197,7 +270,9 @@ float GetVelocityDispersion(float input_aperture_size,
 {
 	
     Galaxy aGalaxy(input_stellar_mass, input_beta, input_half_light_radius, input_aperture_size, input_sersic_index);
-    return 12.0; //aGalaxy.sigma_ap();
+    float res =  aGalaxy.sigma_ap();
+//    std::cout << "Sigma " << res << std::endl;
+    return res;
 }
 
 

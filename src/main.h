@@ -5,7 +5,7 @@
 #include "integration.h"
 #include "utillity.h"
 #include "desmond.h"
-#include "Galaxy.h"
+#include "galaxy.h"
 #include <chrono>
 #include <boost/math/special_functions/gamma.hpp>
 #include <boost/math/special_functions/beta.hpp>

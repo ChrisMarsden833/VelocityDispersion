@@ -10,7 +10,7 @@ import time
 cosmo = cosmology.setCosmology('planck18')
 omega_m = cosmo.Om0
 H = cosmo.H0
-ibc = ctypes.CDLL("../../lib/libsigma.so")
+ibc = ctypes.CDLL("/Users/chris/Documents/PhD/ProjectSigma/VelocityDispersion/lib/libsigma.so")
 
 def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex, StellarMass):
     """I am a docstring"""
@@ -28,6 +28,11 @@ def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex, Ste
         length = len(StellarMass)
 
     print("Reserving Memory")
+
+    assert np.sum(ApertureSize <= 0) == 0, "ApertudeSize has elements < 0, {}".format(ApertureSize[ApertureSize <= 0])
+    assert np.sum(HalfLightRadius <= 0) == 0, "HalfLightRadius has elements < 0, {}".format(HalfLightRadius[HalfLightRadius <= 0])
+    assert np.sum(SersicIndex <= 0) == 0, "Sersic Index has elements < 0 {}".format(SersicIndex[SersicIndex <=0])
+
 
     c_float_p = ctypes.POINTER(ctypes.c_float)
 

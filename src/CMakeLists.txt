@@ -19,8 +19,8 @@ set ( VelocityDispersion_SOURCES
         utillity.h
         dark_matter.cpp
         dark_matter.h
-	Galaxy.h
-	Galaxy.cpp)
+	galaxy.h
+	galaxy.cpp)
 
 set ( Executable_Name DirectExecution )
 
