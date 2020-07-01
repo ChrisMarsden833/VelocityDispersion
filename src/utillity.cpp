@@ -277,7 +277,7 @@ float FindClosest(float value, std::vector<float> * data)
 	    }
 	}
     }
-    free(data);
+    delete data;
     return closest_value;
 }
 

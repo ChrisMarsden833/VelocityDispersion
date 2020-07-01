@@ -9,7 +9,7 @@
 #include <functional>
 #include "integration.h"
 #include <random>
-
+#include "omp.h"
 
 #define PI 3.14159265
 #define GR 4.3009125e-6 // In units of kpc M_sun^-1 (km/s)^2
@@ -29,7 +29,8 @@ class Galaxy
 		       float input_beta,
 		       float input_half_light_radius,
 		       float input_aperture_size,
-		       float input_sersic_index);
+		       float input_sersic_index,
+		       float z);
 
 		void init_dark_matter(string input_profile_name,
 				      float input_concentration);
@@ -64,11 +65,17 @@ class Galaxy
 		// The velocity dispersion within the aperture
 		float sigma_ap(void);
 
+		// Set up Dark Matter in the galaxy.  
+		void setDarkMatter(float InputHaloMass, std::string name);
+
 		// The Halo concentration
 		void GetHaloC(bool scatter);
 
 		// The Halo Radius
 		void GetHaloR(void);
+
+		// Get Halo profile
+		float HaloDensity(float r);
 
 	private:
 		// Stellar Mass of the galaxy [log10 M_sun]
@@ -118,6 +125,19 @@ float GetVelocityDispersion(float input_aperture_size,
 			    float input_beta,
 			    float input_half_light_radius,
 		   	    float input_sersic_index,
-			    float input_stellar_mass);
+			    float input_stellar_mass,
+			    float z);
+
+float GetVelocityDispersion(float input_aperture_size,
+			    float input_beta,
+			    float input_half_light_radius,
+		   	    float input_sersic_index,
+			    float input_stellar_mass,
+			    float z,
+			    float halo_mass,
+			    char * profile_name);
+
+
+
 
 #endif

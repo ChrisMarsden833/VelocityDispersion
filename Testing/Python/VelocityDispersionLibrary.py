@@ -12,7 +12,8 @@ omega_m = cosmo.Om0
 H = cosmo.H0
 ibc = ctypes.CDLL("/Users/chris/Documents/PhD/ProjectSigma/VelocityDispersion/lib/libsigma.so")
 
-def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex, StellarMass):
+def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex,
+        StellarMass, z, DM = None, HaloMass = None ):
     """I am a docstring"""
     # Test that the supplied lengths are consistent
     variables = [ApertureSize, Beta, HalfLightRadius, SersicIndex, StellarMass]
@@ -38,23 +39,28 @@ def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex, Ste
 
     ApertureSize = ApertureSize.astype(np.float32)
     c_aperture = ApertureSize.ctypes.data_as(c_float_p)
-    ApertureSize = None
 
     Beta = Beta.astype(np.float32)
     c_beta = Beta.ctypes.data_as(c_float_p)
-    Beta = None
 
     HalfLightRadius = HalfLightRadius.astype(np.float32)
     c_hlr = HalfLightRadius.ctypes.data_as(c_float_p)
-    HalfLightRadius = None
 
     SersicIndex = SersicIndex.astype(np.float32)
     c_n = SersicIndex.ctypes.data_as(c_float_p)
-    SersicIndex = None
 
     StellarMass = StellarMass.astype(np.float32)
     c_sm = StellarMass.ctypes.data_as(c_float_p)
-    StellarMass = None
+
+    if DM is None:
+        assert HaloMass is None, "Halo mass should not be specified if DM is None"
+        HaloMass = np.zeros_like(StellarMass)
+        DM = "None"
+        c_DM = DM.encode('utf-8')
+
+    HaloMass = HaloMass.astype(np.float32)
+    c_hm = HaloMass.ctypes.data_as(c_float_p)
+
 
     #HaloRs = HaloRs.astype(np.float32)
     #c_rs = HaloRs.ctypes.data_as(c_float_p)
@@ -63,6 +69,8 @@ def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex, Ste
     #HaloC = HaloC.astype(np.float32)
     #c_hc = HaloC.ctypes.data_as(c_float_p)
     #HaloC = None
+
+    c_z = float(z)
 
     #c_om = float(OmegaM)
     #c_H = float(H)
@@ -76,7 +84,10 @@ def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex, Ste
                                ctypes.POINTER(ctypes.c_float),
                                ctypes.POINTER(ctypes.c_float),
                                ctypes.POINTER(ctypes.c_float),
-                               ctypes.c_int32 ]
+                               ctypes.POINTER(ctypes.c_float),
+                               ctypes.c_float,
+                               ctypes.c_int32,
+                               ctypes.c_char_p]
 
                                #ctypes.POINTER(ctypes.c_float)]
                                #ctypes.POINTER(ctypes.c_float),
@@ -88,7 +99,7 @@ def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex, Ste
 
     print("Arrays defined, entering c section")
 
-    res = ibc.ParallelSigma(c_aperture, c_beta, c_hlr, c_n, c_sm, c_size)
+    res = ibc.ParallelSigma(c_aperture, c_beta, c_hlr, c_n, c_sm, c_hm, c_z, c_size, c_DM)
 
     b = np.ctypeslib.as_array(
     (ctypes.c_float * length).from_address(ctypes.addressof(res.contents)))
@@ -104,13 +115,13 @@ if __name__ == "__main__":
     Beta = np.random.normal(0.15, 0.12, size=length)
     HLR = np.ones(length) * 10**0.9
     n = np.ones(length) * 3
-    SM = np.ones(length) * 10**11.3
+    SM = np.ones(length) * 11.3
     DMr = HLR * 20
     DMc = np.ones(length) * 1.3
 
     t1_start = time.time()
 
-    FullVelocityDispersion(Aperture, Beta, HLR, n, SM)
+    FullVelocityDispersion(Aperture, Beta, HLR, n, SM, 0.0)
 
     t1_stop = time.time()
 

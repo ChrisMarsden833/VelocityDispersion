@@ -4,39 +4,21 @@
 int main()
 {
 
-    float z = 0.149;
-    float mass = 3.15e+08;
+    std::cout << "Starting" << std::endl;
 
-    
-    std::string FilePath = "/Users/chris/Desktop/cM_planck18.txt";
+    float ap_size(10.0);
+    float beta(0.15);
+    float hlr = ap_size;
+    float n = 4.;
+    float sm = 10.;
+    float z = 0.0;
+    float hm = 13.;
+    char * name = (char *)"NFW";
 
-    std::vector<int> * IndexesToGrab = new std::vector<int>(0);
-    IndexesToGrab->push_back(0); // z
-    IndexesToGrab->push_back(2); // M200c
-    IndexesToGrab->push_back(4); // c200c
+    float sigma = GetVelocityDispersion(ap_size, beta, hlr, n, sm, z, hm, name);
 
-    std::vector<std::vector<float>> * Extracted;
+    std::cout << "Sigma: " << sigma << std::endl;
 
-    Extracted = ReadFile(FilePath, IndexesToGrab);
-
-    printf("File Read\n");
-
-    std::vector<float> * Redshift = &Extracted->at(0);
-    std::vector<float> * M200c = &Extracted->at(1);
-    std::vector<float> * c200c = &Extracted->at(2);
-
-    std::vector<float> * reduced = new std::vector<float>;
-    float closest_z = FindClosest(z,  Reduce(Redshift, reduced));
-    std::vector<bool> * mask = new std::vector<bool>;
-    Equals(Redshift, closest_z, mask);
-    
-    MaskOut(Redshift, mask);
-    MaskOut(M200c, mask);
-    MaskOut(c200c, mask);
-
-    float logc = LinearInterp(M200c, c200c, mass);
-
-    std::cout << logc << std::endl; 
     
     return 0;
 

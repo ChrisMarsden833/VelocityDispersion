@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
+SET(CMAKE_BUILD_TYPE Debug)
+
 include_directories(${VelocityDispersion_SOURCE_DIR}/src)
 link_directories(${VelocityDispersion_BINARY_DIR}/src)
 
