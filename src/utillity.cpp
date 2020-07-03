@@ -77,9 +77,13 @@ std::vector<std::vector<float>> * ReadFile(std::string path, std::vector<int> * 
     fp = fopen(path.c_str(), "r");
     if(fp == NULL)
     {
-	    std::cout << "Error, file could not be found/opened" << std::endl;
+	    #pragma omp critical
+	    {
+		    std::cout << "Error, file could not be found/opened" << std::endl;
+		    std::cout << "    Path:" << path << std::endl;
+		    exit(1);
+	    }
     }
-    // TODO throw error if file cannot be opened
     // Calculate size of file
     fseek(fp, 0, SEEK_END);
     int fileSize = ftell(fp);

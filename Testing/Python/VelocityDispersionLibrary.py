@@ -13,7 +13,7 @@ H = cosmo.H0
 ibc = ctypes.CDLL("/Users/chris/Documents/PhD/ProjectSigma/VelocityDispersion/lib/libsigma.so")
 
 def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex,
-        StellarMass, z, DM = None, HaloMass = None ):
+        StellarMass, z, DM = None, HaloMass = None, cpath = "../data/cM_planck18.txt" ):
     """I am a docstring"""
     # Test that the supplied lengths are consistent
     variables = [ApertureSize, Beta, HalfLightRadius, SersicIndex, StellarMass]
@@ -27,8 +27,6 @@ def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex,
                 variable_names[i], len(element))
         previous_length = len(element)
         length = len(StellarMass)
-
-    print("Reserving Memory")
 
     assert np.sum(ApertureSize <= 0) == 0, "ApertudeSize has elements < 0, {}".format(ApertureSize[ApertureSize <= 0])
     assert np.sum(HalfLightRadius <= 0) == 0, "HalfLightRadius has elements < 0, {}".format(HalfLightRadius[HalfLightRadius <= 0])
@@ -52,14 +50,22 @@ def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex,
     StellarMass = StellarMass.astype(np.float32)
     c_sm = StellarMass.ctypes.data_as(c_float_p)
 
+    if not hasattr(z, "__len__"):
+        z = np.ones_like(StellarMass) * z
+
     if DM is None:
         assert HaloMass is None, "Halo mass should not be specified if DM is None"
         HaloMass = np.zeros_like(StellarMass)
         DM = "None"
-        c_DM = DM.encode('utf-8')
+
+    c_DM = DM.encode('utf-8')
+    c_cpath = cpath.encode('utf-8')
 
     HaloMass = HaloMass.astype(np.float32)
     c_hm = HaloMass.ctypes.data_as(c_float_p)
+
+    z = z.astype(np.float32)
+    c_z = z.ctypes.data_as(c_float_p)
 
 
     #HaloRs = HaloRs.astype(np.float32)
@@ -70,14 +76,9 @@ def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex,
     #c_hc = HaloC.ctypes.data_as(c_float_p)
     #HaloC = None
 
-    c_z = float(z)
-
     #c_om = float(OmegaM)
     #c_H = float(H)
     c_size = int(length)
-    print("Arrays of length: {}".format(length))
-
-    print("Reserving restypes")
 
     ibc.ParallelSigma.argtypes = [ ctypes.POINTER(ctypes.c_float),
                                ctypes.POINTER(ctypes.c_float),
@@ -85,8 +86,9 @@ def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex,
                                ctypes.POINTER(ctypes.c_float),
                                ctypes.POINTER(ctypes.c_float),
                                ctypes.POINTER(ctypes.c_float),
-                               ctypes.c_float,
+                               ctypes.POINTER(ctypes.c_float),
                                ctypes.c_int32,
+                               ctypes.c_char_p,
                                ctypes.c_char_p]
 
                                #ctypes.POINTER(ctypes.c_float)]
@@ -97,9 +99,8 @@ def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex,
 
     ibc.ParallelSigma.restype = ctypes.POINTER(ctypes.c_float)
 
-    print("Arrays defined, entering c section")
-
-    res = ibc.ParallelSigma(c_aperture, c_beta, c_hlr, c_n, c_sm, c_hm, c_z, c_size, c_DM)
+    res = ibc.ParallelSigma(c_aperture, c_beta, c_hlr, c_n, c_sm, c_hm, c_z,
+            c_size, c_DM, c_cpath)
 
     b = np.ctypeslib.as_array(
     (ctypes.c_float * length).from_address(ctypes.addressof(res.contents)))

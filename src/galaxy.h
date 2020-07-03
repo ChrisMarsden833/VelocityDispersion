@@ -17,6 +17,9 @@
 #define Om 0.3
 #define zero_perturbation 0.00000001
 #define precision 3
+#define cum_mass_precision_modifier 2
+#define sigma_los_precision_modifier 1
+#define initial_subdiv 10
 
 
 using namespace std;
@@ -77,6 +80,9 @@ class Galaxy
 		// Get Halo profile
 		float HaloDensity(float r);
 
+		// Set path to halo/concentration file
+		void setConc_Path(std::string input_path);
+
 	private:
 		// Stellar Mass of the galaxy [log10 M_sun]
 		float stellar_mass;
@@ -107,7 +113,8 @@ class Galaxy
 		float concentration;
 		// Halo Radius
 		float HaloRadius; // Kpc
-
+		// Path to concentration/mass relation file
+		std::string Conc_Path = "../data/cM_planck18.txt";
 
 		// b_n - parameter required for the density profile
 		float b_n;
@@ -135,7 +142,8 @@ float GetVelocityDispersion(float input_aperture_size,
 			    float input_stellar_mass,
 			    float z,
 			    float halo_mass,
-			    char * profile_name);
+			    char * profile_name,
+			    char * c_path = (char*)"../data/cM_planck18.txt");
 
 
 

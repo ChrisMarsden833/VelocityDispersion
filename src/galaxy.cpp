@@ -22,10 +22,8 @@ Galaxy::Galaxy(float input_stellar_mass,
 		{
 			std::cout << "Error, stellar mass is unexpectedly high (" << stellar_mass << ") - are the units log10[M_sun]?" << std::endl;
 			exit(1);
-		}
-	
+		}	
 	}
-
 
 	// Effective constants for divide by zero errors
 	sersic_index_eff = sersic_index;
@@ -38,10 +36,11 @@ Galaxy::Galaxy(float input_stellar_mass,
 
 	// find the gamma function used immedately in sigma_e. This is used by my defn of sigma_e.
 	// not sure this is required?
-	//float gamma = boost::math::tgamma_lower(2*sersic_index, b_n);
+	float gamma = boost::math::tgamma_lower(2*sersic_index, b_n);
 
 	// Sigma_e, the constant for the sersic profile.
-	sigma_e = pow(10, stellar_mass)/( pow(half_light_radius_eff, 2) * PI * 2.);
+	sigma_e = pow(10, stellar_mass)/( pow(half_light_radius_eff, 2) * PI * 2 * 2. * sersic_index * exp(b_n) * gamma / pow(b_n, 2*sersic_index) );
+
 	if(isnan(sigma_e) || isinf(sigma_e))
 	{
 		#pragma omp critical
@@ -183,7 +182,9 @@ float Galaxy::cumulative_mass(float R_arg)
 
 	auto fp = bind(&Galaxy::mass_shell, this, _1);
 
-	float res = AdaptiveRichardsonExtrapolate(fp, 0., R_arg, accuracy);
+    float mass_accuracy = SimpsonsRule(fp, 0., R_arg, initial_subdiv)/pow(10., precision + cum_mass_precision_modifier);
+
+	float res = AdaptiveRichardsonExtrapolate(fp, 0., R_arg, mass_accuracy);
 
     if(isnan(res))
     {
@@ -245,7 +246,9 @@ float Galaxy::sigma_los(float R_arg)
 
 	auto fp = bind(&Galaxy::sigma_integrand, this, _1);
 
-	float numerator = 2. * GR *  AdaptiveRichardsonExtrapolate(fp, R_arg, upper_limit, accuracy); 
+    float los_accuracy = SimpsonsRule(fp, R_arg, upper_limit, initial_subdiv)/pow(10., precision + sigma_los_precision_modifier);
+
+	float numerator = 2. * GR *  AdaptiveRichardsonExtrapolate(fp, R_arg, upper_limit, los_accuracy);
 	float denominator = this->MassDensity(R_arg);
 
 	float value = pow(numerator/denominator, 0.5);
@@ -269,10 +272,12 @@ float Galaxy::sigma_ap(void)
 
 	float accuracy = pow(10, 15-precision);
 
-  	float numerator = AdaptiveRichardsonExtrapolate(numfp, 0., aperture_size, accuracy);
+    float num_accuracy = SimpsonsRule(numfp, 0., aperture_size, initial_subdiv)/pow(10., precision);
+  	float numerator = AdaptiveRichardsonExtrapolate(numfp, 0., aperture_size, num_accuracy);
 
 	auto denfp = bind(&Galaxy::MassDensityr, this, _1);
 
+	float den_accuracy = SimpsonsRule(denfp, 0., aperture_size, initial_subdiv)/pow(10., precision);
 	float denominator = AdaptiveRichardsonExtrapolate(denfp, 0., aperture_size, accuracy);
 	
 
@@ -282,7 +287,6 @@ float Galaxy::sigma_ap(void)
 void Galaxy::GetHaloC(bool scatter)
 {
     // read-off c-Mh from Benedikt's files (taken from http://www.benediktdiemer.com/data/)
-    std::string FilePath = "../data/cM_planck18.txt";
 
     std::vector<int> * IndexesToGrab = new std::vector<int>(0);
     IndexesToGrab->push_back(0); // z
@@ -290,7 +294,7 @@ void Galaxy::GetHaloC(bool scatter)
     IndexesToGrab->push_back(4); // c200c
 
     std::vector<std::vector<float>> * Extracted;
-    Extracted = ReadFile(FilePath, IndexesToGrab);
+    Extracted = ReadFile(Conc_Path, IndexesToGrab);
 
     std::vector<float> * Redshift = &Extracted->at(0);
     std::vector<float> * M200c = &Extracted->at(1);
@@ -345,6 +349,8 @@ void Galaxy::GetHaloR(void)
 
 float Galaxy::HaloDensity(float r)
 {
+    float res;
+
     if(r == 0)
     {
         r = zero_perturbation;
@@ -353,31 +359,73 @@ float Galaxy::HaloDensity(float r)
     if (profile_name == "NFW")
     {
         float log10r = log10(r);
-        if(isnan(log10r) || isinf(log10r))
-        {
-            std::cout << "Halo Density(r), Log10(r) = " << log10r << " when r = " << r << std::endl;
-            exit(1);
-        }
-
         float rs = HaloRadius/concentration;
 	    float fc = log(1.+concentration)-concentration/(1.+concentration);
   	    float logrhos = HaloMass-log10(4.*PI*rs*rs*rs*fc);
-	    float logrho = logrhos-log10(pow(10., log10(r))/rs) - 2.*log10(1. + pow(10., log10(r))/rs);
-	    float res = pow(10., logrho);
-
-	    if(isnan(res) || isinf(res) )
-	    {
-	        std::cout << "HaloDensity(r) will return " << res << " when r = " << r << " log10(r) = " << log10r << std::endl;
-	        exit(1);
-	    }
-
-	    return res;
+	    float logrho = logrhos-log10(r/rs) - 2.*log10(1. + r/rs);
+	    res = pow(10., logrho);
+    }
+    else if (profile_name == "DenhenMcLaughlin")
+    {
+        float log10r = log10(r);
+        float rs = HaloRadius/concentration;
+        float fc = log(1.+concentration)-concentration/(1.+concentration);
+        float logrhos = HaloMass-log10(4.*PI*rs*rs*rs*fc);
+        std::cout << "p0 " << logrhos << std::endl;
+        float logrho = log10(2.) + 6.*logrhos - (7./9.)*log10(r/rs) - 6.*log10(1. + pow(r/rs, 4./9.));
+        std::cout << "Lohrho" << logrho << std::endl;
+        exit(1);
+        res = pow(10., logrho);
+    }
+    else if(profile_name == "Burkert")
+    {
+        // following Cattaneo et al. 2014, I use the same exact rho0 and rs as NFW but different shape:
+        float fc = (log(1.+concentration)-concentration/(1.+concentration));
+        float rs = HaloRadius/concentration;
+        float R0 = log10(rs);
+        float xx = r/rs;
+        float rho0 = HaloMass - log10(4.*PI*pow(rs, 3.)*fc);
+        float logrho = rho0 - log10(1.+xx) - log10(1.+xx*xx);
+        res = pow(10., logrho);
+    }
+    else if(profile_name == "Exponential")
+    {
+        float xr=r/HaloRadius;
+        float logsig0 = HaloMass - log10(2.*PI) - 2.*log10(HaloRadius);
+        float expo = exp(-xr);
+        float logrho = logsig0 + log10(expo);
+        res = pow(10., logrho);
+        //std::cout << "Res: " << res << std::endl;
+    }
+    else if(profile_name == "Hernquist")
+    {
+        float a= HaloRadius/(1.+sqrt(2.));
+        float logrho = HaloMass + log10(a)-log10(2.*PI)-log10(r)-3.*log10(HaloRadius+a);
+        res = pow(10., logrho);
+    }
+    else if(profile_name == "CoredNFW")
+    {
+        float rs = HaloRadius/concentration;
+        float rcore = pow(10., 1.14); //kpc from Newman et al. 2013 paperII
+        float b = rs/rcore;
+        float fc = log(1. + concentration)-concentration/(1.+concentration);
+        float logrhos = HaloMass-log10(4.*PI*pow(rs, 3.)*fc);
+        float logrho = log10(b)+logrhos-log10(1.+b*HaloRadius/rs)-2.*log10(1.+HaloRadius/rs);
+        res = pow(10.,logrho);
     }
     else
     {
 	    std::cout << "HaloDensity() did not recognise profile name: " << profile_name << std::endl;
 	    exit(1);
     }
+
+    if(isnan(res) || isinf(res) )
+    {
+        std::cout << "HaloDensity(r) will return " << res << " when r = " << r << ". Profile = " << profile_name << std::endl;
+        exit(1);
+    }
+
+    return res;
 
 }
 
@@ -388,8 +436,11 @@ void Galaxy::setDarkMatter(float InputHaloMass, std::string name)
 	profile_name = name;
 	GetHaloC(false);
 	GetHaloR();
-	std::cout << "Halo C = " << concentration << std::endl;
-	std::cout << "Halo R = " << HaloRadius << std::endl;
+}
+
+void Galaxy::setConc_Path(std::string input_path)
+{
+    Conc_Path = input_path;
 }
 
 
@@ -413,10 +464,15 @@ float GetVelocityDispersion(float input_aperture_size,
                             float input_stellar_mass,
                             float z,
                             float halo_mass,
-                            char * profile_name)
+                            char * profile_name,
+                            char * c_path)
 {
 	Galaxy aGalaxy(input_stellar_mass, input_beta, input_half_light_radius, input_aperture_size, input_sersic_index, z);
-	std::string name(profile_name);
+
+	std::string path(c_path);
+    aGalaxy.setConc_Path(path);
+
+    std::string name(profile_name);
 	aGalaxy.setDarkMatter(halo_mass, name);
 
 	return aGalaxy.sigma_ap();

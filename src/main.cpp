@@ -14,6 +14,7 @@ int main()
     float z = 0.0;
     float hm = 13.;
     char * name = (char *)"NFW";
+    
 
     float sigma = GetVelocityDispersion(ap_size, beta, hlr, n, sm, z, hm, name);
 

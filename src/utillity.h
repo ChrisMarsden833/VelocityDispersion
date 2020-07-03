@@ -8,6 +8,7 @@
 #include "vector"
 #include <boost/math/special_functions/beta.hpp>
 #include <boost/math/special_functions/factorials.hpp>
+#include "omp.h"
 
 #define PI 3.14159265
 #define EU 2.71828182

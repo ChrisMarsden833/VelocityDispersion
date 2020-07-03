@@ -13,16 +13,19 @@ extern "C"
                        float * SersicIndex,
                        float * StellarMass,
                        float * HaloMass,
-                       float z,
+                       float * z,
                        int size,
-                       char * DM)
+                       char * DM,
+                       char * c_path)
     {
-	printf("Commencing parallelization of %i elements\n", size);
+        printf("\n\n######################################## \n");
+	    printf("Chris Marsden's Velocity dispersion code \n");
+	    printf("Calculating for %i galaxies\n", size);
 
-	float * res = (float *) std::malloc(sizeof(float) * size);
+	    float * res = (float *) std::malloc(sizeof(float) * size);
 
         int progress = 0;
-        #pragma omp parallel for default(none) shared(size, res, Aperture, Beta, HalfLightRadius, SersicIndex, StellarMass, progress, z, HaloMass, DM, stdout)
+        #pragma omp parallel for default(none) shared(size, res, Aperture, Beta, HalfLightRadius, SersicIndex, StellarMass, progress, z, HaloMass, DM, c_path, stdout)
         for (int i = 0; i < size; i++)
         {
             int thread = omp_get_thread_num();
@@ -35,26 +38,24 @@ extern "C"
             }
             if(strcmp(DM, "None") == 0)
             {
-                res[i] = GetVelocityDispersion(Aperture[i], Beta[i], HalfLightRadius[i], SersicIndex[i], StellarMass[i], z);
+                res[i] = GetVelocityDispersion(Aperture[i], Beta[i], HalfLightRadius[i], SersicIndex[i], StellarMass[i], z[i]);
             }
             else
             {
-                res[i] = GetVelocityDispersion(Aperture[i], Beta[i], HalfLightRadius[i], SersicIndex[i], StellarMass[i], z, HaloMass[i], DM);
+                res[i] = GetVelocityDispersion(Aperture[i], Beta[i], HalfLightRadius[i], SersicIndex[i], StellarMass[i], z[i], HaloMass[i], DM, c_path);
             }
-
 
 
 	    // Timer
-	    if(true)
-	    {
-            	#pragma omp atomic
-                progress++;
-            	if(omp_get_thread_num() == 0)
-            	{
-                	printf("\r%2.4f %%", 100.*float(progress)/float(size));
-                	fflush( stdout );
-            	}
-            }
+
+        #pragma omp critical
+        {
+            progress++;
+            printf("\r %i of %i calculated | %2.4f%%", progress, size, 100. * float(progress) / float(size));
+            fflush(stdout);
+        };
+
+
 	}
         return res;
     }

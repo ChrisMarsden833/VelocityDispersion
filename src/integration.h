@@ -10,6 +10,8 @@
 #include "vector"
 #include "utillity.h"
 
+#define max_subdivisions 1000
+
 // General info
 /**
  * This file/library uses Richardson extrapolation, with methodology based on Dr Ian Hawke's numerical methods lecture
