@@ -10,17 +10,17 @@
 #include "integration.h"
 #include <random>
 #include "omp.h"
+#include <cassert>
 
 #define PI 3.14159265
 #define GR 4.3009125e-6 // In units of kpc M_sun^-1 (km/s)^2
 #define h 0.69
 #define Om 0.3
-#define zero_perturbation 0.00000001
-#define precision 3
+#define zero_perturbation 0.00001
+#define precision 4
 #define cum_mass_precision_modifier 2
 #define sigma_los_precision_modifier 1
 #define initial_subdiv 10
-
 
 using namespace std;
 using namespace std::placeholders;
@@ -101,6 +101,9 @@ class Galaxy
 		// Effective Sersic Index perturbed to prevent /0 errors 
 		float sersic_index_eff;
 
+		// Term involving gamma functions, it's best to only calculate once
+        float gamma_term = 0.0;
+
 		// R, value to be used as part of the integral
 		float R;
 		// Switch if dark matter is on or not.
@@ -146,6 +149,23 @@ float GetVelocityDispersion(float input_aperture_size,
 			    char * c_path = (char*)"../data/cM_planck18.txt");
 
 
+float GetUnweightedVelocityDispersion(float R,
+                            float input_beta,
+                            float input_half_light_radius,
+                            float input_sersic_index,
+                            float input_stellar_mass,
+                            float z);
+
+
+float GetUnweightedVelocityDispersion(float R,
+                            float input_beta,
+                            float input_half_light_radius,
+                            float input_sersic_index,
+                            float input_stellar_mass,
+                            float z,
+                            float halo_mass,
+                            char * profile_name,
+                            char * c_path = (char*)"../data/cM_planck18.txt");
 
 
 #endif

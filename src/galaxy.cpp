@@ -8,7 +8,14 @@ Galaxy::Galaxy(float input_stellar_mass,
 	       float z)
 {
 	stellar_mass = input_stellar_mass;
-	beta = input_beta;
+
+    beta = input_beta;
+
+	if(beta == 0.0) beta = zero_perturbation;
+	if(beta == 0.5) beta += zero_perturbation;
+
+    gamma_term = (float) boost::math::tgamma(beta - 0.5) / boost::math::tgamma(beta);
+
 	half_light_radius = input_half_light_radius;
 	sersic_index = input_sersic_index;
 	aperture_size = input_aperture_size;
@@ -203,14 +210,10 @@ float Galaxy::K_Kernel_DW(float u)
     }
     float prefactor = 0.5 * pow(u, (2.* beta - 1.));
 
-    float term1 = ((3./2.) - beta) * pow(PI, 0.5) * boost::math::tgamma(beta - 0.5) / boost::math::tgamma(beta);
+    float term1 = ((3./2.) - beta) * pow(PI, 0.5) * gamma_term;
+
     float term2 = beta * incompleteBeta(beta + 0.5, 0.5, 1./(u*u));
     float term3 = -incompleteBeta(beta - 0.5, 0.5, 1./(u*u));
-
-    if(term1 + term2 + term3 < 0)
-    {
-        return 0; // This can occur for low values of beta, and the values are typically very close to zero, so this is presumably okay.
-    }
 
     float res = prefactor * (term1 + term2 + term3);
 
@@ -239,10 +242,8 @@ float Galaxy::sigma_integrand(float r)
 
 float Galaxy::sigma_los(float R_arg)
 {
-	float upper_limit = 100*R_arg;
+	float upper_limit = 1000*R_arg;
 	R = R_arg;
-
-	float accuracy = pow(10., 17 - precision);
 
 	auto fp = bind(&Galaxy::sigma_integrand, this, _1);
 
@@ -373,8 +374,8 @@ float Galaxy::HaloDensity(float r)
         float logrhos = HaloMass-log10(4.*PI*rs*rs*rs*fc);
         std::cout << "p0 " << logrhos << std::endl;
         float logrho = log10(2.) + 6.*logrhos - (7./9.)*log10(r/rs) - 6.*log10(1. + pow(r/rs, 4./9.));
-        std::cout << "Lohrho" << logrho << std::endl;
-        exit(1);
+        //std::cout << "Lohrho" << logrho << std::endl;
+        //exit(1);
         res = pow(10., logrho);
     }
     else if(profile_name == "Burkert")
@@ -478,5 +479,40 @@ float GetVelocityDispersion(float input_aperture_size,
 	return aGalaxy.sigma_ap();
 }
 
+float GetUnweightedVelocityDispersion(float R,
+                                      float input_beta,
+                                      float input_half_light_radius,
+                                      float input_sersic_index,
+                                      float input_stellar_mass,
+                                      float z)
+{
+    Galaxy aGalaxy(input_stellar_mass, input_beta, input_half_light_radius, 1.0, input_sersic_index, z);
+    float res = aGalaxy.sigma_los(R);
+    assert(!isnan(res) && "GetUnweightedVelocityDispersion() returned NaN");
+    assert(!isinf(res) && "GetUnweightedVelocityDispersion() returned inf");
+    return res;
+}
+
+float GetUnweightedVelocityDispersion(float R,
+                                     float input_beta,
+                                     float input_half_light_radius,
+                                     float input_sersic_index,
+                                     float input_stellar_mass,
+                                     float z,
+                                     float halo_mass,
+                                     char * profile_name,
+                                     char * c_path)
+{
+    Galaxy aGalaxy(input_stellar_mass, input_beta, input_half_light_radius, 1.0, input_sersic_index, z);
+    std::string path(c_path);
+    aGalaxy.setConc_Path(path);
+
+    std::string name(profile_name);
+    aGalaxy.setDarkMatter(halo_mass, name);
+    float res = aGalaxy.sigma_los(R);
+    assert(!isnan(res) && "GetUnweightedVelocityDispersion() returned NaN");
+    assert(!isinf(res) && "GetUnweightedVelocityDispersion() returned inf");
+    return res;
+}
 
 

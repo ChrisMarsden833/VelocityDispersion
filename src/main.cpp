@@ -6,19 +6,14 @@ int main()
 
     std::cout << "Starting" << std::endl;
 
-    float ap_size(10.0);
-    float beta(0.15);
-    float hlr = ap_size;
-    float n = 4.;
-    float sm = 10.;
-    float z = 0.0;
-    float hm = 13.;
-    char * name = (char *)"NFW";
-    
+    float SM = 11.086;
+    float size = 3.2;
+    float n = 3.12;
+    float beta = 0.115;
 
-    float sigma = GetVelocityDispersion(ap_size, beta, hlr, n, sm, z, hm, name);
+    float res = GetUnweightedVelocityDispersion(4.*size, beta, size, n, SM, 0.0);
 
-    std::cout << "Sigma: " << sigma << std::endl;
+    std::cout << res << std::endl;
 
     
     return 0;
