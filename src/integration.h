@@ -9,8 +9,10 @@
 #include "math.h"
 #include "vector"
 #include "utillity.h"
+#include <cassert>
+#define assert_msg(x) !(std::cerr << "Assertion failed: " << x << std::endl)
 
-#define max_subdivisions 1000
+#define max_subdivisions 10000
 
 // General info
 /**

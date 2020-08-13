@@ -7,61 +7,50 @@ Galaxy::Galaxy(float input_stellar_mass,
 	       float input_sersic_index,
 	       float z)
 {
-	stellar_mass = input_stellar_mass;
+    /* Constructor. Here we do all the things we only need to do once */
 
+    // First manage the variables into their respective member variables
+
+    stellar_mass = input_stellar_mass;
     beta = input_beta;
-
-	if(beta == 0.0) beta = zero_perturbation;
-	if(beta == 0.5) beta += zero_perturbation;
-
-    gamma_term = (float) boost::math::tgamma(beta - 0.5) / boost::math::tgamma(beta);
-
 	half_light_radius = input_half_light_radius;
 	sersic_index = input_sersic_index;
 	aperture_size = input_aperture_size;
 	redshift = z;
-	
-	dark_matter_on = false;
 
-	if(stellar_mass > 20)
-	{
-		#pragma omp critical
-		{
-			std::cout << "Error, stellar mass is unexpectedly high (" << stellar_mass << ") - are the units log10[M_sun]?" << std::endl;
-			exit(1);
-		}	
-	}
+	// Manage beta, in the cases of known sigularities (TODO - generalize this, as  I *think* they occur every 0.5n
+    if(beta == 0.0) beta = zero_perturbation;
+    if(beta == 0.5) beta += zero_perturbation;
 
-	// Effective constants for divide by zero errors
+    // Calculate the gamma term within the Kernel, as we use this a lot and it only depends on beta
+    gamma_term = (float) boost::math::tgamma(beta - 0.5) / boost::math::tgamma(beta);
+
+    // Check stellar mass is not in units of M_sun. This occurs more often than you might think...
+    assert(stellar_mass < 20 &&  "Stellar mass is unexpectedly high (>20) - are the units log10 [M_sun]?");
+
+	// Effective constants for divide by zero errors.
 	sersic_index_eff = sersic_index;
 	if(sersic_index == 0.) sersic_index_eff = zero_perturbation;
 	half_light_radius_eff = half_light_radius;
 	if(half_light_radius == 0.) half_light_radius_eff = zero_perturbation;
 	
-	// Set the value of b_n.	
+	// Set the value of b_n (equation 2)
 	b_n = 2.*sersic_index_eff - (1./3.) + (.009876/sersic_index_eff); 
 
 	// find the gamma function used immedately in sigma_e. This is used by my defn of sigma_e.
 	// not sure this is required?
 	float gamma = boost::math::tgamma_lower(2*sersic_index, b_n);
 
-	// Sigma_e, the constant for the sersic profile.
+	// Sigma_e, the constant for the sersic profile. It's debatable if this should just be M_*/(2*pi*Re^2) or this:
 	sigma_e = pow(10, stellar_mass)/( pow(half_light_radius_eff, 2) * PI * 2 * 2. * sersic_index * exp(b_n) * gamma / pow(b_n, 2*sersic_index) );
 
-	if(isnan(sigma_e) || isinf(sigma_e))
-	{
-		#pragma omp critical
-		{
-			std::cout << "Error: sigma_e = " << sigma_e << std::endl;
-			std::cout << "   Numerator (stellar mass, m_sun) = " << pow(10, stellar_mass) << std::endl;
-			std::cout << "   Denominator (2*PI*r^2) = " << ( pow(half_light_radius_eff, 2) * PI * 2.) << std::endl; 
-			exit(1);
-		}
-	}
-
-
-	//* 2.*sersic_index*exp(b_n)*gamma/pow(b_n, 2.*sersic_index)); 
-	// I'm not sure if this is correct. Literature makes this out to be just sm/(pi * re^2)
+	// Asserts
+    assert(!isnan(sigma_e) || !isinf(sigma_e) || assert_msg("Sigma_e was calculated as: " << sigma_e << std::endl <<
+        "====Location: AGalaxy Constructor" << std::endl <<
+        "----Numerator (stellar mass, m_sun) = " << pow(10, stellar_mass) << std::endl <<
+        "----Half Light Radius (Kpc) = " << half_light_radius_eff << std::endl <<
+        "----Sersic Index = " << sersic_index << std::endl <<
+        "----b_n = " << b_n << std::endl));
 
 	// p_n - eqn (5)
 	p_n = 1. - .6097/sersic_index_eff  + .00563/(sersic_index_eff*sersic_index_eff);
@@ -72,60 +61,87 @@ Galaxy::Galaxy(float input_stellar_mass,
 	float right = (boost::math::tgamma(2*sersic_index)/boost::math::tgamma(sersic_index*(3. - p_n)));
 	rho0 = left * right;
 
-	if(isnan(rho0) || isinf(rho0))
-	{
-		#pragma omp critical
-		{
-			std::cout << "Error: rho0 (equation 4) = " << rho0 << std::endl;
-			std::cout << "    left = " << left << std::endl;
-			std::cout << "    right = " << right << std::endl;
-			exit(1);
-		}
-	}
-
-	R = 4.;
-
-}
-
-void Galaxy::init_dark_matter(string input_profile_name,
-			      float input_concentration)
-{
-	dark_matter_on = true;
-	profile_name = input_profile_name;
-	concentration = input_concentration;
+    // Asserts
+    assert(!isnan(rho0) || !isinf(rho0) || assert_msg("rho0 was calculated as: " << rho0 << std::endl <<
+      "====Location: AGalaxy Constructor" << std::endl <<
+      "----Sigma0 (MassDensity(0.)) = " << Sigma0 << std::endl <<
+      "----LHS = " << left << std::endl <<
+      "----RHS = " << right << std::endl));
 }
 
 float Galaxy::MassDensity(float r)
 {
+    // Equation (1)
 	float power = 1./sersic_index_eff;
 	float internal_term = r/half_light_radius_eff;
 	
-	float result = sigma_e * exp(-b_n * (pow(internal_term, power) - 1.));	      
+	float result = sigma_e * exp(-b_n * (pow(internal_term, power) - 1.));
 
-	if(isnan(result) || isinf(result))
-	{
-		#pragma omp critical
-		{
-			std::cout << "Error: MassDensity(r) returned " << result << " at r = " << r << std::endl;
-			std::cout << "    sigma_e =  " << sigma_e << std::endl;
-			std::cout << "    internal_term = " << internal_term << std::endl;
-			std::cout << "    power = " <<  power << std::endl;
-			exit(1);
-		}
-	}
+    // Asserts
+    assert(!isnan(result) || !isinf(result) || assert_msg("MassDensity (sersic) about to return " << rho0 << std::endl <<
+         "----Power (1/n) = " << power << std::endl <<
+         "----internal term (r/R_eff) = " << internal_term << std::endl <<
+         "----Sigma_e = " << sigma_e << std::endl <<
+         "----RHS = " << right << std::endl));
 
 	return result;
 }
 
 float Galaxy::MassDensityr(float r)
 {
-	return this->MassDensity(r) * r;
+    // Just a wrapper function, sometimes we need it *r for integrals.
+    return this->MassDensity(r) * r;
 }
 
+float Galaxy::rho4mass(float r)
+{
+    // Overall Density, sum of all components
+
+    float stars_term = 0.0;
+    float dark_matter_term = 0.0;
+
+    if(stars_on)
+    {
+        // De-projected density, equation (3)
+        float radius_ratio = r/half_light_radius_eff;
+
+        float radius_ratio_eff = radius_ratio;
+        if(radius_ratio == 0. && -p_n <= 0) radius_ratio_eff = zero_perturbation;
+        float power_term = pow(radius_ratio_eff, -p_n);
+
+        float inverse_n = 1./sersic_index_eff;
+        float exp_power_term = pow(radius_ratio_eff, inverse_n);
+
+        float exp_term = exp(-b_n * exp_power_term);
+
+        stars_term = rho0 * power_term * exp_term;
+
+        assert(!isnan(stars_term) || !isinf(stars_term) || assert_msg("Stellar Density (eq3) about to return " << stars_term << std::endl <<
+           "----rho0 = " << rho0 << std::endl <<
+           "----Power term (r/R_eff)^-p_n = " << power_term << std::endl <<
+           "----Exp power term (r/R_eff)^1/n = " << exp_power_term << std::endl <<
+           "----Exp term exp(-b_n (Exp_power_term)) = " << exp_power_term << std::endl <<
+           "-----r = " << r << std::endl));
+    }
+
+    if(dark_matter_on)
+    {
+        dark_matter_term = HaloDensity(r);
+        assert(!isnan(dark_matter_term) || !isinf(dark_matter_term) || assert_msg("Dark Matter Density about to contribute " << stars_term << std::endl <<
+                                                                                                                             "-----r = " << r << std::endl));
+    }
+
+    float res = stars_term + dark_matter_term;
+    return res;
+}
 
 float Galaxy::rho(float r)
 {
+    // Overall Density, sum of all components
 
+    float stars_term = 0.0;
+
+    // De-projected density, equation (3)
     float radius_ratio = r/half_light_radius_eff;
 
     float radius_ratio_eff = radius_ratio;
@@ -136,78 +152,57 @@ float Galaxy::rho(float r)
     float exp_power_term = pow(radius_ratio_eff, inverse_n);
 
     float exp_term = exp(-b_n * exp_power_term);
-    
-    float dark_matter_term = 0.0;
 
-    if(dark_matter_on)
-    {
-	    dark_matter_term = HaloDensity(r);
-	    if(isnan(dark_matter_term) || isinf(dark_matter_term))
-	    {
-		#pragma omp critical
-		{
-	        	std::cout << "HaloDensity(r) returned " << dark_matter_term << ", at r = " << r << std::endl;
-	        	exit(1);
-		}
-	    }
-    }
+    stars_term = rho0 * power_term * exp_term;
 
-    float res = rho0 * power_term * exp_term + dark_matter_term;
-    if(isnan(res) || isinf(res))
-    {
-	#pragma omp critical
-	{
-        	std::cout << "Error: Density profile returned " << res << " at r = " << r << std::endl;
-	        std::cout << "    rho0 = " << rho0 << std::endl;
-		std::cout << "    power_term = " << power_term << std::endl;
-		std::cout << "    exp_term = " << exp_term  << std::endl;
-		std::cout << "    Dark_Matter_term = " << dark_matter_term << std::endl;
-		exit(1);
-	}
-    }
+    assert(!isnan(stars_term) || !isinf(stars_term) || assert_msg("Stellar Density (eq3) about to return " << stars_term << std::endl <<
+             "----rho0 = " << rho0 << std::endl <<
+             "----Power term (r/R_eff)^-p_n = " << power_term << std::endl <<
+             "----Exp power term (r/R_eff)^1/n = " << exp_power_term << std::endl <<
+             "----Exp term exp(-b_n (Exp_power_term)) = " << exp_power_term << std::endl <<
+             "-----r = " << r << std::endl));
 
+    float res = stars_term;
     return res;
 }
 
 float Galaxy::mass_shell(float R)
 {
-	float res = 4.0*PI *R*R * this->rho(R);
-
-    if(isnan(res))
-    {
-        std::cout << "mass_shell returned NaN at R =" << R << std::endl;
-        exit(1);
-    }
-
+    // Mass shell, based on radius or density
+	float res = 4.0*PI *R*R * this->rho4mass(R);
+    assert(!isnan(res) || !isinf(res) || assert_msg("Mass Shell about to contribute " << res << std::endl <<
+      "-----R = " << R << std::endl <<
+      "-----Density (function call to rho(R)) = " << this->rho4mass(R) << std::endl));
 	return res;
 }
 
 
 float Galaxy::cumulative_mass(float R_arg)
 {
-	float accuracy = pow(10., stellar_mass-precision);
+    // Calculate the cumulative mass
 
+    // Bind the Mass shell function to a pointer so we can pass it to the integration functions.
+    // An awkward consequence of having the class setup
 	auto fp = bind(&Galaxy::mass_shell, this, _1);
 
+	//Preliminary pass to get the rough value for the integral. We need it to do Adaptive Richardson Extrapolation properly.
     float mass_accuracy = SimpsonsRule(fp, 0., R_arg, initial_subdiv)/pow(10., precision + cum_mass_precision_modifier);
 
-	float res = AdaptiveRichardsonExtrapolate(fp, 0., R_arg, mass_accuracy);
+    //float res = SimpsonsRule(fp, 0., R_arg, 1000);
 
-    if(isnan(res))
-    {
-        std::cout << "cumulative_mass returned NaN at R_arg =" << R_arg << std::endl;
-        exit(1);
-    }
+    // The actual integration
+    float res = AdaptiveRichardsonExtrapolate(fp, 0., R_arg, mass_accuracy);
 
+    assert(!isnan(res) || !isinf(res) || assert_msg("Cumulative mass about to return " << res << std::endl <<
+      "-----R_arg = " << R_arg << std::endl));
 	return res;
 }
 
 float Galaxy::K_Kernel_DW(float u)
 {
-    if(u == 0.)
-    {
-        return 0.;
-    }
+    // Kernel K(U), equation 9.
+    if(u == 0.) return 0.;
+
     float prefactor = 0.5 * pow(u, (2.* beta - 1.));
 
     float term1 = ((3./2.) - beta) * pow(PI, 0.5) * gamma_term;
@@ -217,58 +212,141 @@ float Galaxy::K_Kernel_DW(float u)
 
     float res = prefactor * (term1 + term2 + term3);
 
+    if((res < 0.) && (res < zero_perturbation))
+    {
+        res = zero_perturbation;
+    }
+
+    assert((res >= 0.) || assert_msg("K_Kernel about to return negative (" << res << ")." << std::endl <<
+       "-----beta = " << beta << std::endl <<
+       "-----u = " << u << std::endl <<
+       "-----gamma term = " << gamma_term << std::endl <<
+       "res = prefactor * (term1 + term2 + term3)" << std::endl <<
+       "-----prefactor: ((3./2.) - beta) * pow(PI, 0.5) * gamma_term = " << prefactor << std::endl <<
+       "-----term 1: ((3./2.) - beta) * pow(PI, 0.5) * gamma_term = " << term1 << std::endl <<
+       "-----term 2: beta * incompleteBeta(beta + 0.5, 0.5, 1./(u*u)) = " << term2 << std::endl <<
+       "-----term 3: -incompleteBeta(beta - 0.5, 0.5, 1./(u*u)) = " << term3 << std::endl));
+
+
     return res;
 }
 
 float Galaxy::sigma_integrand(float r)
-{ 
+{
+    // Internals of sigma integrand
     if(R == 0) R = zero_perturbation;
 
     float ratio = r/R;
 
-    float Kernal = this->K_Kernel_DW(ratio);
+    assert(ratio >= 1.0  || assert_msg("sigma_integrand ratio r/R < 0 (value is " << ratio <<
+        "). This will violate the incomplete beta function." << std::endl <<
+         "-----r = " << r << std::endl <<
+         "-----R = " << R << std::endl <<
+         "-----HLR = " << half_light_radius << std::endl));
+
+    float Kernel = this->K_Kernel_DW(ratio);
     float density = this->rho(r);
     float Mass = this->cumulative_mass(r);
-	
     float res;
-
     if(r == 0) r = zero_perturbation;
+    res = Kernel * density * Mass /  r;
 
-    res = Kernal * density * Mass /  r;
+    assert((!isnan(res) && !isinf(res)) || assert_msg("Sigma LOS integrand (eq8) about to return " << res << std::endl <<
+        "-----r = " << r << std::endl <<
+        "-----R = " << R << std::endl <<
+        "-----Kernel K(U) = " << Kernel << std::endl <<
+        "-----Density rho(r) = " << density << std::endl <<
+        "-----Mass M(r) = " << Mass << std::endl));
+
+    assert((res >= 0.) || assert_msg("Sigma Los integrand (eq8) about to return negative (" << res << ")." << std::endl <<
+       "-----r = " << r << std::endl <<
+       "-----R = " << R << std::endl <<
+       "-----Kernel K(U) = " << Kernel << std::endl <<
+       "-----Density rho(r) = " << density << std::endl <<
+       "-----Mass M(r) = " << Mass << std::endl));
+
 
     return res;
 }
 
-
 float Galaxy::sigma_los(float R_arg)
 {
-	float upper_limit = 1000*R_arg;
+    assert( R_arg > 0 || assert_msg("R_arg cannot be < 0, got: " << R_arg << std::endl));
+    // Full equation to calculate sigma LOS
+
+
+    /*
+
+    float test_value = R_arg;
+    bool keep_going = true;
+    float frac = 0.01;
+
+    float first = this->sigma_integrand(test_value);
+
+    while(keep_going)
+    {
+        test_value += R_arg;
+        float value = this->sigma_integrand(test_value);
+        if value
+    }; */
+
+
+	float upper_limit = 1000.0 * half_light_radius + R_arg; // Hopefully a sufficently high value of r.
+
 	R = R_arg;
 
 	auto fp = bind(&Galaxy::sigma_integrand, this, _1);
 
-    float los_accuracy = SimpsonsRule(fp, R_arg, upper_limit, initial_subdiv)/pow(10., precision + sigma_los_precision_modifier);
+	float prepass = SimpsonsRule(fp, R_arg, upper_limit, initial_subdiv);
 
-	float numerator = 2. * GR *  AdaptiveRichardsonExtrapolate(fp, R_arg, upper_limit, los_accuracy);
+    float los_accuracy = prepass/pow(10., precision + sigma_los_precision_modifier);
+
+    //float numerator = 2. * GR * SimpsonsRule(fp, R_arg, upper_limit, 10000);
+
+    float integral_term = AdaptiveRichardsonExtrapolate(fp, R_arg, upper_limit, los_accuracy);
+
+	float numerator = 2. * GR *  integral_term;
 	float denominator = this->MassDensity(R_arg);
-
 	float value = pow(numerator/denominator, 0.5);
+
+
+	if(isnan(value) || isinf(value))
+	{
+    #pragma omp critical
+	    {
+            assert( (!isnan(value) && !isinf(value)) ||
+                    assert_msg(std::endl << "Sigma LOS (eq7) about to return " << value << std::endl <<
+                 "-----formula = pow(numerator/denominator, 0.5)" << std::endl <<
+                 "-----numerator = " << numerator << std::endl <<
+                 "-----denominator = " << denominator << std::endl <<
+                 "This occured when:" << std::endl <<
+                 "-------R (distance, main argument) = " << R_arg << " kpc" << std::endl <<
+                 "-------Integration was performed between " << R_arg << " and " << upper_limit << std::endl <<
+                 "-------Integration prepass (simpsons rule with " << initial_subdiv << " elements) return = " << prepass << std::endl <<
+                 "-------Accuracy = " << los_accuracy << std::endl <<
+                 "-------Full Integration (ARE) = " << integral_term << std::endl));
+
+	    }
+	}
+
+
+
 
 	return value;
 }
 
-
 float Galaxy::sigma_ap_integrand(float R_arg)
 {
+    // Integrand of sigma aperture
 	float sigma = this->sigma_los(R_arg);
 	float MDP = this->MassDensity(R_arg);
-
 	return MDP * sigma * sigma * R_arg;
 }
 
 
 float Galaxy::sigma_ap(void)
 {
+    // Full value of halo aperture
 	auto numfp = bind(&Galaxy::sigma_ap_integrand, this, _1);
 
 	float accuracy = pow(10, 15-precision);
@@ -279,8 +357,7 @@ float Galaxy::sigma_ap(void)
 	auto denfp = bind(&Galaxy::MassDensityr, this, _1);
 
 	float den_accuracy = SimpsonsRule(denfp, 0., aperture_size, initial_subdiv)/pow(10., precision);
-	float denominator = AdaptiveRichardsonExtrapolate(denfp, 0., aperture_size, accuracy);
-	
+	float denominator = AdaptiveRichardsonExtrapolate(denfp, 0., aperture_size, den_accuracy);
 
 	return pow(numerator/denominator, 0.5);	
 }
@@ -361,10 +438,13 @@ float Galaxy::HaloDensity(float r)
     {
         float log10r = log10(r);
         float rs = HaloRadius/concentration;
+
 	    float fc = log(1.+concentration)-concentration/(1.+concentration);
   	    float logrhos = HaloMass-log10(4.*PI*rs*rs*rs*fc);
+
 	    float logrho = logrhos-log10(r/rs) - 2.*log10(1. + r/rs);
 	    res = pow(10., logrho);
+
     }
     else if (profile_name == "DenhenMcLaughlin")
     {
@@ -372,7 +452,7 @@ float Galaxy::HaloDensity(float r)
         float rs = HaloRadius/concentration;
         float fc = log(1.+concentration)-concentration/(1.+concentration);
         float logrhos = HaloMass-log10(4.*PI*rs*rs*rs*fc);
-        std::cout << "p0 " << logrhos << std::endl;
+        //std::cout << "p0 " << logrhos << std::endl;
         float logrho = log10(2.) + 6.*logrhos - (7./9.)*log10(r/rs) - 6.*log10(1. + pow(r/rs, 4./9.));
         //std::cout << "Lohrho" << logrho << std::endl;
         //exit(1);
@@ -444,6 +524,10 @@ void Galaxy::setConc_Path(std::string input_path)
     Conc_Path = input_path;
 }
 
+void Galaxy::set_stars_on(bool new_value) {
+    stars_on = new_value;
+}
+
 
 float GetVelocityDispersion(float input_aperture_size,
                             float input_beta,
@@ -512,6 +596,71 @@ float GetUnweightedVelocityDispersion(float R,
     float res = aGalaxy.sigma_los(R);
     assert(!isnan(res) && "GetUnweightedVelocityDispersion() returned NaN");
     assert(!isinf(res) && "GetUnweightedVelocityDispersion() returned inf");
+    return res;
+}
+
+float GetUnweightedVelocityDispersion(float R,
+                                      float z,
+                                      float halo_mass,
+                                      char * profile_name,
+                                      char * c_path)
+{
+    Galaxy aGalaxy(11., 0.1, 5, 1.0, 4, z);
+    std::string path(c_path);
+    aGalaxy.setConc_Path(path);
+
+    std::string name(profile_name);
+    aGalaxy.setDarkMatter(halo_mass, name);
+    aGalaxy.set_stars_on(false);
+    float res = aGalaxy.sigma_los(R);
+    assert(!isnan(res) && "GetUnweightedVelocityDispersion() returned NaN");
+    assert(!isinf(res) && "GetUnweightedVelocityDispersion() returned inf");
+    return res;
+}
+
+
+float GetDMrho(float R,
+              float input_beta,
+              float input_half_light_radius,
+              float input_sersic_index,
+              float input_stellar_mass,
+              float z,
+              float halo_mass,
+              char * profile_name,
+              char * c_path)
+{
+    Galaxy aGalaxy(input_stellar_mass, input_beta, input_half_light_radius, 1.0, input_sersic_index, z);
+    std::string path(c_path);
+    aGalaxy.setConc_Path(path);
+    std::string name(profile_name);
+    aGalaxy.setDarkMatter(halo_mass, name);
+
+    float res = aGalaxy.HaloDensity(R);
+    return res;
+}
+
+float GetCum(float R,
+               float input_beta,
+               float input_half_light_radius,
+               float input_sersic_index,
+               float input_stellar_mass,
+               float z,
+               float halo_mass,
+               char * profile_name,
+               char * c_path)
+{
+    Galaxy aGalaxy(input_stellar_mass, input_beta, input_half_light_radius, 1.0, input_sersic_index, z);
+    std::string path(c_path);
+    aGalaxy.setConc_Path(path);
+    std::string name(profile_name);
+    aGalaxy.setDarkMatter(halo_mass, name);
+
+    //float res = aGalaxy.sigma_integrand(R);
+
+    //auto fp = bind(&Galaxy::sigma_integrand, aGalaxy, _1);
+
+    float res = aGalaxy.sigma_integrand(R);
+
     return res;
 }
 

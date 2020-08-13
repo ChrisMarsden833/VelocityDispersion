@@ -16,11 +16,12 @@
 #define GR 4.3009125e-6 // In units of kpc M_sun^-1 (km/s)^2
 #define h 0.69
 #define Om 0.3
-#define zero_perturbation 0.00001
+#define zero_perturbation 0.000001
 #define precision 4
-#define cum_mass_precision_modifier 2
+#define cum_mass_precision_modifier 0
 #define sigma_los_precision_modifier 1
-#define initial_subdiv 10
+#define initial_subdiv 500
+#define assert_msg(x) !(std::cerr << "Assertion failed: " << x << std::endl)
 
 using namespace std;
 using namespace std::placeholders;
@@ -35,14 +36,14 @@ class Galaxy
 		       float input_sersic_index,
 		       float z);
 
-		void init_dark_matter(string input_profile_name,
-				      float input_concentration);
-
 		// Function to return the mass density at radius r - Equation (1). P824
 		float MassDensity(float r);
 
 		// Function returning the mass density * r (for integration)
 		float MassDensityr(float r);
+
+		// Density for integration
+        float rho4mass(float r);
 
 		// Function to return the de-projected density at radius r.
 		float rho(float r);
@@ -58,6 +59,9 @@ class Galaxy
 
 		// The Integrand for sigma (internals of the integral)
 		float sigma_integrand(float r);
+
+		// The Integrand for sigma, but only DM
+		float sigma_DM_integrand(float r);
 
 		// The value of sigma in the LOS
 		float sigma_los(float R_arg);
@@ -83,6 +87,9 @@ class Galaxy
 		// Set path to halo/concentration file
 		void setConc_Path(std::string input_path);
 
+		// Turn of stellar component
+		void set_stars_on(bool new_value);
+
 	private:
 		// Stellar Mass of the galaxy [log10 M_sun]
 		float stellar_mass;
@@ -103,11 +110,13 @@ class Galaxy
 
 		// Term involving gamma functions, it's best to only calculate once
         float gamma_term = 0.0;
-
 		// R, value to be used as part of the integral
-		float R;
+		float R = 0.0;
+
+		// Switch if Baryonic Matter is on or not
+		bool stars_on = true;
 		// Switch if dark matter is on or not.
-		bool dark_matter_on;
+		bool dark_matter_on = false;
 		// Dark Matter Profile Name
 		string profile_name;
 		// Halo Mass;
@@ -167,5 +176,30 @@ float GetUnweightedVelocityDispersion(float R,
                             char * profile_name,
                             char * c_path = (char*)"../data/cM_planck18.txt");
 
+float GetUnweightedVelocityDispersion(float R,
+                                      float z,
+                                      float halo_mass,
+                                      char * profile_name,
+                                      char * c_path = (char*)"../data/cM_planck18.txt");
+
+float GetDMrho(float R,
+               float input_beta,
+               float input_half_light_radius,
+               float input_sersic_index,
+               float input_stellar_mass,
+               float z,
+               float halo_mass,
+               char * profile_name,
+               char * c_path);
+
+float GetCum(float R,
+               float input_beta,
+               float input_half_light_radius,
+               float input_sersic_index,
+               float input_stellar_mass,
+               float z,
+               float halo_mass,
+               char * profile_name,
+               char * c_path);
 
 #endif

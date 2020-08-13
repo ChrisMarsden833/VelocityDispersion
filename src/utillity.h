@@ -9,9 +9,11 @@
 #include <boost/math/special_functions/beta.hpp>
 #include <boost/math/special_functions/factorials.hpp>
 #include "omp.h"
+#include <cassert>
 
 #define PI 3.14159265
 #define EU 2.71828182
+#define assert_msg(x) !(std::cerr << "Assertion failed: " << x << std::endl)
 
 /** ++ factorial ++
  * Simple recursive function to return the factorial of an integer

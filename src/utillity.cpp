@@ -25,6 +25,7 @@ bool checkEven(int Value)
 float incompleteBeta(float a, float b, float z)
 {
     float beta;
+
     if(a <= 0)
     {
         beta = pow(z, a) * pow((1 - z), b) + (a + b) * incompleteBeta(a + 1, b, z);
@@ -33,11 +34,25 @@ float incompleteBeta(float a, float b, float z)
     }
     else
     {
+        assert( ((a >= 0) && (a <= 1)) || assert_msg("incompleteBeta recursion finished but a = " << a << std::endl <<
+          "====Location: inCompleteBeta" << std::endl <<
+          "----a = " << a << std::endl <<
+          "----b = " << b << std::endl <<
+          "----z = " << z << std::endl));
+
+        assert( ((z >= 0) && (z <= 1)) || assert_msg("incompleteBeta about to be called, but z = " << z << std::endl <<
+            "====Location: inCompleteBeta" << std::endl <<
+            "----a = " << a << std::endl <<
+            "----b = " << b << std::endl <<
+            "----z = " << z << std::endl));
+
+
         beta = boost::math::beta(a, b, z);
+
+
         return beta;
     }
 }
-
 
 void CheckAndMaybeIncrementN(int * N, std::string fname)
 {
@@ -192,7 +207,6 @@ std::vector<std::vector<float>> * ReadFile(std::string path, std::vector<int> * 
 
 }
 
-
 void checkOutputConsistency(std::vector<int> *IndexesToGrab, std::vector<std::vector<float>> *OutputArrays)
 {
     // function to check output arrays are all the same length
@@ -238,7 +252,6 @@ void InputPrechecks(std::vector<int> *IndexesToGrab)
     bool duplicatesFlag = (IndexesToGrab->size() < originalLength);
     if(duplicatesFlag) printf("Warning, supplied index array contains duplicates - duplicates will be removed\n");
 }
-
 
 std::vector<float> * Reduce(std::vector<float> * input, std::vector<float> * output)
 {
@@ -296,7 +309,6 @@ void Equals(std::vector<float> * array, float value, std::vector<bool> * mask)
 		mask->push_back(input);
 	}
 }
-
 
 void MaskOut(std::vector<float> * array, std::vector<bool> * mask)
 {

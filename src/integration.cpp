@@ -61,6 +61,10 @@ float SimpsonsRule(std::function<float (float)> fun, float a, float b, int N)
 {
     CheckAndMaybeIncrementN(&N, "Simpsons Rule, basic");
 
+    assert(b > a || assert_msg("Simpsons rule does not allow b <= a " << std::endl <<
+        "----a = " << a << std::endl <<
+        "----b = " << b << std::endl));
+
     float * grid = NULL;
     float h;
     fastLinspace(grid, h, a, b, N);
@@ -78,6 +82,29 @@ float SimpsonsRule(std::function<float (float)> fun, float a, float b, int N)
 
     // Full formula
     float total = (h/3.0)*(fun(a) + 2.0 * sum1 + 4 * sum2 + fun(b));
+
+    if(total < 0)
+    {
+        #pragma omp critical
+        {
+            std::cout << "######### Simpson's rule full report ##########" << std::endl;
+            std::cout << "-Grid: [";
+            for(int i = 0; i < N; i++) std::cout << grid[i] << ", ";
+            std::cout << "]" << std::endl;
+
+            std::cout << "-Term 1 (sum of below elements):" << std::endl;
+            for(int j = 1; j <= (N_half - 1); j++)  std::cout << "-fun(grid[2*" << j << "]) = " << fun(grid[2*j]) << std::endl;
+            std::cout << "-Term 2 (sum of below elements):" << std::endl;
+            for(int j = 1; j <= N_half; j++) std::cout << "-fun(grid[2*" << j << "-1]) = " << fun(grid[2*j-1]) << std::endl;
+
+            std::cout << "fun(a) [a = " << a << "] = " << fun(a) << std::endl;
+            std::cout << "fun(b) [b = " << b << "]= " << fun(b) << std::endl;
+
+            assert( (total >=0 ) || assert_msg(std::endl << "Simpsons Rule about to return negative." << std::endl <<
+                "---Value = " << total << std::endl));
+        }
+    }
+
     free(grid);
     return total;
 }
@@ -109,7 +136,20 @@ RResult RichardsonExtrapolate(std::function<float (float)> fun, float a, float b
     float In = SimpsonsRule(fun, a, b, steps2);
 
     // Assign the value of the integral according to the formulae for the integral and it's accuracy.
-    data.integral = (pow(2., 4.) * I2n - In)/(pow(2., 4.) - 1); 
+    data.integral = (pow(2., 4.) * I2n - In)/(pow(2., 4.) - 1);
+
+    if(data.integral <= 0)
+    {
+        #pragma omp critical
+        {
+            assert((data.integral > 0) || assert_msg(std::endl << "Richardson Extrapolate about to return a negative integral" << std::endl <<
+                "----Value = " << data.integral << std::endl <<
+                "----I2n = " << I2n << std::endl <<
+                "----In = " << In << std::endl <<
+                "---Domain, a = " << a << ", b = " << b << ". Over (2x) " << steps2 << " steps." << std::endl));
+        }
+    }
+
     data.accuracy = abs(In - I2n)/(pow(2., 4.) - 1 );
     return data; 
 }
@@ -183,7 +223,6 @@ float AdaptiveRichardsonExtrapolate(float (*f)(float, std::vector<float>), float
     }
     return integral;
 }
-
 
 float AdaptiveRichardsonExtrapolate(std::function<float (float)> fun, float a, float b, float accuracy)
 {

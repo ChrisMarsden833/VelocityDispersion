@@ -56,7 +56,8 @@ extern "C"
                              float * z,
                              int size,
                              char * DM,
-                             char * c_path)
+                             char * c_path,
+                             int flag)
     {
         printf("\n\n######################################## \n");
         printf("Chris Marsden's Velocity dispersion code \n");
@@ -65,12 +66,16 @@ extern "C"
         float * res = (float *) std::malloc(sizeof(float) * size);
 
         int progress = 0;
-        #pragma omp parallel for default(none) shared(size, res, R, Beta, HalfLightRadius, SersicIndex, StellarMass, progress, z, HaloMass, DM, c_path, stdout)
+        #pragma omp parallel for default(none) shared(size, res, R, Beta, HalfLightRadius, SersicIndex, StellarMass, progress, z, HaloMass, DM, c_path, flag, stdout) schedule(static, 2)
         for (int i = 0; i < size; i++)
         {
             if(strcmp(DM, "None") == 0)
             {
                 res[i] = GetUnweightedVelocityDispersion(R[i], Beta[i], HalfLightRadius[i], SersicIndex[i], StellarMass[i], z[i]);
+            }
+            else if(flag == 1)
+            {
+                res[i] = GetUnweightedVelocityDispersion(R[i], z[i], HaloMass[i], DM, c_path);
             }
             else
             {
@@ -86,5 +91,53 @@ extern "C"
         }
         return res;
 
+    }
+
+    float * GetCumMass(float * R,
+                             float * Beta,
+                             float * HalfLightRadius,
+                             float * SersicIndex,
+                             float * StellarMass,
+                             float * HaloMass,
+                             float * z,
+                             int size,
+                             char * DM,
+                             char * c_path,
+                             int flag)
+    {
+
+
+        float * res = (float *) std::malloc(sizeof(float) * size);
+
+        int progress = 0;
+        #pragma omp parallel for default(none) shared(size, res, R, Beta, HalfLightRadius, SersicIndex, StellarMass, progress, z, HaloMass, DM, c_path, flag, stdout)
+        for (int i = 0; i < size; i++)
+        {
+            res[i] = GetCum(R[i], Beta[i], HalfLightRadius[i], SersicIndex[i], StellarMass[i], z[i], HaloMass[i], DM, c_path);
+            #pragma omp critical
+            {
+                progress++;
+                printf("\r %i of %i calculated | %2.4f%%", progress, size, 100. * float(progress) / float(size));
+                fflush(stdout);
+            };
+
+        }
+        return res;
+
+    }
+
+    float * DM_Profile(float * r, float HaloMass, float z, int size, char * DM, char * c_path)
+    {
+        printf("\n\n######################################## \n");
+        printf("Chris Marsden's Velocity dispersion code \n");
+        printf("Calculating DM Profile for %i points\n", size);
+
+        float * res = (float *) std::malloc(sizeof(float) * size);
+
+        for (int i = 0; i < size; i++)
+        {
+            res[i] = GetDMrho(r[i], 0.0014, 5, 3.223, 11.0, z, HaloMass, DM, c_path);
+        }
+        return res;
     }
 }

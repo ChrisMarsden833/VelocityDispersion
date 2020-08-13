@@ -77,7 +77,7 @@ def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex,
     return b
 
 def SigmaLOS(R, Beta, HalfLightRadius, SersicIndex, StellarMass, z, DM = None, HaloMass = None,
-             cpath = "../data/cM_planck18.txt" ):
+             cpath = "../data/cM_planck18.txt" , flag = 0):
 
     # Test that the supplied lengths are consistent
     variables = [R, Beta, HalfLightRadius, SersicIndex, StellarMass]
@@ -115,6 +115,8 @@ def SigmaLOS(R, Beta, HalfLightRadius, SersicIndex, StellarMass, z, DM = None, H
     z = z.astype(np.float32)
     c_z = z.ctypes.data_as(c_float_p)
     c_size = int(length)
+    c_flag = int(flag)
+
 
     ibc.ParallelSigmaLos.argtypes = [ctypes.POINTER(ctypes.c_float),
                                   ctypes.POINTER(ctypes.c_float),
@@ -125,16 +127,115 @@ def SigmaLOS(R, Beta, HalfLightRadius, SersicIndex, StellarMass, z, DM = None, H
                                   ctypes.POINTER(ctypes.c_float),
                                   ctypes.c_int32,
                                   ctypes.c_char_p,
-                                  ctypes.c_char_p]
+                                  ctypes.c_char_p,
+                                  ctypes.c_int32]
 
     ibc.ParallelSigmaLos.restype = ctypes.POINTER(ctypes.c_float)
 
-    res = ibc.ParallelSigmaLos(c_R, c_beta, c_hlr, c_n, c_sm, c_hm, c_z, c_size, c_DM, c_cpath)
+    res = ibc.ParallelSigmaLos(c_R, c_beta, c_hlr, c_n, c_sm, c_hm, c_z, c_size, c_DM, c_cpath, c_flag)
 
     b = np.ctypeslib.as_array( (ctypes.c_float * length).from_address(ctypes.addressof(res.contents)))
 
     return b
 
+
+def CumulativeMass(R, Beta, HalfLightRadius, SersicIndex, StellarMass, z, DM = None, HaloMass = None,
+             cpath = "../data/cM_planck18.txt" , flag = 0):
+    # Test that the supplied lengths are consistent
+    variables = [R, Beta, HalfLightRadius, SersicIndex, StellarMass]
+    variable_names = ["R", "Beta", "Half Light Radius", "Sersic Index", "Stellar Mass"]
+    length = check_list(variables, variable_names)
+
+    assert np.sum(HalfLightRadius <= 0) == 0, "HalfLightRadius has elements < 0, {}".format(
+        HalfLightRadius[HalfLightRadius <= 0])
+    assert np.sum(SersicIndex <= 0) == 0, "Sersic Index has elements < 0 {}".format(SersicIndex[SersicIndex <= 0])
+
+    c_float_p = ctypes.POINTER(ctypes.c_float)
+
+    R = R.astype(np.float32)
+    c_R = R.ctypes.data_as(c_float_p)
+    Beta = Beta.astype(np.float32)
+    c_beta = Beta.ctypes.data_as(c_float_p)
+    HalfLightRadius = HalfLightRadius.astype(np.float32)
+    c_hlr = HalfLightRadius.ctypes.data_as(c_float_p)
+    SersicIndex = SersicIndex.astype(np.float32)
+    c_n = SersicIndex.ctypes.data_as(c_float_p)
+    StellarMass = StellarMass.astype(np.float32)
+    c_sm = StellarMass.ctypes.data_as(c_float_p)
+
+    if not hasattr(z, "__len__"):
+        z = np.ones_like(StellarMass) * z
+
+    if DM is None:
+        assert HaloMass is None, "Halo mass should not be specified if DM is None"
+        HaloMass = np.zeros_like(StellarMass)
+        DM = "None"
+
+    c_DM = DM.encode('utf-8')
+    c_cpath = cpath.encode('utf-8')
+    HaloMass = HaloMass.astype(np.float32)
+    c_hm = HaloMass.ctypes.data_as(c_float_p)
+    z = z.astype(np.float32)
+    c_z = z.ctypes.data_as(c_float_p)
+    c_size = int(length)
+    c_flag = int(flag)
+
+    ibc.GetCumMass.argtypes = [ctypes.POINTER(ctypes.c_float),
+                                     ctypes.POINTER(ctypes.c_float),
+                                     ctypes.POINTER(ctypes.c_float),
+                                     ctypes.POINTER(ctypes.c_float),
+                                     ctypes.POINTER(ctypes.c_float),
+                                     ctypes.POINTER(ctypes.c_float),
+                                     ctypes.POINTER(ctypes.c_float),
+                                     ctypes.c_int32,
+                                     ctypes.c_char_p,
+                                     ctypes.c_char_p,
+                                     ctypes.c_int32]
+
+    ibc.GetCumMass.restype = ctypes.POINTER(ctypes.c_float)
+
+    res = ibc.GetCumMass(c_R, c_beta, c_hlr, c_n, c_sm, c_hm, c_z, c_size, c_DM, c_cpath, c_flag)
+
+    b = np.ctypeslib.as_array((ctypes.c_float * length).from_address(ctypes.addressof(res.contents)))
+
+    return b
+
+
+
+
+def DM_profile(r, HaloMass, z, DM, cpath = "../data/cM_planck18.txt"):
+
+    length = len(r)
+
+    c_float_p = ctypes.POINTER(ctypes.c_float)
+
+    c_DM = DM.encode('utf-8')
+    c_cpath = cpath.encode('utf-8')
+
+    r = r.astype(np.float32)
+    c_r = r.ctypes.data_as(c_float_p)
+
+    HaloMass = float(HaloMass)
+    c_hm = HaloMass
+    c_z = float(z)
+
+    c_size = int(length)
+
+
+    ibc.DM_Profile.argtypes = [ctypes.POINTER(ctypes.c_float),
+                               ctypes.c_float,
+                               ctypes.c_float,
+                               ctypes.c_int32,
+                               ctypes.c_char_p,
+                               ctypes.c_char_p]
+
+    ibc.DM_Profile.restype = ctypes.POINTER(ctypes.c_float)
+
+    res = ibc.DM_Profile(c_r, c_hm, c_z, c_size, c_DM, c_cpath)
+
+    b = np.ctypeslib.as_array( (ctypes.c_float * length).from_address(ctypes.addressof(res.contents)))
+
+    return b
 
 def check_list(list, names):
     for i, element in enumerate(list):
