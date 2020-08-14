@@ -76,47 +76,50 @@ def FullVelocityDispersion(ApertureSize, Beta, HalfLightRadius, SersicIndex,
 
     return b
 
-def SigmaLOS(R, Beta, HalfLightRadius, SersicIndex, StellarMass, z, DM = None, HaloMass = None,
-             cpath = "../data/cM_planck18.txt" , flag = 0):
+def SigmaLOS(R, Beta, HalfLightRadius, SersicIndex, StellarMass, z,
+             DM=None, HaloMass=None,
+             BlackHole=False, BHMass=None,
+             stars=True,
+             cpath="../data/cM_planck18.txt" , flag = 0):
 
-    # Test that the supplied lengths are consistent
-    variables = [R, Beta, HalfLightRadius, SersicIndex, StellarMass]
-    variable_names = ["R", "Beta", "Half Light Radius", "Sersic Index", "Stellar Mass"]
-    length = check_list(variables, variable_names)
-
-    assert np.sum(HalfLightRadius <= 0) == 0, "HalfLightRadius has elements < 0, {}".format(HalfLightRadius[HalfLightRadius <= 0])
-    assert np.sum(SersicIndex <= 0) == 0, "Sersic Index has elements < 0 {}".format(SersicIndex[SersicIndex <= 0])
-
+    length = int(len(R))
     c_float_p = ctypes.POINTER(ctypes.c_float)
-
-    R = R.astype(np.float32)
-    c_R = R.ctypes.data_as(c_float_p)
-    Beta = Beta.astype(np.float32)
-    c_beta = Beta.ctypes.data_as(c_float_p)
-    HalfLightRadius = HalfLightRadius.astype(np.float32)
-    c_hlr = HalfLightRadius.ctypes.data_as(c_float_p)
-    SersicIndex = SersicIndex.astype(np.float32)
-    c_n = SersicIndex.ctypes.data_as(c_float_p)
-    StellarMass = StellarMass.astype(np.float32)
-    c_sm = StellarMass.ctypes.data_as(c_float_p)
-
-    if not hasattr(z, "__len__"):
-        z = np.ones_like(StellarMass) * z
+    c_int_p = ctypes.POINTER(ctypes.c_int32)
 
     if DM is None:
         assert HaloMass is None, "Halo mass should not be specified if DM is None"
-        HaloMass = np.zeros_like(StellarMass)
         DM = "None"
 
-    c_DM = DM.encode('utf-8')
-    c_cpath = cpath.encode('utf-8')
-    HaloMass = HaloMass.astype(np.float32)
-    c_hm = HaloMass.ctypes.data_as(c_float_p)
-    z = z.astype(np.float32)
-    c_z = z.ctypes.data_as(c_float_p)
-    c_size = int(length)
-    c_flag = int(flag)
+    R = R.astype(np.float32).ctypes.data_as(c_float_p)
+    Beta = check_make_array(Beta, length).astype(np.float32).ctypes.data_as(c_float_p)
+    HalfLightRadius = check_make_array(HalfLightRadius, length).astype(np.float32).ctypes.data_as(c_float_p)
+    SersicIndex = check_make_array(SersicIndex, length).astype(np.float32).ctypes.data_as(c_float_p)
+    StellarMass = check_make_array(StellarMass, length).astype(np.float32).ctypes.data_as(c_float_p)
+    z = check_make_array(z, length).astype(np.float32).ctypes.data_as(c_float_p)
+    if HaloMass is None:
+        HaloMass = 0.0
+    HaloMass = check_make_array(HaloMass, length).astype(np.float32).ctypes.data_as(c_float_p)
+    if BHMass is None:
+        BHMass = 0.0
+    BHMass = check_make_array(BHMass, length).astype(np.float32).ctypes.data_as(c_float_p)
 
+    c_size = int(length)
+
+    if stars:
+        stars_component = 1
+    else:
+        stars_component = 0
+    if DM is not None:
+        dm_component = 1
+    else:
+        dm_component = 0
+    if BlackHole:
+        bh_component = 1
+    else:
+        bh_component = 0
+
+    component_array = [stars_component, dm_component, bh_component]
+    component_array = np.array(component_array).astype(int).ctypes.data_as(c_int_p)
 
     ibc.ParallelSigmaLos.argtypes = [ctypes.POINTER(ctypes.c_float),
                                   ctypes.POINTER(ctypes.c_float),
@@ -245,6 +248,13 @@ def check_list(list, names):
         previous_length = len(element)
         length = len(element)
     return length
+
+def check_make_array(subject, length):
+    if not hasattr(subject, "__len__"):
+        subject = np.ones(length) * float(subject)
+    else:
+        assert len(subject) == length, "Length not consistent."
+    return subject
 
 
 if __name__ == "__main__":

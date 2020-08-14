@@ -138,7 +138,7 @@ RResult RichardsonExtrapolate(std::function<float (float)> fun, float a, float b
     // Assign the value of the integral according to the formulae for the integral and it's accuracy.
     data.integral = (pow(2., 4.) * I2n - In)/(pow(2., 4.) - 1);
 
-    if(data.integral <= 0)
+    if(data.integral < 0)
     {
         #pragma omp critical
         {

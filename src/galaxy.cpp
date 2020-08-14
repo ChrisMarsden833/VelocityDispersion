@@ -56,10 +56,17 @@ Galaxy::Galaxy(float input_stellar_mass,
 	p_n = 1. - .6097/sersic_index_eff  + .00563/(sersic_index_eff*sersic_index_eff);
 
 	// Rho0 - eqn (4)
-	float Sigma0 = this->MassDensity(0.);
+	Sigma0 = this->MassDensity(0.);
 	float left = Sigma0 *  pow(b_n, (sersic_index * (1. - p_n))) / (2.*half_light_radius_eff);
 	float right = (boost::math::tgamma(2*sersic_index)/boost::math::tgamma(sersic_index*(3. - p_n)));
 	rho0 = left * right;
+
+	float as = half_light_radius/pow(p_n, sersic_index);
+	float l = rho0 / pow(b_n, (1. - p_n));
+
+	//mass_prefactor = 4.0 * PI * sersic_index * l * pow(as, 3.);
+	mass_prefactor = 4.0 * PI * sersic_index * boost::math::tgamma((3.0-p_n)*sersic_index) * l * pow(as, 3.);
+    //mass_prefactor =  2. * PI * sersic_index * boost::math::tgamma(2.*sersic_index) * Sigma0 * pow(as, 2.);
 
     // Asserts
     assert(!isnan(rho0) || !isinf(rho0) || assert_msg("rho0 was calculated as: " << rho0 << std::endl <<
@@ -176,7 +183,6 @@ float Galaxy::mass_shell(float R)
 	return res;
 }
 
-
 float Galaxy::cumulative_mass(float R_arg)
 {
     // Calculate the cumulative mass
@@ -196,6 +202,50 @@ float Galaxy::cumulative_mass(float R_arg)
     assert(!isnan(res) || !isinf(res) || assert_msg("Cumulative mass about to return " << res << std::endl <<
       "-----R_arg = " << R_arg << std::endl));
 	return res;
+}
+
+float Galaxy::analytic_mass(float r)
+{
+    float mass = pow(10., 8.);
+
+    if(stars_on)
+    {
+        float as = half_light_radius_eff/pow(b_n, sersic_index);
+        float x = r/as;
+        float threemp_term = (3.-p_n) * sersic_index;
+
+        mass += pow(10., stellar_mass) * boost::math::tgamma_lower(threemp_term, pow(x, 1./sersic_index) )/ boost::math::tgamma(threemp_term, 0.0);
+    }
+    if(dark_matter_on)
+    {
+        if(profile_name == "NFW")
+        {
+            float rs = HaloRadius/concentration;
+
+            float fc = log(1.+concentration)-concentration/(1.+concentration);
+            float logrhos = HaloMass-log10(4.*PI*rs*rs*rs*fc);
+
+            float y = r/rs;
+
+            float numerator = log(y+1.) - y/(y+1.);
+            float denominator = log(concentration + 1.) - concentration/(concentration + 1.);
+
+            float res = pow(10., HaloMass) * numerator/denominator;
+
+
+                    //4. * PI * pow(10., logrhos) * pow(r, 3.) * (log(1. + concentration) - concentration/(1. + concentration));
+
+            mass += res;
+        }
+        else
+        {
+            assert(false || assert_msg("Dark Matter profile \"" << profile_name << "\" not recognized"));
+        }
+
+    }
+
+    return mass;
+
 }
 
 float Galaxy::K_Kernel_DW(float u)
@@ -246,7 +296,8 @@ float Galaxy::sigma_integrand(float r)
 
     float Kernel = this->K_Kernel_DW(ratio);
     float density = this->rho(r);
-    float Mass = this->cumulative_mass(r);
+    //float Mass = this->cumulative_mass(r);
+    float Mass = this->analytic_mass(r);
     float res;
     if(r == 0) r = zero_perturbation;
     res = Kernel * density * Mass /  r;
@@ -258,12 +309,17 @@ float Galaxy::sigma_integrand(float r)
         "-----Density rho(r) = " << density << std::endl <<
         "-----Mass M(r) = " << Mass << std::endl));
 
-    assert((res >= 0.) || assert_msg("Sigma Los integrand (eq8) about to return negative (" << res << ")." << std::endl <<
-       "-----r = " << r << std::endl <<
-       "-----R = " << R << std::endl <<
-       "-----Kernel K(U) = " << Kernel << std::endl <<
-       "-----Density rho(r) = " << density << std::endl <<
-       "-----Mass M(r) = " << Mass << std::endl));
+    if(res < 0)
+    {
+        #pragma omp critical
+        assert((res >= 0.) || assert_msg("Sigma Los integrand (eq8) about to return negative (" << res << ")." << std::endl <<
+                                                                                                "-----r = " << r << std::endl <<
+                                                                                                "-----R = " << R << std::endl <<
+                                                                                                "-----Kernel K(U) = " << Kernel << std::endl <<
+                                                                                                "-----Density rho(r) = " << density << std::endl <<
+                                                                                                "-----Mass M(r) = " << Mass << std::endl));
+    }
+
 
 
     return res;
@@ -275,31 +331,17 @@ float Galaxy::sigma_los(float R_arg)
     // Full equation to calculate sigma LOS
 
 
-    /*
-
-    float test_value = R_arg;
-    bool keep_going = true;
-    float frac = 0.01;
-
-    float first = this->sigma_integrand(test_value);
-
-    while(keep_going)
-    {
-        test_value += R_arg;
-        float value = this->sigma_integrand(test_value);
-        if value
-    }; */
-
-
-	float upper_limit = 1000.0 * half_light_radius + R_arg; // Hopefully a sufficently high value of r.
+	float upper_limit = 100.0 * half_light_radius + R_arg; // Hopefully a sufficently high value of r.
 
 	R = R_arg;
 
 	auto fp = bind(&Galaxy::sigma_integrand, this, _1);
 
-	float prepass = SimpsonsRule(fp, R_arg, upper_limit, initial_subdiv);
+	float prepass = 0.0; //SimpsonsRule(fp, R_arg, upper_limit, initial_subdiv);
 
-    float los_accuracy = prepass/pow(10., precision + sigma_los_precision_modifier);
+
+	float los_accuracy = std::fmin(this->sigma_integrand(R_arg), pow(10., 8.));
+    //float los_accuracy = this->sigma_integrand(R_arg); ///10.0; //pow(10., precision); //prepass/pow(10., precision + sigma_los_precision_modifier);
 
     //float numerator = 2. * GR * SimpsonsRule(fp, R_arg, upper_limit, 10000);
 
@@ -342,7 +384,6 @@ float Galaxy::sigma_ap_integrand(float R_arg)
 	float MDP = this->MassDensity(R_arg);
 	return MDP * sigma * sigma * R_arg;
 }
-
 
 float Galaxy::sigma_ap(void)
 {

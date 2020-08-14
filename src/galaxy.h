@@ -11,6 +11,7 @@
 #include <random>
 #include "omp.h"
 #include <cassert>
+#include <algorithm>
 
 #define PI 3.14159265
 #define GR 4.3009125e-6 // In units of kpc M_sun^-1 (km/s)^2
@@ -20,7 +21,7 @@
 #define precision 4
 #define cum_mass_precision_modifier 0
 #define sigma_los_precision_modifier 1
-#define initial_subdiv 500
+#define initial_subdiv 10
 #define assert_msg(x) !(std::cerr << "Assertion failed: " << x << std::endl)
 
 using namespace std;
@@ -53,6 +54,9 @@ class Galaxy
 
 		// Function to to return the cumulative mass at radius r.
 		float cumulative_mass(float R_arg);
+
+		// Function to return the analytic expression of the mass at radius r.
+        float analytic_mass(float r);
 
 		// Function to return the value of the K_Kernal
 		float K_Kernel_DW(float u);
@@ -107,6 +111,10 @@ class Galaxy
 		float sersic_index;
 		// Effective Sersic Index perturbed to prevent /0 errors 
 		float sersic_index_eff;
+		// The mass density at z.
+		float Sigma0;
+        // prefactor for integrated density
+        float mass_prefactor;
 
 		// Term involving gamma functions, it's best to only calculate once
         float gamma_term = 0.0;
