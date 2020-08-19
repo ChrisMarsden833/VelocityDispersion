@@ -17,7 +17,7 @@
 #define GR 4.3009125e-6 // In units of kpc M_sun^-1 (km/s)^2
 #define h 0.69
 #define Om 0.3
-#define zero_perturbation 0.000001
+#define zero_perturbation 1e-8
 #define precision 4
 #define cum_mass_precision_modifier 0
 #define sigma_los_precision_modifier 1
@@ -125,14 +125,20 @@ class Galaxy
 		bool stars_on = true;
 		// Switch if dark matter is on or not.
 		bool dark_matter_on = false;
-		// Dark Matter Profile Name
+		// Switch on black hole or not.
+		bool black_hole_on = false;
+public:
+    void setBlackHoleOn(bool blackHoleOn);
+
+private:
+    // Dark Matter Profile Name
 		string profile_name;
 		// Halo Mass;
 		float HaloMass; // Log10
 		// Dark Matter Concentration parameter
 		float concentration;
 		// Halo Radius
-		float HaloRadius; // Kpc
+		float HaloRadius; // Kpc R_vir
 		// Path to concentration/mass relation file
 		std::string Conc_Path = "../data/cM_planck18.txt";
 
@@ -143,7 +149,14 @@ class Galaxy
 		// p_n - parameter needed for density
 		float p_n;
 
-		// rho0 - constant required for de-projected mass density.
+		// Black Hole Mass
+		float BHMass;
+public:
+    void setBhMass(float bhMass);
+
+private:
+
+    // rho0 - constant required for de-projected mass density.
 		float rho0;
 
 };
@@ -167,28 +180,16 @@ float GetVelocityDispersion(float input_aperture_size,
 
 
 float GetUnweightedVelocityDispersion(float R,
-                            float input_beta,
-                            float input_half_light_radius,
-                            float input_sersic_index,
-                            float input_stellar_mass,
-                            float z);
-
-
-float GetUnweightedVelocityDispersion(float R,
-                            float input_beta,
-                            float input_half_light_radius,
-                            float input_sersic_index,
-                            float input_stellar_mass,
-                            float z,
-                            float halo_mass,
-                            char * profile_name,
-                            char * c_path = (char*)"../data/cM_planck18.txt");
-
-float GetUnweightedVelocityDispersion(float R,
+                                      float Beta,
+                                      float HalfLightRadius,
+                                      float SersicIndex,
+                                      float StellarMass,
+                                      float HaloMass,
+                                      float BlackHoleMass,
                                       float z,
-                                      float halo_mass,
                                       char * profile_name,
-                                      char * c_path = (char*)"../data/cM_planck18.txt");
+                                      char * c_path,
+                                      int * componentFlag);
 
 float GetDMrho(float R,
                float input_beta,

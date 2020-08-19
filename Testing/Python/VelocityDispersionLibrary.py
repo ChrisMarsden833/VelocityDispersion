@@ -80,15 +80,11 @@ def SigmaLOS(R, Beta, HalfLightRadius, SersicIndex, StellarMass, z,
              DM=None, HaloMass=None,
              BlackHole=False, BHMass=None,
              stars=True,
-             cpath="../data/cM_planck18.txt" , flag = 0):
+             cpath="../data/cM_planck18.txt"):
 
     length = int(len(R))
     c_float_p = ctypes.POINTER(ctypes.c_float)
     c_int_p = ctypes.POINTER(ctypes.c_int32)
-
-    if DM is None:
-        assert HaloMass is None, "Halo mass should not be specified if DM is None"
-        DM = "None"
 
     R = R.astype(np.float32).ctypes.data_as(c_float_p)
     Beta = check_make_array(Beta, length).astype(np.float32).ctypes.data_as(c_float_p)
@@ -98,10 +94,12 @@ def SigmaLOS(R, Beta, HalfLightRadius, SersicIndex, StellarMass, z,
     z = check_make_array(z, length).astype(np.float32).ctypes.data_as(c_float_p)
     if HaloMass is None:
         HaloMass = 0.0
+
     HaloMass = check_make_array(HaloMass, length).astype(np.float32).ctypes.data_as(c_float_p)
     if BHMass is None:
         BHMass = 0.0
     BHMass = check_make_array(BHMass, length).astype(np.float32).ctypes.data_as(c_float_p)
+    cpath = cpath.encode('utf-8')
 
     c_size = int(length)
 
@@ -109,19 +107,27 @@ def SigmaLOS(R, Beta, HalfLightRadius, SersicIndex, StellarMass, z,
         stars_component = 1
     else:
         stars_component = 0
-    if DM is not None:
-        dm_component = 1
-    else:
+    if (DM is None) or (DM is "None"):
         dm_component = 0
+    else:
+        dm_component = 1
     if BlackHole:
         bh_component = 1
     else:
         bh_component = 0
 
     component_array = [stars_component, dm_component, bh_component]
-    component_array = np.array(component_array).astype(int).ctypes.data_as(c_int_p)
+
+    print(component_array)
+
+    if DM is None:
+        DM = "None"
+    DM = DM.encode('utf-8')
+
+    component_array = np.array(component_array).astype(np.int32).ctypes.data_as(c_int_p)
 
     ibc.ParallelSigmaLos.argtypes = [ctypes.POINTER(ctypes.c_float),
+                                  ctypes.POINTER(ctypes.c_float),
                                   ctypes.POINTER(ctypes.c_float),
                                   ctypes.POINTER(ctypes.c_float),
                                   ctypes.POINTER(ctypes.c_float),
@@ -131,13 +137,14 @@ def SigmaLOS(R, Beta, HalfLightRadius, SersicIndex, StellarMass, z,
                                   ctypes.c_int32,
                                   ctypes.c_char_p,
                                   ctypes.c_char_p,
-                                  ctypes.c_int32]
+                                  ctypes.POINTER(ctypes.c_int32)]
 
     ibc.ParallelSigmaLos.restype = ctypes.POINTER(ctypes.c_float)
 
-    res = ibc.ParallelSigmaLos(c_R, c_beta, c_hlr, c_n, c_sm, c_hm, c_z, c_size, c_DM, c_cpath, c_flag)
+    res = ibc.ParallelSigmaLos(R, Beta, HalfLightRadius, SersicIndex, StellarMass, HaloMass, BHMass, z, length,
+                               DM, cpath, component_array)
 
-    b = np.ctypeslib.as_array( (ctypes.c_float * length).from_address(ctypes.addressof(res.contents)))
+    b = np.ctypeslib.as_array((ctypes.c_float * length).from_address(ctypes.addressof(res.contents)))
 
     return b
 

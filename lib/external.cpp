@@ -53,11 +53,12 @@ extern "C"
                              float * SersicIndex,
                              float * StellarMass,
                              float * HaloMass,
+                             float * BlackHoleMass,
                              float * z,
                              int size,
                              char * DM,
                              char * c_path,
-                             int flag)
+                             int * componentFlag)
     {
         printf("\n\n######################################## \n");
         printf("Chris Marsden's Velocity dispersion code \n");
@@ -66,22 +67,13 @@ extern "C"
         float * res = (float *) std::malloc(sizeof(float) * size);
 
         int progress = 0;
-        #pragma omp parallel for default(none) shared(size, res, R, Beta, HalfLightRadius, SersicIndex, StellarMass, progress, z, HaloMass, DM, c_path, flag, stdout) schedule(static, 2)
+        #pragma omp parallel for default(none) shared(size, res, R, Beta, HalfLightRadius, SersicIndex, StellarMass, progress, z, HaloMass, BlackHoleMass, DM, c_path, componentFlag, stdout) schedule(static, 2)
         for (int i = 0; i < size; i++)
         {
-            if(strcmp(DM, "None") == 0)
-            {
-                res[i] = GetUnweightedVelocityDispersion(R[i], Beta[i], HalfLightRadius[i], SersicIndex[i], StellarMass[i], z[i]);
-            }
-            else if(flag == 1)
-            {
-                res[i] = GetUnweightedVelocityDispersion(R[i], z[i], HaloMass[i], DM, c_path);
-            }
-            else
-            {
-                res[i] = GetUnweightedVelocityDispersion(R[i], Beta[i], HalfLightRadius[i], SersicIndex[i], StellarMass[i], z[i], HaloMass[i], DM, c_path);
-            }
-            // Timer
+
+            res[i] = GetUnweightedVelocityDispersion(R[i], Beta[i], HalfLightRadius[i], SersicIndex[i], StellarMass[i],
+                    HaloMass[i], BlackHoleMass[i], z[i], DM, c_path, componentFlag);
+
             #pragma omp critical
             {
                 progress++;

@@ -206,7 +206,7 @@ float Galaxy::cumulative_mass(float R_arg)
 
 float Galaxy::analytic_mass(float r)
 {
-    float mass = pow(10., 8.);
+    float mass = 0.0;
 
     if(stars_on)
     {
@@ -225,16 +225,28 @@ float Galaxy::analytic_mass(float r)
             float fc = log(1.+concentration)-concentration/(1.+concentration);
             float logrhos = HaloMass-log10(4.*PI*rs*rs*rs*fc);
 
-            float y = r/rs;
+            float prefactor = 4. * PI * pow(10., logrhos) * pow(rs, 3.);
 
+            float ratio = r/rs;
+
+            float rhs = log(1. + ratio) - r/(rs + r);
+
+            float res = prefactor * rhs;
+
+            if(abs(res) < zero_perturbation) res = zero_perturbation;
+
+            assert(res >= 0. || assert_msg("NFW mass returned negative, res = " << res << std::endl <<
+                    "---- r = " << r << std::endl <<
+                    "---- rs = " << rs << std::endl <<
+                    "---- prefactor 4. * PI * pow(10., logrhos) * pow(rs, 3.) = " << prefactor << std::endl <<
+                    "---- rhs (log(rs + r) - log(rs) - r/(rs + r) =" << rhs << std::endl <<
+                    "----- ratio r/rs = " << ratio << std::endl));
+
+            /*
+            float y = r/rs;
             float numerator = log(y+1.) - y/(y+1.);
             float denominator = log(concentration + 1.) - concentration/(concentration + 1.);
-
-            float res = pow(10., HaloMass) * numerator/denominator;
-
-
-                    //4. * PI * pow(10., logrhos) * pow(r, 3.) * (log(1. + concentration) - concentration/(1. + concentration));
-
+            float res = pow(10., HaloMass) * numerator/denominator;*/
             mass += res;
         }
         else
@@ -242,6 +254,11 @@ float Galaxy::analytic_mass(float r)
             assert(false || assert_msg("Dark Matter profile \"" << profile_name << "\" not recognized"));
         }
 
+    }
+
+    if(black_hole_on)
+    {
+        mass += pow(10., BHMass);
     }
 
     return mass;
@@ -300,6 +317,7 @@ float Galaxy::sigma_integrand(float r)
     float Mass = this->analytic_mass(r);
     float res;
     if(r == 0) r = zero_perturbation;
+
     res = Kernel * density * Mass /  r;
 
     assert((!isnan(res) && !isinf(res)) || assert_msg("Sigma LOS integrand (eq8) about to return " << res << std::endl <<
@@ -337,15 +355,11 @@ float Galaxy::sigma_los(float R_arg)
 
 	auto fp = bind(&Galaxy::sigma_integrand, this, _1);
 
-	float prepass = 0.0; //SimpsonsRule(fp, R_arg, upper_limit, initial_subdiv);
+	float los_accuracy = std::fmin(this->sigma_integrand(R_arg), pow(10., 7.));
 
+	float integral_term = AdaptiveRichardsonExtrapolate(fp, R_arg, upper_limit, los_accuracy);
+    //float integral_term = SimpsonsRule(fp, R_arg, upper_limit, 1000000);
 
-	float los_accuracy = std::fmin(this->sigma_integrand(R_arg), pow(10., 8.));
-    //float los_accuracy = this->sigma_integrand(R_arg); ///10.0; //pow(10., precision); //prepass/pow(10., precision + sigma_los_precision_modifier);
-
-    //float numerator = 2. * GR * SimpsonsRule(fp, R_arg, upper_limit, 10000);
-
-    float integral_term = AdaptiveRichardsonExtrapolate(fp, R_arg, upper_limit, los_accuracy);
 
 	float numerator = 2. * GR *  integral_term;
 	float denominator = this->MassDensity(R_arg);
@@ -364,7 +378,6 @@ float Galaxy::sigma_los(float R_arg)
                  "This occured when:" << std::endl <<
                  "-------R (distance, main argument) = " << R_arg << " kpc" << std::endl <<
                  "-------Integration was performed between " << R_arg << " and " << upper_limit << std::endl <<
-                 "-------Integration prepass (simpsons rule with " << initial_subdiv << " elements) return = " << prepass << std::endl <<
                  "-------Accuracy = " << los_accuracy << std::endl <<
                  "-------Full Integration (ARE) = " << integral_term << std::endl));
 
@@ -569,6 +582,14 @@ void Galaxy::set_stars_on(bool new_value) {
     stars_on = new_value;
 }
 
+void Galaxy::setBlackHoleOn(bool blackHoleOn) {
+    black_hole_on = blackHoleOn;
+}
+
+void Galaxy::setBhMass(float bhMass) {
+    BHMass = bhMass;
+}
+
 
 float GetVelocityDispersion(float input_aperture_size,
                             float input_beta,
@@ -605,58 +626,48 @@ float GetVelocityDispersion(float input_aperture_size,
 }
 
 float GetUnweightedVelocityDispersion(float R,
-                                      float input_beta,
-                                      float input_half_light_radius,
-                                      float input_sersic_index,
-                                      float input_stellar_mass,
-                                      float z)
-{
-    Galaxy aGalaxy(input_stellar_mass, input_beta, input_half_light_radius, 1.0, input_sersic_index, z);
-    float res = aGalaxy.sigma_los(R);
-    assert(!isnan(res) && "GetUnweightedVelocityDispersion() returned NaN");
-    assert(!isinf(res) && "GetUnweightedVelocityDispersion() returned inf");
-    return res;
-}
-
-float GetUnweightedVelocityDispersion(float R,
-                                     float input_beta,
-                                     float input_half_light_radius,
-                                     float input_sersic_index,
-                                     float input_stellar_mass,
-                                     float z,
-                                     float halo_mass,
-                                     char * profile_name,
-                                     char * c_path)
-{
-    Galaxy aGalaxy(input_stellar_mass, input_beta, input_half_light_radius, 1.0, input_sersic_index, z);
-    std::string path(c_path);
-    aGalaxy.setConc_Path(path);
-
-    std::string name(profile_name);
-    aGalaxy.setDarkMatter(halo_mass, name);
-    float res = aGalaxy.sigma_los(R);
-    assert(!isnan(res) && "GetUnweightedVelocityDispersion() returned NaN");
-    assert(!isinf(res) && "GetUnweightedVelocityDispersion() returned inf");
-    return res;
-}
-
-float GetUnweightedVelocityDispersion(float R,
+                                      float Beta,
+                                      float HalfLightRadius,
+                                      float SersicIndex,
+                                      float StellarMass,
+                                      float HaloMass,
+                                      float BlackHoleMass,
                                       float z,
-                                      float halo_mass,
                                       char * profile_name,
-                                      char * c_path)
+                                      char * c_path,
+                                      int * componentFlag)
 {
-    Galaxy aGalaxy(11., 0.1, 5, 1.0, 4, z);
-    std::string path(c_path);
-    aGalaxy.setConc_Path(path);
+    Galaxy aGalaxy(StellarMass, Beta, HalfLightRadius, 1.0, SersicIndex, z);
 
-    std::string name(profile_name);
-    aGalaxy.setDarkMatter(halo_mass, name);
-    aGalaxy.set_stars_on(false);
+    if(componentFlag[0] == 0)
+    {
+        // Stars own contribution to their velocity dispersion is on.
+        aGalaxy.set_stars_on(false);
+    }
+
+    if(componentFlag[1] == 1)
+    {
+        // Dark Matter contribution to velocity dispersion is on
+        std::string path(c_path);
+        aGalaxy.setConc_Path(path);
+        std::string name(profile_name);
+        aGalaxy.setDarkMatter(HaloMass, name);
+    }
+
+    if(componentFlag[2] == 1)
+    {
+        // Black hole contribution to velocity dispersion is on.
+        aGalaxy.setBlackHoleOn(true);
+        aGalaxy.setBhMass(BlackHoleMass);
+    }
+
     float res = aGalaxy.sigma_los(R);
+
     assert(!isnan(res) && "GetUnweightedVelocityDispersion() returned NaN");
     assert(!isinf(res) && "GetUnweightedVelocityDispersion() returned inf");
+
     return res;
+
 }
 
 
