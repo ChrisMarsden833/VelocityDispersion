@@ -161,22 +161,17 @@ private:
 
 };
 
-float GetVelocityDispersion(float input_aperture_size,
-			    float input_beta,
-			    float input_half_light_radius,
-		   	    float input_sersic_index,
-			    float input_stellar_mass,
-			    float z);
-
-float GetVelocityDispersion(float input_aperture_size,
-			    float input_beta,
-			    float input_half_light_radius,
-		   	    float input_sersic_index,
-			    float input_stellar_mass,
-			    float z,
-			    float halo_mass,
-			    char * profile_name,
-			    char * c_path = (char*)"../data/cM_planck18.txt");
+float GetVelocityDispersion(float Aperture,
+                            float Beta,
+                            float HalfLightRadius,
+                            float SersicIndex,
+                            float StellarMass,
+                            float HaloMass,
+                            float BlackHoleMass,
+                            float z,
+                            char * profile_name,
+                            char * c_path,
+                            int * componentFlag);
 
 
 float GetUnweightedVelocityDispersion(float R,

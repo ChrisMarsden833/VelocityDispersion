@@ -56,6 +56,12 @@ float incompleteBeta(float a, float b, float z)
 
 void CheckAndMaybeIncrementN(int * N, std::string fname)
 {
+
+    if(!checkEven(*N))
+    {
+        ++*N;
+    }
+    /*
     try
     {
         if(!checkEven(*N))
@@ -67,7 +73,7 @@ void CheckAndMaybeIncrementN(int * N, std::string fname)
     catch (const std::invalid_argument& ia) {
         std::cerr << ia.what() << "\n" << "Value will be incremented by one." << '\n';
         ++*N;
-    }
+    }*/
 }
 
 void fastLinspace(float * &grid, float &h, float a, float b, int N)

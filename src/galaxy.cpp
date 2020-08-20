@@ -233,7 +233,7 @@ float Galaxy::analytic_mass(float r)
 
             float res = prefactor * rhs;
 
-            if(abs(res) < zero_perturbation) res = zero_perturbation;
+            if(abs(rhs) < zero_perturbation) res = 0.;
 
             assert(res >= 0. || assert_msg("NFW mass returned negative, res = " << res << std::endl <<
                     "---- r = " << r << std::endl <<
@@ -247,6 +247,7 @@ float Galaxy::analytic_mass(float r)
             float numerator = log(y+1.) - y/(y+1.);
             float denominator = log(concentration + 1.) - concentration/(concentration + 1.);
             float res = pow(10., HaloMass) * numerator/denominator;*/
+
             mass += res;
         }
         else
@@ -345,7 +346,7 @@ float Galaxy::sigma_integrand(float r)
 
 float Galaxy::sigma_los(float R_arg)
 {
-    assert( R_arg > 0 || assert_msg("R_arg cannot be < 0, got: " << R_arg << std::endl));
+    if(R_arg == 0.) R_arg = zero_perturbation;
     // Full equation to calculate sigma LOS
 
 
@@ -355,7 +356,7 @@ float Galaxy::sigma_los(float R_arg)
 
 	auto fp = bind(&Galaxy::sigma_integrand, this, _1);
 
-	float los_accuracy = std::fmin(this->sigma_integrand(R_arg), pow(10., 7.));
+	float los_accuracy = std::fmin(this->sigma_integrand(R_arg), pow(10., 9.));
 
 	float integral_term = AdaptiveRichardsonExtrapolate(fp, R_arg, upper_limit, los_accuracy);
     //float integral_term = SimpsonsRule(fp, R_arg, upper_limit, 1000000);
@@ -400,18 +401,35 @@ float Galaxy::sigma_ap_integrand(float R_arg)
 
 float Galaxy::sigma_ap(void)
 {
+    float numerator, denominator, accuracy;
+
     // Full value of halo aperture
 	auto numfp = bind(&Galaxy::sigma_ap_integrand, this, _1);
 
-	float accuracy = pow(10, 15-precision);
+	//float accuracy = pow(10., stellar_mass-3);
 
-    float num_accuracy = SimpsonsRule(numfp, 0., aperture_size, initial_subdiv)/pow(10., precision);
-  	float numerator = AdaptiveRichardsonExtrapolate(numfp, 0., aperture_size, num_accuracy);
+	if(aperture_size > half_light_radius)
+	{
+        numerator = SimpsonsRule(numfp, 0., aperture_size, 500);
+	}
+	else
+    {
+        accuracy = pow(10., stellar_mass) / 100.;
+        numerator = AdaptiveRichardsonExtrapolate(numfp, 0., aperture_size, accuracy);
+    }
+
 
 	auto denfp = bind(&Galaxy::MassDensityr, this, _1);
 
-	float den_accuracy = SimpsonsRule(denfp, 0., aperture_size, initial_subdiv)/pow(10., precision);
-	float denominator = AdaptiveRichardsonExtrapolate(denfp, 0., aperture_size, den_accuracy);
+	if(aperture_size > half_light_radius)
+	{
+	    denominator = SimpsonsRule(denfp, 0., half_light_radius, 100);
+	}
+	else
+    {
+	    accuracy = pow(10., stellar_mass)/500.;
+        denominator = AdaptiveRichardsonExtrapolate(denfp, 0., aperture_size, accuracy);
+    }
 
 	return pow(numerator/denominator, 0.5);	
 }
@@ -604,25 +622,49 @@ float GetVelocityDispersion(float input_aperture_size,
     return res;
 }
 
-float GetVelocityDispersion(float input_aperture_size,
-                            float input_beta,
-                            float input_half_light_radius,
-                            float input_sersic_index,
-                            float input_stellar_mass,
+float GetVelocityDispersion(float Aperture,
+                            float Beta,
+                            float HalfLightRadius,
+                            float SersicIndex,
+                            float StellarMass,
+                            float HaloMass,
+                            float BlackHoleMass,
                             float z,
-                            float halo_mass,
                             char * profile_name,
-                            char * c_path)
+                            char * c_path,
+                            int * componentFlag)
 {
-	Galaxy aGalaxy(input_stellar_mass, input_beta, input_half_light_radius, input_aperture_size, input_sersic_index, z);
+    Galaxy aGalaxy(StellarMass, Beta, HalfLightRadius, Aperture, SersicIndex, z);
 
-	std::string path(c_path);
-    aGalaxy.setConc_Path(path);
+    if(componentFlag[0] == 0)
+    {
+        // Stars own contribution to their velocity dispersion is on.
+        aGalaxy.set_stars_on(false);
+    }
 
-    std::string name(profile_name);
-	aGalaxy.setDarkMatter(halo_mass, name);
+    if(componentFlag[1] == 1)
+    {
+        // Dark Matter contribution to velocity dispersion is on
+        std::string path(c_path);
+        aGalaxy.setConc_Path(path);
+        std::string name(profile_name);
+        aGalaxy.setDarkMatter(HaloMass, name);
+    }
 
-	return aGalaxy.sigma_ap();
+    if(componentFlag[2] == 1)
+    {
+        // Black hole contribution to velocity dispersion is on.
+        aGalaxy.setBlackHoleOn(true);
+        aGalaxy.setBhMass(BlackHoleMass);
+    }
+
+    float res = aGalaxy.sigma_ap();
+
+    assert(!isnan(res) && "GetVelocityDispersion() returned NaN");
+    assert(!isinf(res) && "GetVelocityDispersion() returned inf");
+
+    return res;
+
 }
 
 float GetUnweightedVelocityDispersion(float R,
