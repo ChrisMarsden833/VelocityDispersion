@@ -145,14 +145,6 @@
 			<Option target="DirectExecution"/>
 			<Option target="sigma"/>
 		</Unit>
-		<Unit filename="/Users/chris/Documents/PhD/ProjectSigma/VelocityDispersion/src/desmond.cpp">
-			<Option target="DirectExecution"/>
-			<Option target="sigma"/>
-		</Unit>
-		<Unit filename="/Users/chris/Documents/PhD/ProjectSigma/VelocityDispersion/src/desmond.h">
-			<Option target="DirectExecution"/>
-			<Option target="sigma"/>
-		</Unit>
 		<Unit filename="/Users/chris/Documents/PhD/ProjectSigma/VelocityDispersion/src/galaxy.cpp">
 			<Option target="DirectExecution"/>
 			<Option target="sigma"/>

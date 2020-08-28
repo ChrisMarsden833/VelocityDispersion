@@ -10,7 +10,11 @@
 #include "vector"
 #include "utillity.h"
 #include <cassert>
-#define assert_msg(x) !(std::cerr << "Assertion failed: " << x << std::endl)
+#define assert_msg(x) !(std::cerr << std::endl << \
+    "#######################################################" << std::endl << \
+    "################# Assertion failed ####################" << std::endl << \
+    x << std::endl << \
+    "#######################################################" << std::endl)
 
 #define max_subdivisions 10000
 

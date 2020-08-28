@@ -18,6 +18,7 @@ def Sigma(Aperture, Beta, HalfLightRadius, SersicIndex, StellarMass, z,
              DM=None, HaloMass=None,
              BlackHole=False, BHMass=None,
              stars=True,
+             disk_mass = 0.0,
              cpath="../data/cM_planck18.txt"):
 
     length = int(len(Aperture))
@@ -29,6 +30,7 @@ def Sigma(Aperture, Beta, HalfLightRadius, SersicIndex, StellarMass, z,
     HalfLightRadius = check_make_array(HalfLightRadius, length).astype(np.float32).ctypes.data_as(c_float_p)
     SersicIndex = check_make_array(SersicIndex, length).astype(np.float32).ctypes.data_as(c_float_p)
     StellarMass = check_make_array(StellarMass, length).astype(np.float32).ctypes.data_as(c_float_p)
+    disk_mass = check_make_array(disk_mass, length).astype(np.float32).ctypes.data_as(c_float_p)
     z = check_make_array(z, length).astype(np.float32).ctypes.data_as(c_float_p)
     if HaloMass is None:
         HaloMass = 0.0
@@ -62,29 +64,29 @@ def Sigma(Aperture, Beta, HalfLightRadius, SersicIndex, StellarMass, z,
 
     component_array = np.array(component_array).astype(np.int32).ctypes.data_as(c_int_p)
 
-    ibc.ParallelSigma.argtypes = [ctypes.POINTER(ctypes.c_float),
-                                  ctypes.POINTER(ctypes.c_float),
-                                  ctypes.POINTER(ctypes.c_float),
-                                  ctypes.POINTER(ctypes.c_float),
-                                  ctypes.POINTER(ctypes.c_float),
-                                  ctypes.POINTER(ctypes.c_float),
-                                  ctypes.POINTER(ctypes.c_float),
-                                  ctypes.POINTER(ctypes.c_float),
-                                  ctypes.c_int32,
-                                  ctypes.c_char_p,
-                                  ctypes.c_char_p,
-                                  ctypes.POINTER(ctypes.c_int32)]
+    ibc.ParallelSigma.argtypes = [ctypes.POINTER(ctypes.c_float), # Aperture
+                                  ctypes.POINTER(ctypes.c_float), # Redshift
+                                  ctypes.POINTER(ctypes.c_float), # Bulge mass
+                                  ctypes.POINTER(ctypes.c_float), # Bulge radius
+                                  ctypes.POINTER(ctypes.c_float), # Bulge beta
+                                  ctypes.POINTER(ctypes.c_float), # Bulge sersic index
+                                  ctypes.POINTER(ctypes.c_int), # Bulge component flag
+                                  ctypes.POINTER(ctypes.c_float), # Disk Mass
+                                  ctypes.POINTER(ctypes.c_float), # Halo Mass
+                                  ctypes.c_char_p, # Profile Name
+                                  ctypes.c_char_p, # c_path
+                                  ctypes.POINTER(ctypes.c_float),  # Black Hole Mass
+                                  ctypes.c_int32]  # Length
 
     ibc.ParallelSigma.restype = ctypes.POINTER(ctypes.c_float)
-
-    res = ibc.ParallelSigma(Aperture, Beta, HalfLightRadius, SersicIndex, StellarMass, HaloMass, BHMass, z, length,
-                               DM, cpath, component_array)
+    res = ibc.ParallelSigma(Aperture, z, StellarMass, HalfLightRadius, Beta, SersicIndex, component_array, disk_mass, HaloMass, DM, cpath, BlackHole, length)
 
     b = np.ctypeslib.as_array(
     (ctypes.c_float * length).from_address(ctypes.addressof(res.contents)))
 
     return b
 
+'''
 def SigmaLOS(R, Beta, HalfLightRadius, SersicIndex, StellarMass, z,
              DM=None, HaloMass=None,
              BlackHole=False, BHMass=None,
@@ -254,6 +256,10 @@ def DM_profile(r, HaloMass, z, DM, cpath = "../data/cM_planck18.txt"):
     b = np.ctypeslib.as_array( (ctypes.c_float * length).from_address(ctypes.addressof(res.contents)))
 
     return b
+
+
+'''
+
 
 def check_list(list, names):
     for i, element in enumerate(list):

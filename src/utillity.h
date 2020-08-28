@@ -13,7 +13,11 @@
 
 #define PI 3.14159265
 #define EU 2.71828182
-#define assert_msg(x) !(std::cerr << "Assertion failed: " << x << std::endl)
+#define assert_msg(x) !(std::cerr << std::endl << \
+    "#######################################################" << std::endl << \
+    "################# Assertion failed ####################" << std::endl << \
+    x << std::endl << \
+    "#######################################################" << std::endl)
 
 /** ++ factorial ++
  * Simple recursive function to return the factorial of an integer

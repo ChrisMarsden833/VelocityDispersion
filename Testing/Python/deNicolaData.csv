@@ -1,4 +1,4 @@
-Name,Morphology,A,Distance_Mpc,Distance_Error_Mpc,Black_Hole_Mass_Msun,Black_Hole_Mass_Error_Msun,velocity_dispersion_kms,velocity_dispersion_error_kms,Luminosity_Lsun,Luminosity_Error_Lsun,Radius_kpc,Radius_error_kpc,B,stellar_mass,Sersic_Index
+Name,Morphology,A,Distance_Mpc,Distance_Error_Mpc,Black_Hole_Mass_Msun,Black_Hole_Mass_Error_Msun,velocity_dispersion_kms,velocity_dispersion_error_kms,Luminosity_Lsun,Luminosity_Error_Lsun,Radius_kpc,Radius_error_kpc,B,bulge_stellar_mass,Sersic_Index
 Circinus,SABb:,3,2.82,0.47,6.23,0.1,1.9,0.02,10,0.12,-0.91,0.07,1,null,null
 A1836,BCGE,0,152.4,8.4,9.57,0.06,2.46,0.02,11.75,0.06,0.89,0.02,0,null,null
 IC1459,E4,0,28.9,3.7,9.39,0.08,2.52,0.01,11.7,0.06,0.9,0.06,1,null,null

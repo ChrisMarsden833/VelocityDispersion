@@ -11,9 +11,7 @@ INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 set(CMAKE_CXX_STANDARD 14)
 
 set ( VelocityDispersion_SOURCES
-        desmond.cpp
-        desmond.h
-        integration.cpp
+		integration.cpp
         integration.h
         main.cpp
         main.h
