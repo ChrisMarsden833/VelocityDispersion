@@ -452,10 +452,11 @@ float Galaxy::HaloVcirc2(float r)
 // ///// Disk Functions /////
 // //////////////////////////
 
-void Galaxy::ConstructDisk(float DiskMass)
+void Galaxy::ConstructDisk(float DiskMass, float input_inclination)
 {
     disk_present = true;
     mass_disk = DiskMass;
+    disk_inclination = input_inclination;
     float length_log10 = 0.633 + 0.39*(mass_disk - 11.) + 0.069*(mass_disk- 11.)*(mass_disk- 11.);
     disk_scale_length = pow(10., length_log10);
 }
@@ -482,7 +483,7 @@ float Galaxy::disk_integrand(float R)
     return 2. * PI * R * disk_projected_density(R) * disk_Vcirc2(R);
 }
 
-float Galaxy::disk_velocity_dispersion2(float aperture_size, float inclination)
+float Galaxy::disk_velocity_dispersion2()
 {
     auto numfp = bind(&Galaxy::disk_integrand, this, _1);
 
@@ -490,7 +491,7 @@ float Galaxy::disk_velocity_dispersion2(float aperture_size, float inclination)
     int prepass = 6;
     float accuracy = SimpsonsRule(numfp, 0, aperture_size, prepass)/multiplyer;
     float integral_term = AdaptiveRichardsonExtrapolate(numfp, 0., aperture_size, accuracy);
-    float constant = (sin(inclination) * sin(inclination))/disk_mass(aperture_size);
+    float constant = (sin(disk_inclination) * sin(disk_inclination))/disk_mass(aperture_size);
     return constant * integral_term;
 }
 
@@ -516,6 +517,7 @@ float GetVelocityDispersion(float Aperture,
                             float bulge_sersicIndex,
                             int * componentFlag,
                             float disk_mass,
+                            float disk_inclination,
                             float Halo_mass,
                             char * profile_name,
                             char * c_path,
@@ -523,14 +525,16 @@ float GetVelocityDispersion(float Aperture,
 {
     Galaxy aGalaxy(Aperture, redshift);
     aGalaxy.ConstructBulge(bulge_mass, bulge_beta, bulge_radius, bulge_sersicIndex);
-    aGalaxy.ConstructDisk(disk_mass);
+    aGalaxy.ConstructDisk(disk_mass, disk_inclination);
     aGalaxy.ConstructHalo(Halo_mass, profile_name, c_path);
     aGalaxy.Construct_Black_Hole(BlackHole_mass);
 
     aGalaxy.SetBulgeGravitationalContributions(componentFlag[0], componentFlag[1], componentFlag[2]);
 
     float bulge_sigma = aGalaxy.sigma_ap();
-    float disk_sigma2 =
+    float disk_sigma2 = aGalaxy.disk_velocity_dispersion2();
+
+    float res = pow(bulge_sigma*bulge_sigma + disk_sigma2, 0.5);
 
     assert(!isnan(res) && "GetVelocityDispersion() returned NaN");
     assert(!isinf(res) && "GetVelocityDispersion() returned inf");

@@ -101,7 +101,7 @@ class Galaxy
         // \\\\\\\\\\\\\\\\\\\\\\\\
 
         // Set up the galactic disk
-        void ConstructDisk(float DiskMass);
+        void ConstructDisk(float DiskMass, float input_inclination);
 
         // The disk surface density
         float disk_projected_density(float R);
@@ -116,7 +116,7 @@ class Galaxy
         float disk_integrand(float R);
 
         // Disk velocity dispersion
-        float disk_velocity_dispersion2(float aperture_size, float inclination);
+        float disk_velocity_dispersion2();
 
         // ]]]]]]]]]]]]]]]]]]]]]]]]]]]]
         // ]]] Black Hole Functions ]]]
@@ -200,6 +200,8 @@ class Galaxy
         float mass_disk = 0.;
         // Disk Scale length [kpc]
         float disk_scale_length = 0.;
+        // Disk Inclination
+        float disk_inclination = 0.;
 
         // ]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
         // ]]] Black Hole Properties ]]]
@@ -220,6 +222,7 @@ float GetVelocityDispersion(float Aperture,
                             float bulge_sersicIndex,
                             int * componentFlag,
                             float disk_mass,
+                            float disk_inclination,
                             float Halo_mass,
                             char * profile_name,
                             char * c_path,
