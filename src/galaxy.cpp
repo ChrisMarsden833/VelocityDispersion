@@ -35,12 +35,17 @@ void Galaxy::ConstructBulge(float input_bulge_mass, float input_bulge_beta, floa
     // Other bulge-related values that we only need to calculate once.
 
     // Calculate the gamma term within the Kernel, often used and only depends on beta
+
     gamma_term = (float) boost::math::tgamma(bulge_beta - 0.5) / boost::math::tgamma(bulge_beta);
 
     // Set the value of b_n (D.W. - equation 2)
     b_n = 2.*bulge_sersic_index - (1./3.) + (.009876/bulge_sersic_index);
 
     // Find the gamma function used in sigma_e.
+
+    assert(bulge_sersic_index > 0. || assert_msg("Bulge sersic_index < 0 - value: " << bulge_sersic_index));
+    assert(b_n >= 0. || assert_msg("b_n < 0 - value:" << b_n << std::endl << ". This occured when n =" << bulge_sersic_index));
+
     float gamma = boost::math::tgamma_lower(2 * bulge_sersic_index, b_n);
     // Sigma_e, the constant for the sersic profile. It's debatable if this should just be M_*/(2*pi*Re^2) or this, but it seems to work as is:
     sigma_e = pow(10, bulge_stellar_mass) / (pow(bulge_half_light_radius, 2) * PI * 2 * 2. * bulge_sersic_index * exp(b_n) * gamma / pow(b_n, 2 * bulge_sersic_index) );
@@ -206,20 +211,30 @@ float Galaxy::bulge_sigma_integrand(float r)
 
 float Galaxy::bulge_sigma_los(float R_arg)
 {
-    if(R_arg == 0.) R_arg = zero_perturbation;
-
     // Full equation to calculate sigma LOS
-	float upper_limit = 100.0 * bulge_half_light_radius + R_arg; // Hopefully a sufficently high value of r that can never be exceeded by R_arg
+    if(R_arg == 0.) R_arg = zero_perturbation;
+    float K = (2. * GR) / this->BulgeProjectedDensity(R_arg);
+
 	R = R_arg;
 	auto fp = bind(&Galaxy::bulge_sigma_integrand, this, _1); // An unfortunate consequence of using classes
 
-	// The accuracy is the smallest of the first value in the integral * 0.01, or 10, 9. This combinationb seems to work well.
-	// TODO - Generalize the accuracy in a phyiscal way that presevers performance
-	float los_accuracy = std::fmin(this->bulge_sigma_integrand(R_arg) * 0.01, pow(10., 9.));
+	float accuracy = 1; // kms^-1
+	float los_accuracy = pow(accuracy, 2)/K; // Transform this into the units of the integral
+
+	// Let's find a sensible upper limit for the integral.
+	float step = bulge_half_light_radius;
+	float upper_limit = R_arg + step; // We subdivide into
+	float unit_accuracy = 2. * los_accuracy/(upper_limit - R_arg); // Unit accuracy is the accuracy divided by the interval
+	while(unit_accuracy > los_accuracy/(upper_limit - R_arg))
+	{
+	    unit_accuracy = this->bulge_sigma_integrand(upper_limit) / (upper_limit - R_arg) ;
+	    upper_limit += step;
+	}
+
+
 	float integral_term = AdaptiveRichardsonExtrapolate(fp, R_arg, upper_limit, los_accuracy);
-	float numerator = 2. * GR *  integral_term;
-	float denominator = this->BulgeProjectedDensity(R_arg);
-	float value = pow(numerator/denominator, 0.5);
+
+	float value = pow(K * integral_term, 0.5);
 
 	if(isnan(value) || isinf(value))
 	{
@@ -228,8 +243,7 @@ float Galaxy::bulge_sigma_los(float R_arg)
             assert( (!isnan(value) && !isinf(value)) ||
                     assert_msg(std::endl << "Sigma LOS (eq7) about to return " << value << std::endl <<
                  "-----formula = pow(numerator/denominator, 0.5)" << std::endl <<
-                 "-----numerator = " << numerator << std::endl <<
-                 "-----denominator = " << denominator << std::endl <<
+                 "-----K (2G/Sigma(r) = " << K << std::endl <<
                  "This occured when:" << std::endl <<
                  "-------R (distance, main argument) = " << R_arg << " kpc" << std::endl <<
                  "-------Integration was performed between " << R_arg << " and " << upper_limit << std::endl <<
@@ -255,29 +269,51 @@ float Galaxy::sigma_ap(void)
     // Full value of halo aperture
 	auto numfp = bind(&Galaxy::sigma_ap_integrand, this, _1);
 
-	float multiplyer = 1e3;
+	float multiplyer = 1e6;
 	int prepass = 6;
     // Do a prepass to get a sense of the value of the integral
     accuracy = SimpsonsRule(numfp, 0, aperture_size, prepass)/multiplyer;
-    numerator = AdaptiveRichardsonExtrapolate(numfp, 0., aperture_size, accuracy);
+    numerator =  AdaptiveRichardsonExtrapolate(numfp, 0., aperture_size, accuracy);
 
 	auto denfp = bind(&Galaxy::BulgeProjectedDensityxR, this, _1);
     accuracy = SimpsonsRule(denfp, 0, aperture_size, prepass)/multiplyer;
+
+    //float accuracy =
+
     denominator = AdaptiveRichardsonExtrapolate(denfp, 0., aperture_size, accuracy);
 
-	return pow(numerator/denominator, 0.5);	
+    float res = pow(numerator/denominator, 0.5);
+
+    if(isnan(res) || isinf(res))
+    {
+    #pragma omp critical
+        {
+            assert( (!isnan(res) && !isinf(res)) ||
+                    assert_msg(std::endl << "Sigma ap (eq10) about to return " << res << std::endl <<
+                                         "-----formula = pow(numerator/denominator, 0.5)" << std::endl <<
+                                         "-----numereator: " << numerator <<
+                                         "-----denominator: " << denominator <<
+                                         "This occured when:" << std::endl <<
+                                         "-------Aperture = " << aperture_size << " kpc" << std::endl));
+        }
+    }
+
+
+    return res;
+
 }
 
 // //////////////////////////
 // ///// Halo Functions /////
 // //////////////////////////
 
-void Galaxy::ConstructHalo(float input_halo_mass, std::string input_profile_name, std::string input_conc_path)
+void Galaxy::ConstructHalo(float input_halo_mass, std::string input_profile_name, float input_conc)
 {
     HaloMass = input_halo_mass;
     profile_name = input_profile_name;
-    Conc_Path = input_conc_path;
-    GetHaloC(false);
+    concentration = input_conc;
+    //Conc_Path = input_conc_path;
+    //GetHaloC(false);
     GetHaloR();
 }
 
@@ -468,7 +504,9 @@ float Galaxy::disk_projected_density(float R)
 
 float Galaxy::disk_Vcirc2(float R)
 {
+    if(R == 0.) R += zero_perturbation;
     float x = R/disk_scale_length;
+
     float B_term = boost::math::cyl_bessel_i(0., x/2.) * boost::math::cyl_bessel_k(0., x/2.) - boost::math::cyl_bessel_i(1., x/2.) * boost::math::cyl_bessel_k(1., x/2.);
     return (GR * pow(10., mass_disk))/(2.*disk_scale_length) * x * B_term;
 }
@@ -520,24 +558,37 @@ float GetVelocityDispersion(float Aperture,
                             float disk_inclination,
                             float Halo_mass,
                             char * profile_name,
-                            char * c_path,
+                            float halo_concentration,
                             float BlackHole_mass)
 {
     Galaxy aGalaxy(Aperture, redshift);
     aGalaxy.ConstructBulge(bulge_mass, bulge_beta, bulge_radius, bulge_sersicIndex);
     aGalaxy.ConstructDisk(disk_mass, disk_inclination);
-    aGalaxy.ConstructHalo(Halo_mass, profile_name, c_path);
+    aGalaxy.ConstructHalo(Halo_mass, profile_name, halo_concentration);
     aGalaxy.Construct_Black_Hole(BlackHole_mass);
 
     aGalaxy.SetBulgeGravitationalContributions(componentFlag[0], componentFlag[1], componentFlag[2]);
 
+    float res, disk_sigma2 = 0;
+
     float bulge_sigma = aGalaxy.sigma_ap();
-    float disk_sigma2 = aGalaxy.disk_velocity_dispersion2();
+    if (disk_mass > 0)
+    {
+        disk_sigma2 = aGalaxy.disk_velocity_dispersion2();
+        res = pow(bulge_sigma*bulge_sigma + disk_sigma2, 0.5);
+    }
+    else
+    {
+        res = bulge_sigma;
+    }
 
-    float res = pow(bulge_sigma*bulge_sigma + disk_sigma2, 0.5);
 
-    assert(!isnan(res) && "GetVelocityDispersion() returned NaN");
-    assert(!isinf(res) && "GetVelocityDispersion() returned inf");
+    assert( (!isnan(res) && !isinf(res)) ||
+            assert_msg(std::endl << "GetVelocityDispersion() about to return " << res << std::endl <<
+                                 "----bulge_sigma: " << bulge_sigma << std::endl <<
+                                 "----disk_sigma2: " << disk_sigma2 << std::endl));
+
+
 
     return res;
 

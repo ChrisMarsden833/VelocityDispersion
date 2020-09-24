@@ -15,18 +15,21 @@ H = cosmo.H0
 ibc = ctypes.CDLL("/Users/chris/Documents/PhD/ProjectSigma/VelocityDispersion/lib/libsigma.so")
 
 def Sigma(Aperture, Beta, HalfLightRadius, SersicIndex, StellarMass, z,
-             DM=None, HaloMass=None,
-             BlackHole=False, BHMass=None,
+        DM=None, HaloMass=0.0, haloC=0.0,
+             BlackHole=False, BHMass=0.0,
              stars=True,
              disk_mass = 0.0,
-             disk_inclination = 0.0,
-             cpath="../data/cM_planck18.txt"):
+             disk_inclination = 0.0):
 
-    length = int(len(Aperture))
+    if hasattr(Aperture, "__len__"):
+        length = int(len(np.array(Aperture)))
+    else:
+        length = 1
+
     c_float_p = ctypes.POINTER(ctypes.c_float)
     c_int_p = ctypes.POINTER(ctypes.c_int32)
 
-    Aperture = Aperture.astype(np.float32).ctypes.data_as(c_float_p)
+    Aperture = check_make_array(Aperture, length).astype(np.float32).ctypes.data_as(c_float_p)
     Beta = check_make_array(Beta, length).astype(np.float32).ctypes.data_as(c_float_p)
     HalfLightRadius = check_make_array(HalfLightRadius, length).astype(np.float32).ctypes.data_as(c_float_p)
     SersicIndex = check_make_array(SersicIndex, length).astype(np.float32).ctypes.data_as(c_float_p)
@@ -38,10 +41,11 @@ def Sigma(Aperture, Beta, HalfLightRadius, SersicIndex, StellarMass, z,
         HaloMass = 0.0
 
     HaloMass = check_make_array(HaloMass, length).astype(np.float32).ctypes.data_as(c_float_p)
+    haloC = check_make_array(haloC, length).astype(np.float32).ctypes.data_as(c_float_p)
+
     if BHMass is None:
         BHMass = 0.0
     BHMass = check_make_array(BHMass, length).astype(np.float32).ctypes.data_as(c_float_p)
-    cpath = cpath.encode('utf-8')
 
     if stars:
         stars_component = 1
@@ -77,12 +81,14 @@ def Sigma(Aperture, Beta, HalfLightRadius, SersicIndex, StellarMass, z,
                                   ctypes.POINTER(ctypes.c_float),  # Disk Inclination
                                   ctypes.POINTER(ctypes.c_float),  # Halo Mass
                                   ctypes.c_char_p, # Profile Name
-                                  ctypes.c_char_p, # c_path
+                                  ctypes.POINTER(ctypes.c_float), # c_path
                                   ctypes.POINTER(ctypes.c_float),  # Black Hole Mass
                                   ctypes.c_int32]  # Length
 
     ibc.ParallelSigma.restype = ctypes.POINTER(ctypes.c_float)
-    res = ibc.ParallelSigma(Aperture, z, StellarMass, HalfLightRadius, Beta, SersicIndex, component_array, disk_mass, disk_inclination, HaloMass, DM, cpath, BlackHole, length)
+    res = ibc.ParallelSigma(Aperture, z, StellarMass, HalfLightRadius, Beta,
+            SersicIndex, component_array, disk_mass, disk_inclination,
+            HaloMass, DM, haloC, BHMass, length)
 
     b = np.ctypeslib.as_array(
     (ctypes.c_float * length).from_address(ctypes.addressof(res.contents)))

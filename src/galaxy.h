@@ -79,7 +79,7 @@ class Galaxy
         // +++++++++++++++++++++++++
 
         // Set up Dark Matter in the galaxy.
-        void ConstructHalo(float input_halo_mass, std::string input_profile_name, std::string input_conc_path);
+        void ConstructHalo(float input_halo_mass, std::string input_profile_name, float input_conc);
 
 		// The Halo concentration
 		void GetHaloC(bool scatter);
@@ -225,8 +225,7 @@ float GetVelocityDispersion(float Aperture,
                             float disk_inclination,
                             float Halo_mass,
                             char * profile_name,
-                            char * c_path,
+                            float halo_concentration,
                             float BlackHole_mass);
-
 
 #endif
