@@ -46,9 +46,7 @@ float incompleteBeta(float a, float b, float z)
             "----b = " << b << std::endl <<
             "----z = " << z << std::endl));
 
-
         beta = boost::math::beta(a, b, z);
-
 
         return beta;
     }

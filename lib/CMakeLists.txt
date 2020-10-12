@@ -16,9 +16,7 @@ set (lib_SOURCES
         ../src/utillity.cpp
         ../src/integration.h
         ../src/integration.cpp
-		../src/dark_matter.h
-        ../src/dark_matter.cpp
-	../src/galaxy.h
+		../src/galaxy.h
 	../src/galaxy.cpp
         external.cpp)
 

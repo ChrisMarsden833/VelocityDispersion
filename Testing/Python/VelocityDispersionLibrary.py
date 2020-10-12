@@ -19,7 +19,8 @@ def Sigma(Aperture, Beta, HalfLightRadius, SersicIndex, StellarMass, z,
              BlackHole=False, BHMass=0.0,
              stars=True,
              disk_mass = 0.0,
-             disk_inclination = 0.0):
+             disk_inclination = 0.0,
+             disk_scale_length = 0.0):
 
     if hasattr(Aperture, "__len__"):
         length = int(len(np.array(Aperture)))
@@ -36,7 +37,9 @@ def Sigma(Aperture, Beta, HalfLightRadius, SersicIndex, StellarMass, z,
     StellarMass = check_make_array(StellarMass, length).astype(np.float32).ctypes.data_as(c_float_p)
     disk_mass = check_make_array(disk_mass, length).astype(np.float32).ctypes.data_as(c_float_p)
     disk_inclination = check_make_array(disk_inclination, length).astype(np.float32).ctypes.data_as(c_float_p)
+    disk_scale_length = check_make_array(disk_scale_length, length).astype(np.float32).ctypes.data_as(c_float_p)
     z = check_make_array(z, length).astype(np.float32).ctypes.data_as(c_float_p)
+
     if HaloMass is None:
         HaloMass = 0.0
 
@@ -79,6 +82,7 @@ def Sigma(Aperture, Beta, HalfLightRadius, SersicIndex, StellarMass, z,
                                   ctypes.POINTER(ctypes.c_int),  # Bulge component flag
                                   ctypes.POINTER(ctypes.c_float),  # Disk Mass
                                   ctypes.POINTER(ctypes.c_float),  # Disk Inclination
+                                  ctypes.POINTER(ctypes.c_float),  # Disk ScaleLength
                                   ctypes.POINTER(ctypes.c_float),  # Halo Mass
                                   ctypes.c_char_p, # Profile Name
                                   ctypes.POINTER(ctypes.c_float), # c_path
@@ -87,7 +91,7 @@ def Sigma(Aperture, Beta, HalfLightRadius, SersicIndex, StellarMass, z,
 
     ibc.ParallelSigma.restype = ctypes.POINTER(ctypes.c_float)
     res = ibc.ParallelSigma(Aperture, z, StellarMass, HalfLightRadius, Beta,
-            SersicIndex, component_array, disk_mass, disk_inclination,
+            SersicIndex, component_array, disk_mass, disk_inclination, disk_scale_length,
             HaloMass, DM, haloC, BHMass, length)
 
     b = np.ctypeslib.as_array(
@@ -283,6 +287,7 @@ def check_make_array(subject, length):
     if not hasattr(subject, "__len__"):
         subject = np.ones(length) * float(subject)
     else:
+        subject = np.array(subject)
         assert len(subject) == length, "Length not consistent."
     return subject
 

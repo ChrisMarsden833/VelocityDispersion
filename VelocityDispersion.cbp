@@ -137,14 +137,6 @@
 		<Unit filename="/Users/chris/Documents/PhD/ProjectSigma/VelocityDispersion/lib/external.cpp">
 			<Option target="sigma"/>
 		</Unit>
-		<Unit filename="/Users/chris/Documents/PhD/ProjectSigma/VelocityDispersion/src/dark_matter.cpp">
-			<Option target="DirectExecution"/>
-			<Option target="sigma"/>
-		</Unit>
-		<Unit filename="/Users/chris/Documents/PhD/ProjectSigma/VelocityDispersion/src/dark_matter.h">
-			<Option target="DirectExecution"/>
-			<Option target="sigma"/>
-		</Unit>
 		<Unit filename="/Users/chris/Documents/PhD/ProjectSigma/VelocityDispersion/src/galaxy.cpp">
 			<Option target="DirectExecution"/>
 			<Option target="sigma"/>

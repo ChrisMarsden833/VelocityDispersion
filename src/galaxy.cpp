@@ -3,6 +3,7 @@
 Galaxy::Galaxy(float input_aperture_size, float z)
 {
     // Constructor. This all happens when the class is initialized.
+    // I've stripped this back so we can have more control.
 	aperture_size = input_aperture_size;
 	redshift = z;
 }
@@ -44,7 +45,7 @@ void Galaxy::ConstructBulge(float input_bulge_mass, float input_bulge_beta, floa
     // Find the gamma function used in sigma_e.
 
     assert(bulge_sersic_index > 0. || assert_msg("Bulge sersic_index < 0 - value: " << bulge_sersic_index));
-    assert(b_n >= 0. || assert_msg("b_n < 0 - value:" << b_n << std::endl << ". This occured when n =" << bulge_sersic_index));
+    assert(b_n >= 0. || assert_msg("b_n < 0 - value:" << b_n << std::endl << "This occured when n =" << bulge_sersic_index));
 
     float gamma = boost::math::tgamma_lower(2 * bulge_sersic_index, b_n);
     // Sigma_e, the constant for the sersic profile. It's debatable if this should just be M_*/(2*pi*Re^2) or this, but it seems to work as is:
@@ -149,6 +150,8 @@ float Galaxy::K_Kernel_DW(float u)
     // Kernel K(U), equation 9.
     if(u == 0.) return 0.;
 
+    if(bulge_beta > 0.5) bulge_beta = 0.5;
+
     float prefactor = 0.5 * pow(u, (2. * bulge_beta - 1.));
     float term1 = ((3./2.) - bulge_beta) * pow(PI, 0.5) * gamma_term;
     float term2 = bulge_beta * incompleteBeta(bulge_beta + 0.5, 0.5, 1. / (u * u));
@@ -211,28 +214,42 @@ float Galaxy::bulge_sigma_integrand(float r)
 
 float Galaxy::bulge_sigma_los(float R_arg)
 {
+    float integral_term = 0., accuracy = 0., upper_limit = 0., los_accuracy = 0.;
+
     // Full equation to calculate sigma LOS
     if(R_arg == 0.) R_arg = zero_perturbation;
-    float K = (2. * GR) / this->BulgeProjectedDensity(R_arg);
+
+    float bulge_density = this->BulgeProjectedDensity(R_arg);
+    if(bulge_density < zero_perturbation) bulge_density = zero_perturbation;
+
+    float K = (2. * GR) / bulge_density;
 
 	R = R_arg;
 	auto fp = bind(&Galaxy::bulge_sigma_integrand, this, _1); // An unfortunate consequence of using classes
 
-	float accuracy = 1; // kms^-1
-	float los_accuracy = pow(accuracy, 2)/K; // Transform this into the units of the integral
-
-	// Let's find a sensible upper limit for the integral.
-	float step = bulge_half_light_radius;
-	float upper_limit = R_arg + step; // We subdivide into
-	float unit_accuracy = 2. * los_accuracy/(upper_limit - R_arg); // Unit accuracy is the accuracy divided by the interval
-	while(unit_accuracy > los_accuracy/(upper_limit - R_arg))
+	if(slow_integrate)
 	{
-	    unit_accuracy = this->bulge_sigma_integrand(upper_limit) / (upper_limit - R_arg) ;
-	    upper_limit += step;
+	    upper_limit = 100. * bulge_half_light_radius + R_arg;
+	    integral_term = SimpsonsRule(fp, R_arg, upper_limit, 1000);
 	}
+    else
+    {
+        accuracy = 1; // kms^-1
+        los_accuracy = pow(accuracy, 2)/K; // Transform this into the units of the integral
+
+        // Let's find a sensible upper limit for the integral.
+        float step = bulge_half_light_radius;
+        upper_limit = R_arg + step; // We subdivide into
+        float unit_accuracy = 2. * los_accuracy/(upper_limit - R_arg); // Unit accuracy is the accuracy divided by the interval
+        while(unit_accuracy > los_accuracy/(upper_limit - R_arg))
+        {
+            unit_accuracy = this->bulge_sigma_integrand(upper_limit) / (upper_limit - R_arg) ;
+            upper_limit += step;
+        }
+        integral_term = AdaptiveRichardsonExtrapolate(fp, R_arg, upper_limit, los_accuracy);
+    }
 
 
-	float integral_term = AdaptiveRichardsonExtrapolate(fp, R_arg, upper_limit, los_accuracy);
 
 	float value = pow(K * integral_term, 0.5);
 
@@ -246,6 +263,9 @@ float Galaxy::bulge_sigma_los(float R_arg)
                  "-----K (2G/Sigma(r) = " << K << std::endl <<
                  "This occured when:" << std::endl <<
                  "-------R (distance, main argument) = " << R_arg << " kpc" << std::endl <<
+                 "-------Bulge Mass " << bulge_stellar_mass << std::endl <<
+                 "-------Bulge Density @ r " << bulge_density << std::endl <<
+                 "-------Bulge Re " << bulge_half_light_radius << std::endl <<
                  "-------Integration was performed between " << R_arg << " and " << upper_limit << std::endl <<
                  "-------Accuracy = " << los_accuracy << std::endl <<
                  "-------Full Integration (ARE) = " << integral_term << std::endl));
@@ -268,19 +288,24 @@ float Galaxy::sigma_ap(void)
 
     // Full value of halo aperture
 	auto numfp = bind(&Galaxy::sigma_ap_integrand, this, _1);
+    auto denfp = bind(&Galaxy::BulgeProjectedDensityxR, this, _1);
 
-	float multiplyer = 1e6;
-	int prepass = 6;
-    // Do a prepass to get a sense of the value of the integral
-    accuracy = SimpsonsRule(numfp, 0, aperture_size, prepass)/multiplyer;
-    numerator =  AdaptiveRichardsonExtrapolate(numfp, 0., aperture_size, accuracy);
+	if(true)
+	{
+        numerator = SimpsonsRule(numfp, 0, aperture_size, 1000);
+	    denominator = SimpsonsRule(denfp, 0, aperture_size, 1000);
+	}
+	else
+    {
+        float multiplyer = 1e6;
+        int prepass = 6;
+        // Do a prepass to get a sense of the value of the integral
+        accuracy = SimpsonsRule(numfp, 0, aperture_size, prepass)/multiplyer;
+        numerator =  AdaptiveRichardsonExtrapolate(numfp, 0., aperture_size, accuracy);
+        accuracy = SimpsonsRule(denfp, 0, aperture_size, prepass)/multiplyer;
+        denominator = AdaptiveRichardsonExtrapolate(denfp, 0., aperture_size, accuracy);
+    }
 
-	auto denfp = bind(&Galaxy::BulgeProjectedDensityxR, this, _1);
-    accuracy = SimpsonsRule(denfp, 0, aperture_size, prepass)/multiplyer;
-
-    //float accuracy =
-
-    denominator = AdaptiveRichardsonExtrapolate(denfp, 0., aperture_size, accuracy);
 
     float res = pow(numerator/denominator, 0.5);
 
@@ -456,7 +481,7 @@ float Galaxy::HaloDensity(float r)
 
 float Galaxy::HaloAnalyticMass(float r)
 {
-    float mass;
+    float mass = 0.;
     if(profile_name == "NFW")
     {
         float rs = HaloRadius/concentration;
@@ -475,7 +500,7 @@ float Galaxy::HaloAnalyticMass(float r)
             "----- ratio r/rs = " << ratio << std::endl));
         mass = res;
     }
-    else assert(false || assert_msg("HaloAnalyticMass() -> Dark Matter profile \"" << profile_name << "\" not recognized/implemented"));
+    
     return mass;
 }
 
@@ -488,32 +513,57 @@ float Galaxy::HaloVcirc2(float r)
 // ///// Disk Functions /////
 // //////////////////////////
 
-void Galaxy::ConstructDisk(float DiskMass, float input_inclination)
+void Galaxy::ConstructDisk(float DiskMass, float input_inclination, float disk_scale)
 {
     disk_present = true;
     mass_disk = DiskMass;
     disk_inclination = input_inclination;
-    float length_log10 = 0.633 + 0.39*(mass_disk - 11.) + 0.069*(mass_disk- 11.)*(mass_disk- 11.);
-    disk_scale_length = pow(10., length_log10);
+
+    if(disk_scale <= 0.) disk_scale = 1.0;
+    //float length_log10 = 0.633 + 0.39*(mass_disk - 11.) + 0.069*(mass_disk- 11.)*(mass_disk- 11.);
+    disk_scale_length = disk_scale; //pow(10., length_log10);
 }
 
 float Galaxy::disk_projected_density(float R)
 {
-    return pow(10., mass_disk)/(2. * PI * disk_scale_length) * exp(-R/disk_scale_length);
+    return (pow(10., mass_disk)/(2. * PI * disk_scale_length * disk_scale_length)) * exp(-R/disk_scale_length);
 }
+
+float Galaxy::disk_bessel(float x)
+{
+    return boost::math::cyl_bessel_i(0., x) * boost::math::cyl_bessel_k(0., x) -
+                     boost::math::cyl_bessel_i(1., x) * boost::math::cyl_bessel_k(1., x);
+}
+
 
 float Galaxy::disk_Vcirc2(float R)
 {
     if(R == 0.) R += zero_perturbation;
     float x = R/disk_scale_length;
 
-    float B_term = boost::math::cyl_bessel_i(0., x/2.) * boost::math::cyl_bessel_k(0., x/2.) - boost::math::cyl_bessel_i(1., x/2.) * boost::math::cyl_bessel_k(1., x/2.);
-    return (GR * pow(10., mass_disk))/(2.*disk_scale_length) * x * B_term;
+    float B_term;
+
+    if(x > 80)
+    {
+        B_term = 1.0; // Insane situations
+    }
+    else
+    {
+        B_term = disk_bessel(1.6 * x) / disk_bessel(1.6);
+    }
+
+    float kappa = 0.5;
+
+    float res = kappa * ((GR * pow(10., mass_disk))/(disk_scale_length)) * x * x * B_term;
+
+    res += HaloVcirc2(R); //(1. - kappa) * HaloVcirc2(R);
+
+    return res;
 }
 
 float Galaxy::disk_mass(float R)
 {
-    return (pow(10., mass_disk)/(disk_scale_length*disk_scale_length)) * (-disk_scale_length * exp(-R/disk_scale_length) * (disk_scale_length + R) + (disk_scale_length*disk_scale_length) );
+    return (pow(10., mass_disk)/(disk_scale_length*disk_scale_length)) * (disk_scale_length * (-exp(-R/disk_scale_length)) * (disk_scale_length + R) + (disk_scale_length*disk_scale_length) );
 }
 
 float Galaxy::disk_integrand(float R)
@@ -529,7 +579,9 @@ float Galaxy::disk_velocity_dispersion2()
     int prepass = 6;
     float accuracy = SimpsonsRule(numfp, 0, aperture_size, prepass)/multiplyer;
     float integral_term = AdaptiveRichardsonExtrapolate(numfp, 0., aperture_size, accuracy);
+    //float integral_term = SimpsonsRule(numfp, 0., aperture_size, 1000);
     float constant = (sin(disk_inclination) * sin(disk_inclination))/disk_mass(aperture_size);
+
     return constant * integral_term;
 }
 
@@ -556,37 +608,74 @@ float GetVelocityDispersion(float Aperture,
                             int * componentFlag,
                             float disk_mass,
                             float disk_inclination,
+                            float disk_scale_length,
                             float Halo_mass,
                             char * profile_name,
                             float halo_concentration,
-                            float BlackHole_mass)
+                            float BlackHole_mass,
+                            int mode)
 {
+    assert( ((Aperture > 0.) &
+            (redshift >= 0.) &
+            (bulge_radius >= 0) &
+            (disk_scale_length >= 0))
+            || assert_msg("Input validation.\nInvalid negative value suppled.\n" <<
+            "Values:\n" <<
+            "Aperture: " << Aperture <<
+            "\nredshift: " << redshift <<
+            "\nbulge_radius: " << bulge_radius <<
+            "\ndisk_scale_length: " << disk_scale_length));
+
+    // Construct galaxy object
     Galaxy aGalaxy(Aperture, redshift);
-    aGalaxy.ConstructBulge(bulge_mass, bulge_beta, bulge_radius, bulge_sersicIndex);
-    aGalaxy.ConstructDisk(disk_mass, disk_inclination);
+
+    // Construct the mass and/or bulge
+    if(bulge_mass > 0.) aGalaxy.ConstructBulge(bulge_mass, bulge_beta, bulge_radius, bulge_sersicIndex);
+    if(disk_mass > 0.) aGalaxy.ConstructDisk(disk_mass, disk_inclination, disk_scale_length);
+
+    // Construct the halo and black hole
     aGalaxy.ConstructHalo(Halo_mass, profile_name, halo_concentration);
     aGalaxy.Construct_Black_Hole(BlackHole_mass);
 
+    // Set the contributions to the bulge velocity dispersion. Primarily for comparison with Mamon&Lokas2
     aGalaxy.SetBulgeGravitationalContributions(componentFlag[0], componentFlag[1], componentFlag[2]);
 
-    float res, disk_sigma2 = 0;
+    float res = 0, disk_sigma2 = 0, bulge_sigma = 0;
 
-    float bulge_sigma = aGalaxy.sigma_ap();
-    if (disk_mass > 0)
+    if(mode == 1)
     {
-        disk_sigma2 = aGalaxy.disk_velocity_dispersion2();
+        // Actually compute the disk and bulge velocity dispersion contributions (most of the legwork happens here)
+
+        if(bulge_mass > 0)
+        {
+            bulge_sigma = aGalaxy.sigma_ap();
+        }
+        if (disk_mass > 0)
+        {
+            disk_sigma2 = aGalaxy.disk_velocity_dispersion2();
+        }
+
+        // Combine these values in quadrature.
         res = pow(bulge_sigma*bulge_sigma + disk_sigma2, 0.5);
+
+        // Stop in the case that inf or nan is returned, this should never have to happen.
+        assert( (!isnan(res) && !isinf(res)) ||
+                assert_msg(std::endl << "GetVelocityDispersion() about to return " << res << std::endl <<
+                                     "----bulge_sigma: " << bulge_sigma << std::endl <<
+                                     "----disk_sigma2: " << disk_sigma2 << std::endl <<
+                                     "\t\t Disk_mass : " << disk_mass << std::endl <<
+                                     "\t\t Disk_inclination: " << disk_inclination << std::endl));
+
+    }
+    else if(mode == 2)
+    {
+        // Return sigma LOS
+        res = aGalaxy.bulge_sigma_los(Aperture);
     }
     else
     {
-        res = bulge_sigma;
+        assert((false) || assert_msg( "Unknown mode : "  << mode));
     }
-
-
-    assert( (!isnan(res) && !isinf(res)) ||
-            assert_msg(std::endl << "GetVelocityDispersion() about to return " << res << std::endl <<
-                                 "----bulge_sigma: " << bulge_sigma << std::endl <<
-                                 "----disk_sigma2: " << disk_sigma2 << std::endl));
 
 
 

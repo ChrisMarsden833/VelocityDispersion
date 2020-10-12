@@ -31,7 +31,7 @@ using namespace std::placeholders;
 class Galaxy
 {
 	public:
-        // Constructors
+        // Constructor
 		Galaxy(float input_aperture_size, float z);
 
 
@@ -101,13 +101,16 @@ class Galaxy
         // \\\\\\\\\\\\\\\\\\\\\\\\
 
         // Set up the galactic disk
-        void ConstructDisk(float DiskMass, float input_inclination);
+        void ConstructDisk(float DiskMass, float input_inclination, float disk_scale);
 
         // The disk surface density
         float disk_projected_density(float R);
 
         // The disk mass as a function of r [log10 solar masses]
         float disk_mass(float R);
+
+        // Disk bessel function used in vcirc
+        float disk_bessel(float x);
 
         // The disk circular velocity
         float disk_Vcirc2(float r);
@@ -134,6 +137,9 @@ class Galaxy
         float redshift;
         // Aperture size [kpc]
         float aperture_size;
+
+        // Take longer integrating, but (potenitally) better accuracy
+        bool slow_integrate = false;
 
         // ++++++++++++++++++++++++++
         // ++++ Halo Properties +++++
@@ -223,9 +229,11 @@ float GetVelocityDispersion(float Aperture,
                             int * componentFlag,
                             float disk_mass,
                             float disk_inclination,
+                            float disk_scale_length,
                             float Halo_mass,
                             char * profile_name,
                             float halo_concentration,
-                            float BlackHole_mass);
+                            float BlackHole_mass,
+                            int mode = 1);
 
 #endif

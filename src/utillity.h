@@ -42,7 +42,7 @@ bool checkEven(int Value);
 float incompleteBeta(float a, float b, float z);
 
 /** ++ linspace ++
- * Simple function to mimic numpy's linspace function. This creates
+ * Simple function to mimic numpy/matlab style linspace function. This creates
  * a linearly spaced vector of values.
  * @param a : the value at the start of the array
  * @param b : the value at the end of the array
@@ -99,7 +99,7 @@ void CheckAndMaybeIncrementN(int * N, std::string fname = "Richardson Extrapolat
 void fastLinspace(float * &grid, float &h, float a, float b, int N = 100);
 
 /** ++ ReadFile ++
- * CSV reader,
+ * CSV reader. TODO, update documentation, but not sure we use this...
  */
 std::vector<std::vector<float>> * ReadFile(std::string path, std::vector<int> * IndexesToGrab);
 

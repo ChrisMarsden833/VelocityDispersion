@@ -11,4 +11,7 @@
 
 using namespace std::chrono;
 
+// We don't use the main function, as we are compiling into a library
+// Can be helpful for the occasional test though.
+
 #endif //VELOCITYDISPERSIONS_MAIN_H

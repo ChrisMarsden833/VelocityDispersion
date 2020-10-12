@@ -3,7 +3,9 @@
 
 int main()
 {
+    // We don't use the main function, as we are compiling into a library
 
+    /*
     std::cout << "Starting" << std::endl;
 
     float SM = 11.1;
@@ -19,11 +21,11 @@ int main()
     char * name = &str[0];
 
     float sigma = GetVelocityDispersion(4., 0., 11.086, 3.2, 0.001, 3.12, compfp,
-                    0., 0., 12., name, 4., 0.);
+                    0., 0., 0., 12., name, 4., 0., 1.);
 
     std::cout << "Res = " << sigma << std::endl;
 
-    /*
+
     float GetVelocityDispersion(float Aperture,
                             float redshift,
                             float bulge_mass,
