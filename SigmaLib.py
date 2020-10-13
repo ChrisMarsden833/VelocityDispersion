@@ -4,7 +4,7 @@
 import numpy as np
 import ctypes
 import time
-from datetime import timedata
+#from datetime import timedata
 import os
 # openmp can sometimes be already using by a jupyter notebook. This command prevents crashing.
 os.environ['KMP_DUPLICATE_LIB_OK']='True' # Potentially dangerous.
@@ -13,7 +13,7 @@ def Sigma(ApertureSize,
             Bulge_mass,
               Bulge_Re,
                Bulge_n,
-            Bulge_Beta,
+            Bulge_Beta=0.0,
              Disk_mass=0.0,
      Disk_scale_length=0.0,
       Disk_inclination=0.0,
@@ -25,9 +25,9 @@ def Sigma(ApertureSize,
          BlackHoleMass=0.0,
                StarsOn=True,
                   mode=1,
-                 debug=True,
+                 debug=False,
                threads=-1,
-          library_path="/Users/chris/Documents/PhD/ProjectSigma/VelocityDispersion/lib/libsigma.so"):
+          library_path="/home/chris/Files/ProjectSigma/VelocityDispersion/lib/libsigma.so"):
 
     """The Velocity Dispersion of a Galaxy (sigma).
 
@@ -151,6 +151,11 @@ def Sigma(ApertureSize,
     DarkMatter_type = DarkMatter_type.encode('utf-8') # Encode the dm string as a c-style string.
     component_array = np.array(component_array).astype(np.int32).ctypes.data_as(c_int_p) # Encode component array
 
+    if debug:
+        debug_var = 1
+    else:
+        debug_var = 0
+
     # Set the argument types for the function. Note the order is different here.
     ibc.ParallelSigma.argtypes = [ctypes.POINTER(ctypes.c_float),  # Aperture
                                   ctypes.POINTER(ctypes.c_float),  # Redshift
@@ -168,6 +173,7 @@ def Sigma(ApertureSize,
                                   ctypes.POINTER(ctypes.c_float),  # Black Hole Mass
                                   ctypes.c_int32, # Threads
                                   ctypes.c_int32, # Mode
+                                  ctypes.c_int32, # debug
                                   ctypes.c_int32]  # Length
 
     # Set the argument return type. 
@@ -176,13 +182,14 @@ def Sigma(ApertureSize,
     # Call the function! Note argument order is different
     res = ibc.ParallelSigma(ApertureSize, z, Bulge_mass, Bulge_Re, Bulge_Beta,
             Bulge_n, component_array, Disk_mass, Disk_inclination, Disk_scale_length,
-            HaloMass, DarkMatter_type, HaloC, BlackHoleMass, mode, length)
+            HaloMass, DarkMatter_type, HaloC, BlackHoleMass, mode, threads, debug_var, length)
 
     # Convert the returned variable into readable format.
     res = np.ctypeslib.as_array((ctypes.c_float * length).from_address(ctypes.addressof(res.contents)))
 
     if debug:
-        print("elapsed time : ",  str(timedelta(seconds=time.time() - start_time)))
+        pass
+        #print("elapsed time : ",  str(timedelta(seconds=time.time() - start_time)))
 
     return res
 
@@ -190,8 +197,6 @@ def check_list(listoflists, names):
     """ Simply function to check that a list of lists are all consistent lengths.
     Arguments
     ---------
-        listoflists (listlike of listlike) : the suppled list of lists.
-        names  (listlike of strings) : the names of the variables, for error messages.
     Returns
     -------
         length (float) : the length of (all) the lists, else assertion error.

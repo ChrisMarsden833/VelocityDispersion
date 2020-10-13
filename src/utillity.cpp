@@ -83,7 +83,7 @@ void fastLinspace(float * &grid, float &h, float a, float b, int N)
 
 std::vector<std::vector<float>> * ReadFile(std::string path, std::vector<int> * IndexesToGrab)
 {
-    auto start = std::chrono::high_resolution_clock::now(); // Timing
+    //auto start = std::chrono::high_resolution_clock::now(); // Timing
 
     InputPrechecks(IndexesToGrab);
 
@@ -204,8 +204,8 @@ std::vector<std::vector<float>> * ReadFile(std::string path, std::vector<int> * 
 
     fclose(fp);
 
-    auto finish = std::chrono::high_resolution_clock::now(); // Timing
-    std::chrono::duration<double> elapsed = finish - start;
+    //auto finish = std::chrono::high_resolution_clock::now(); // Timing
+    //std::chrono::duration<double> elapsed = finish - start;
 
     return OutputArrays;
 

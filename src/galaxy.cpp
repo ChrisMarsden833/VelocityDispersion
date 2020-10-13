@@ -31,6 +31,7 @@ void Galaxy::ConstructBulge(float input_bulge_mass, float input_bulge_beta, floa
 
     // Sersic Index
     if(input_sersic_index == 0.) input_sersic_index += zero_perturbation;
+    if((input_sersic_index < 0.13) && (input_sersic_index > 0.0385) ) input_sersic_index = 0.13;
     bulge_sersic_index = input_sersic_index;
 
     // Other bulge-related values that we only need to calculate once.
@@ -40,6 +41,7 @@ void Galaxy::ConstructBulge(float input_bulge_mass, float input_bulge_beta, floa
     gamma_term = (float) boost::math::tgamma(bulge_beta - 0.5) / boost::math::tgamma(bulge_beta);
 
     // Set the value of b_n (D.W. - equation 2)
+
     b_n = 2.*bulge_sersic_index - (1./3.) + (.009876/bulge_sersic_index);
 
     // Find the gamma function used in sigma_e.
