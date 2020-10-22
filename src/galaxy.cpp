@@ -33,6 +33,7 @@ void Galaxy::ConstructBulge(float input_bulge_mass, float input_bulge_beta, floa
     if(input_sersic_index == 0.) input_sersic_index += zero_perturbation;
     if((input_sersic_index < 0.13) && (input_sersic_index > 0.0385) ) input_sersic_index = 0.13;
     bulge_sersic_index = input_sersic_index;
+    if((input_sersic_index > 8.)) input_sersic_index = 8.;
 
     // Other bulge-related values that we only need to calculate once.
 
@@ -53,7 +54,7 @@ void Galaxy::ConstructBulge(float input_bulge_mass, float input_bulge_beta, floa
     // Sigma_e, the constant for the sersic profile. It's debatable if this should just be M_*/(2*pi*Re^2) or this, but it seems to work as is:
     sigma_e = pow(10, bulge_stellar_mass) / (pow(bulge_half_light_radius, 2) * PI * 2 * 2. * bulge_sersic_index * exp(b_n) * gamma / pow(b_n, 2 * bulge_sersic_index) );
 
-    assert(!isnan(sigma_e) || !isinf(sigma_e) || assert_msg("Sigma_e was calculated as: " << sigma_e << std::endl <<
+    assert((!isnan(sigma_e) && !isinf(sigma_e)) || assert_msg("Sigma_e was calculated as: " << sigma_e << std::endl <<
           "====Location: Construction of Bulge" << std::endl <<
           "----Numerator (stellar mass, m_sun) = " << pow(10, bulge_stellar_mass) << std::endl <<
           "----Half Light Radius (Kpc) = " << bulge_half_light_radius << std::endl <<
@@ -74,8 +75,12 @@ void Galaxy::ConstructBulge(float input_bulge_mass, float input_bulge_beta, floa
     mass_prefactor = 4.0 * PI * bulge_sersic_index * boost::math::tgamma((3.0 - p_n) * bulge_sersic_index) * l * pow(as, 3.);
 
     // Asserts
-    assert(!isnan(rho0) || !isinf(rho0) || assert_msg("rho0 was calculated as: " << rho0 << std::endl <<
+    assert((!isnan(rho0) && !isinf(rho0)) || assert_msg("rho0 was calculated as: " << rho0 << std::endl <<
          "====Location: Construction of bulge" << std::endl <<
+	 "----Bulge Mass = " << input_bulge_mass << std::endl <<
+	 "----Bulge beta = " << input_bulge_beta << std::endl <<
+	 "----Bulge HLR = " << input_bulge_half_light_radius <<
+	 "----Bulge n = " << input_sersic_index << std::endl <<
          "----Sigma0 (BulgeMassDensity(0.)) = " << Sigma0 << std::endl <<
          "----LHS = " << left << std::endl <<
          "----RHS = " << right));
@@ -87,11 +92,15 @@ float Galaxy::BulgeProjectedDensity(float R)
 	float power = 1./bulge_sersic_index;
 	float internal_term = R/bulge_half_light_radius;
 	float result = sigma_e * exp(-b_n * (pow(internal_term, power) - 1.));
-    assert(!isnan(result) || !isinf(result) || assert_msg("BulgeProjectedDensity (Sersic Profile) about to return " << rho0 << std::endl <<
-         "----Power (1/n) = " << power << std::endl <<
+    	
+	assert((!isnan(result) && !isinf(result)) || assert_msg("BulgeProjectedDensity (Sersic Profile) about to return " << result << std::endl <<
+         "----Bulge n = " << bulge_sersic_index << std::endl <<
+	 "----R = " << R << std::endl <<
+       	 "----HLR = " << bulge_half_light_radius  << std::endl <<
+	 "result = sigma_e * exp(-b_n * (pow(internal_term, power) - 1.))" << std::endl <<	 
+	 "----Power (1/n) = " << power << std::endl <<
          "----internal term (r/R_eff) = " << internal_term << std::endl <<
-         "----Sigma_e = " << sigma_e << std::endl <<
-         "----RHS = " << right));
+         "----Sigma_e = " << sigma_e << std::endl));
 	return result;
 }
 
@@ -112,7 +121,7 @@ float Galaxy::BulgeDensity(float r)
     float exp_term = exp(-b_n * exp_power_term);
     float res = rho0 * power_term * exp_term;
 
-    assert(!isnan(res) || !isinf(res) || assert_msg("Bulge Density (eq3) to return " << res << std::endl <<
+    assert((!isnan(res) && !isinf(res)) || assert_msg("Bulge Density (eq3) to return " << res << std::endl <<
              "----rho0 = " << rho0 << std::endl <<
              "----Power term (r/R_eff)^-p_n = " << power_term << std::endl <<
              "----Exp power term (r/R_eff)^1/n = " << exp_power_term << std::endl <<
@@ -321,7 +330,10 @@ float Galaxy::sigma_ap(void)
                                          "-----numereator: " << numerator <<
                                          "-----denominator: " << denominator <<
                                          "This occured when:" << std::endl <<
-                                         "-------Aperture = " << aperture_size << " kpc" << std::endl));
+                                         "-------Aperture = " << aperture_size << " kpc" << std::endl <<
+					 "This occured when:" << std::endl <<
+					 "-------Bulge Mass " << bulge_stellar_mass << std::endl <<
+			 	         "-------Bulge Re " << bulge_half_light_radius << std::endl ));
         }
     }
 
