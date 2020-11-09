@@ -318,6 +318,8 @@ float Galaxy::sigma_ap(void)
     }
 
 
+    if(denominator == 0.) return 0.;
+
     float res = pow(numerator/denominator, 0.5);
 
     if(isnan(res) || isinf(res))
