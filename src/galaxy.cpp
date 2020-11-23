@@ -245,7 +245,7 @@ float Galaxy::bulge_sigma_los(float R_arg)
 	}
     else
     {
-        accuracy = 1; // kms^-1
+        accuracy = 0.1; // kms^-1
         los_accuracy = pow(accuracy, 2)/K; // Transform this into the units of the integral
 
         // Let's find a sensible upper limit for the integral.
@@ -301,7 +301,7 @@ float Galaxy::sigma_ap(void)
 	auto numfp = bind(&Galaxy::sigma_ap_integrand, this, _1);
     auto denfp = bind(&Galaxy::BulgeProjectedDensityxR, this, _1);
 
-	if(true)
+	if(false)
 	{
         numerator = SimpsonsRule(numfp, 0, aperture_size, 1000);
 	    denominator = SimpsonsRule(denfp, 0, aperture_size, 1000);
