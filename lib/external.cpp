@@ -19,13 +19,14 @@ extern "C"
                            float * bulge_radius,
                            float * bulge_beta,
                            float * bulge_sersicIndex,
+                           float * rem_prefactor,
                            int * componentFlag,
                            float * disk_mass,
                            float * disk_inclination,
                            float * disk_scale_length,
-                           float * Halo_mass,
                            char * profile_name,
-                           float * halo_concentration,
+                           float * haloRs,
+                           float * haloRhos,
                            float * BlackHole_mass,
                            int mode,
                            int threads,
@@ -37,6 +38,8 @@ extern "C"
 	{
         	printf("\n\n######################################## \n");
 	    	printf(    "Chris Marsden's Velocity dispersion code \n");
+
+
 	}
 
         // Reserved memory for results, and progress.
@@ -50,12 +53,12 @@ extern "C"
 
         // Shedulding is set to schedule(dynamic, 1). This is because tasks can be very asymmetric.
         // Loop back through array as often the last elements can take the longest, so this results in better load management with the above schedule
-        #pragma omp parallel for default(none) shared(progress, res, Aperture, redshift, bulge_mass, bulge_radius, bulge_beta, bulge_sersicIndex, componentFlag, disk_mass, disk_inclination, disk_scale_length, Halo_mass, profile_name, halo_concentration, BlackHole_mass, mode, threads, debug, size, stdout) schedule(dynamic, 1)
+        #pragma omp parallel for default(none) shared(progress, res, Aperture, redshift, bulge_mass, bulge_radius, bulge_beta, bulge_sersicIndex, rem_prefactor, componentFlag, disk_mass, disk_inclination, disk_scale_length, profile_name, haloRs, haloRhos, BlackHole_mass, mode, threads, debug, size, stdout) schedule(dynamic, 1)
         for (int i = size-1; i >= 0; i--)
         {
             // Call function itself.
-        	res[i] = GetVelocityDispersion(Aperture[i], redshift[i], bulge_mass[i], bulge_radius[i], bulge_beta[i], bulge_sersicIndex[i], componentFlag,
-                    disk_mass[i], disk_inclination[i], disk_scale_length[i], Halo_mass[i], profile_name, halo_concentration[i] , BlackHole_mass[i], mode);
+        	res[i] = GetVelocityDispersion(Aperture[i], redshift[i], bulge_mass[i], bulge_radius[i], bulge_beta[i], bulge_sersicIndex[i], rem_prefactor[i], componentFlag,
+                    disk_mass[i], disk_inclination[i], disk_scale_length[i], profile_name, haloRs[i], haloRhos[i], BlackHole_mass[i], mode);
 	
 		if(debug == 1)
 		{

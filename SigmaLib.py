@@ -14,18 +14,19 @@ def Sigma(ApertureSize,
               Bulge_Re,
                Bulge_n,
             Bulge_Beta=0.0,
+    StellarReminantPref=1.0,
              Disk_mass=0.0,
      Disk_scale_length=0.0,
       Disk_inclination=0.0,
                      z=0,
        DarkMatter_type=None,
-              HaloMass=0.0,
-                 HaloC=0.0,
+                HaloRs=0.0,
+              HaloRhos=0.0,
            BlackHoleOn=False,
          BlackHoleMass=0.0,
                StarsOn=True,
                   mode=1,
-                 debug=False,
+                 debug=True,
                threads=-1,
           library_path="/home/chris/Files/ProjectSigma/VelocityDispersion/lib/libsigma.so"):
 
@@ -67,6 +68,8 @@ def Sigma(ApertureSize,
             implemented profile is 'NFW'. This string is case-sensitive.
         HaloMass (np array or float) : The mass of the dark matter halo [log10 Msun]
         HaloC (np array or float) : The halo concentration parameter [dimensionless]
+        HaloRs (np array or float): The halo scale radius [kpc]
+        HaloRhos (np array or float): The halo density factor [M_sun]/kpc^3
 
         BlackHoleOn (bool) : If the gravitational effects of a black hole should be switched on. Defaults to False. If 
             False, the variable BlackHoleMass is redundant if assigned.
@@ -113,12 +116,13 @@ def Sigma(ApertureSize,
     Bulge_Re = check_make_array(Bulge_Re, length).astype(np.float32).ctypes.data_as(c_float_p)
     Bulge_n = check_make_array(Bulge_n, length).astype(np.float32).ctypes.data_as(c_float_p)
     Bulge_mass = check_make_array(Bulge_mass, length).astype(np.float32).ctypes.data_as(c_float_p)
+    StellarReminantPref = check_make_array(StellarReminantPref, length).astype(np.float32).ctypes.data_as(c_float_p)
     Disk_mass = check_make_array(Disk_mass, length).astype(np.float32).ctypes.data_as(c_float_p)
     Disk_inclination = check_make_array(Disk_inclination, length).astype(np.float32).ctypes.data_as(c_float_p)
     Disk_scale_length = check_make_array(Disk_scale_length, length).astype(np.float32).ctypes.data_as(c_float_p)
     z = check_make_array(z, length).astype(np.float32).ctypes.data_as(c_float_p)
-    HaloMass = check_make_array(HaloMass, length).astype(np.float32).ctypes.data_as(c_float_p)
-    HaloC = check_make_array(HaloC, length).astype(np.float32).ctypes.data_as(c_float_p)
+    HaloRs = check_make_array(HaloRs, length).astype(np.float32).ctypes.data_as(c_float_p)
+    HaloRhos = check_make_array(HaloRhos, length).astype(np.float32).ctypes.data_as(c_float_p)
     BlackHoleMass = check_make_array(BlackHoleMass, length).astype(np.float32).ctypes.data_as(c_float_p)
 
     # Manage which components are gravitationally active, based on the inputs provided.
@@ -163,13 +167,14 @@ def Sigma(ApertureSize,
                                   ctypes.POINTER(ctypes.c_float),  # Bulge radius
                                   ctypes.POINTER(ctypes.c_float),  # Bulge beta
                                   ctypes.POINTER(ctypes.c_float),  # Bulge sersic index
+                                  ctypes.POINTER(ctypes.c_float),  # Stellar Remenant Prefactor
                                   ctypes.POINTER(ctypes.c_int),  # Bulge component flag
                                   ctypes.POINTER(ctypes.c_float),  # Disk Mass
                                   ctypes.POINTER(ctypes.c_float),  # Disk Inclination
                                   ctypes.POINTER(ctypes.c_float),  # Disk ScaleLength
-                                  ctypes.POINTER(ctypes.c_float),  # Halo Mass
                                   ctypes.c_char_p, # Profile Name
-                                  ctypes.POINTER(ctypes.c_float), # c_path
+                                  ctypes.POINTER(ctypes.c_float), # Halo Rs
+                                  ctypes.POINTER(ctypes.c_float), # Halo Rhos
                                   ctypes.POINTER(ctypes.c_float),  # Black Hole Mass
                                   ctypes.c_int32, # Threads
                                   ctypes.c_int32, # Mode
@@ -178,11 +183,11 @@ def Sigma(ApertureSize,
 
     # Set the argument return type. 
     ibc.ParallelSigma.restype = ctypes.POINTER(ctypes.c_float)
-    
+
     # Call the function! Note argument order is different
     res = ibc.ParallelSigma(ApertureSize, z, Bulge_mass, Bulge_Re, Bulge_Beta,
-            Bulge_n, component_array, Disk_mass, Disk_inclination, Disk_scale_length,
-            HaloMass, DarkMatter_type, HaloC, BlackHoleMass, mode, threads, debug_var, length)
+            Bulge_n, StellarReminantPref, component_array, Disk_mass, Disk_inclination, Disk_scale_length,
+            DarkMatter_type, HaloRs, HaloRhos, BlackHoleMass, mode, threads, debug_var, length)
 
     # Convert the returned variable into readable format.
     res = np.ctypeslib.as_array((ctypes.c_float * length).from_address(ctypes.addressof(res.contents)))

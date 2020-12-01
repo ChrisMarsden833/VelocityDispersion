@@ -74,27 +74,22 @@ class Galaxy
 		// The velocity dispersion within the aperture
 		float sigma_ap(void);
 
+		// Set bulge remenant prefactor
+		void set_rem_prefac(float input_prefactor);
+
         // +++++++++++++++++++++++++
         // ++++ Halo Functions +++++
         // +++++++++++++++++++++++++
 
         // Set up Dark Matter in the galaxy.
-        void ConstructHalo(float input_halo_mass, std::string input_profile_name, float input_conc);
+        void ConstructHalo(std::string input_profile_name, float haloRs, float haloRhos);
 
-		// The Halo concentration
-		void GetHaloC(bool scatter);
+	// Halo analytic mass
+	float HaloAnalyticMass(float r);
 
-		// The Halo Radius
-		void GetHaloR(void);
 
-		// Halo analytic mass
-		float HaloAnalyticMass(float r);
-
-		// Get Halo profile
-		float HaloDensity(float r);
-
-		// Halo Circular Velocity
-		float HaloVcirc2(float r);
+	// Halo Circular Velocity
+	float HaloVcirc2(float r);
 
         // \\\\\\\\\\\\\\\\\\\\\\\\
         // \\\\ Disk Functions \\\\
@@ -146,16 +141,14 @@ class Galaxy
         // ++++++++++++++++++++++++++
 
         bool halo_present = false;
+
         // Dark Matter Profile Name
         string profile_name;
-        // Halo Mass;
-        float HaloMass; // [log10 m_sun]
-        // Dark Matter Concentration parameter
-        float concentration;
+
         // Halo Radius
         float HaloRadius; // [Kpc] R_vir
-        // Path to concentration/mass relation file
-        std::string Conc_Path = "../data/cM_planck18.txt";
+	    // HaloDensity
+	    float HaloRhos; // M_sun/kpc^3
 
         // --------------------------
         // ---- Bulge Properties ----
@@ -196,6 +189,8 @@ class Galaxy
         float rho0 = 0.;
         // Constant for the mass, best saved.
         float mass_prefactor = 0.;
+        // Reminant Prefactor  - 1.72
+        float rem_prefac  = 1.; // Default is 1, which corresponds to no change.
 
         // \\\\\\\\\\\\\\\\\\\\\\\\\\\\
         // \\\\ Disk Properties \\\\\\\
@@ -226,14 +221,15 @@ float GetVelocityDispersion(float Aperture,
                             float bulge_radius,
                             float bulge_beta,
                             float bulge_sersicIndex,
+                            float rem_prefactor,
                             int * componentFlag,
                             float disk_mass,
                             float disk_inclination,
                             float disk_scale_length,
-                            float Halo_mass,
                             char * profile_name,
-                            float halo_concentration,
+                            float haloRs,
+                            float haloRhos,
                             float BlackHole_mass,
-                            int mode = 1);
+                            int mode);
 
 #endif

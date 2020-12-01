@@ -121,6 +121,8 @@ float Galaxy::BulgeDensity(float r)
     float exp_term = exp(-b_n * exp_power_term);
     float res = rho0 * power_term * exp_term;
 
+    if(res < 0.) res = 0;
+
     assert((!isnan(res) && !isinf(res)) || assert_msg("Bulge Density (eq3) to return " << res << std::endl <<
              "----rho0 = " << rho0 << std::endl <<
              "----Power term (r/R_eff)^-p_n = " << power_term << std::endl <<
@@ -143,9 +145,17 @@ float Galaxy::BulgeMass(float r)
 float Galaxy::BulgeTotalMass(float r)
 {
     float mass = 0.0;
-    if(bulge_stars_gravitation_on) mass += BulgeMass(r);
+    if(bulge_stars_gravitation_on) mass += rem_prefac * this->BulgeMass(r); //1.72 * this->BulgeMass(r);
     if(dark_matter_gravitation_on) mass += this->HaloAnalyticMass(r);
     if(black_hole_gravitation_on)  mass += pow(10., BHMass);
+    
+    assert(mass >= 0 || assert_msg("Bulge Total Mass < 0" << std::endl <<
+			    "---BulgeMass(r) = " << this->BulgeMass(r) << std::endl <<
+			    "---DM(r) = " << this->HaloAnalyticMass(r) << std::endl <<
+			    "---r =" << r << std::endl
+			    
+			    ));
+    
     return mass;
 }
 
@@ -309,7 +319,7 @@ float Galaxy::sigma_ap(void)
 	else
     {
         float multiplyer = 1e6;
-        int prepass = 6;
+        int prepass = 12;
         // Do a prepass to get a sense of the value of the integral
         accuracy = SimpsonsRule(numfp, 0, aperture_size, prepass)/multiplyer;
         numerator =  AdaptiveRichardsonExtrapolate(numfp, 0., aperture_size, accuracy);
@@ -344,179 +354,54 @@ float Galaxy::sigma_ap(void)
 
 }
 
+void Galaxy::set_rem_prefac(float input_prefactor)
+{
+    rem_prefac = input_prefactor;
+}
+
+
 // //////////////////////////
 // ///// Halo Functions /////
 // //////////////////////////
 
-void Galaxy::ConstructHalo(float input_halo_mass, std::string input_profile_name, float input_conc)
+void Galaxy::ConstructHalo(std::string input_profile_name, float haloRs, float haloRhos)
 {
-    HaloMass = input_halo_mass;
+    HaloRadius = haloRs;
+    HaloRhos = haloRhos;
     profile_name = input_profile_name;
-    concentration = input_conc;
-    //Conc_Path = input_conc_path;
-    //GetHaloC(false);
-    GetHaloR();
 }
 
-void Galaxy::GetHaloC(bool scatter)
-{
-    // read-off c-Mh from Benedikt's files (taken from http://www.benediktdiemer.com/data/)
-    std::vector<int> * IndexesToGrab = new std::vector<int>(0);
-    IndexesToGrab->push_back(0); // z
-    IndexesToGrab->push_back(2); // M200c
-    IndexesToGrab->push_back(4); // c200c
-
-    std::vector<std::vector<float>> * Extracted;
-    Extracted = ReadFile(Conc_Path, IndexesToGrab);
-
-    std::vector<float> * Redshift = &Extracted->at(0);
-    std::vector<float> * M200c = &Extracted->at(1);
-    std::vector<float> * c200c = &Extracted->at(2);
-
-    std::vector<float> * reduced = new std::vector<float>;
-    float closest_z = FindClosest(redshift,  Reduce(Redshift, reduced));
-    std::vector<bool> * mask = new std::vector<bool>;
-    Equals(Redshift, closest_z, mask);
-
-    MaskOut(Redshift, mask);
-    MaskOut(M200c, mask);
-    MaskOut(c200c, mask);
-
-    // Find the concentration by linearly interpolating the data.
-
-    float logC = LinearInterp(M200c, c200c, pow(10., HaloMass + log10(h)));
-
-    float scatter_magnitude = 0.;
-
-    if(scatter)
-    {
-	std::default_random_engine generator;
-	std::normal_distribution<float> distribution(0., 1.0);
-	scatter_magnitude = distribution(generator) * 0.16;
-    }
-    concentration = logC + scatter_magnitude; //pow(10., logC + scatter_magnitude);
-
-    // Prevent Memory Leaks? Probably not necessary...
-    delete IndexesToGrab;
-    delete Extracted;
-}
-
-void Galaxy::GetHaloR(void)
-{
-    float OmegaL = 1. - Om;
-    float Omegaz = Om*pow((1.+redshift), 3.)/(Om*pow((1.+redshift), 3.) + OmegaL);
-    float d = Omegaz-1.;
-    float Deltac = 18.*pow(PI, 2.) + 82.*d - 39.*d*d;
-    float H0 = 100.*h; //km/s/Mpc
-    float HH = H0*pow(Om*pow((1.+redshift), 3.)+(1.-Om), 0.5);
-    float GR_Mpc = 4.302e-9;  // Mpc/Msun(km/s)^2
-    float rhoc =3.*HH*HH/(8.*PI*GR_Mpc);
-    float k = 4.*PI/3.;
-    HaloRadius = pow((pow(10., HaloMass)/rhoc/k/200.), (1./3.))*1000.; // kpc
-}
-
-float Galaxy::HaloDensity(float r)
-{
-    float res;
-
-    if(r == 0) r = zero_perturbation;
-
-    if (profile_name == "NFW")
-    {
-        float log10r = log10(r);
-        float rs = HaloRadius/concentration;
-
-	    float fc = log(1.+concentration)-concentration/(1.+concentration);
-  	    float logrhos = HaloMass-log10(4.*PI*rs*rs*rs*fc);
-
-	    float logrho = logrhos-log10(r/rs) - 2.*log10(1. + r/rs);
-	    res = pow(10., logrho);
-
-    }
-    else if (profile_name == "DenhenMcLaughlin")
-    {
-        float log10r = log10(r);
-        float rs = HaloRadius/concentration;
-        float fc = log(1.+concentration)-concentration/(1.+concentration);
-        float logrhos = HaloMass-log10(4.*PI*rs*rs*rs*fc);
-        //std::cout << "p0 " << logrhos << std::endl;
-        float logrho = log10(2.) + 6.*logrhos - (7./9.)*log10(r/rs) - 6.*log10(1. + pow(r/rs, 4./9.));
-        //std::cout << "Lohrho" << logrho << std::endl;
-        //exit(1);
-        res = pow(10., logrho);
-    }
-    else if(profile_name == "Burkert")
-    {
-        // following Cattaneo et al. 2014, I use the same exact rho0 and rs as NFW but different shape:
-        float fc = (log(1.+concentration)-concentration/(1.+concentration));
-        float rs = HaloRadius/concentration;
-        float R0 = log10(rs);
-        float xx = r/rs;
-        float rho0 = HaloMass - log10(4.*PI*pow(rs, 3.)*fc);
-        float logrho = rho0 - log10(1.+xx) - log10(1.+xx*xx);
-        res = pow(10., logrho);
-    }
-    else if(profile_name == "Exponential")
-    {
-        float xr=r/HaloRadius;
-        float logsig0 = HaloMass - log10(2.*PI) - 2.*log10(HaloRadius);
-        float expo = exp(-xr);
-        float logrho = logsig0 + log10(expo);
-        res = pow(10., logrho);
-        //std::cout << "Res: " << res << std::endl;
-    }
-    else if(profile_name == "Hernquist")
-    {
-        float a= HaloRadius/(1.+sqrt(2.));
-        float logrho = HaloMass + log10(a)-log10(2.*PI)-log10(r)-3.*log10(HaloRadius+a);
-        res = pow(10., logrho);
-    }
-    else if(profile_name == "CoredNFW")
-    {
-        float rs = HaloRadius/concentration;
-        float rcore = pow(10., 1.14); //kpc from Newman et al. 2013 paperII
-        float b = rs/rcore;
-        float fc = log(1. + concentration)-concentration/(1.+concentration);
-        float logrhos = HaloMass-log10(4.*PI*pow(rs, 3.)*fc);
-        float logrho = log10(b)+logrhos-log10(1.+b*HaloRadius/rs)-2.*log10(1.+HaloRadius/rs);
-        res = pow(10.,logrho);
-    }
-    else
-    {
-	    std::cout << "HaloDensity() did not recognise profile name: " << profile_name << std::endl;
-	    exit(1);
-    }
-
-    if(isnan(res) || isinf(res) )
-    {
-        std::cout << "HaloDensity(r) will return " << res << " when r = " << r << ". Profile = " << profile_name << std::endl;
-        exit(1);
-    }
-    return res;
-}
 
 float Galaxy::HaloAnalyticMass(float r)
 {
     float mass = 0.;
+
     if(profile_name == "NFW")
     {
-        float rs = HaloRadius/concentration;
-        float fc = log(1.+concentration)-concentration/(1.+concentration);
-        float logrhos = HaloMass-log10(4.*PI*rs*rs*rs*fc);
-        float prefactor = 4. * PI * pow(10., logrhos) * pow(rs, 3.);
-        float ratio = r/rs;
-        float rhs = log(1. + ratio) - r/(rs + r);
-        float res = prefactor * rhs;
-        if(abs(rhs) < zero_perturbation) res = 0.;
-        assert(res >= 0. || assert_msg("NFW mass returned negative, res = " << res << std::endl <<
-            "---- r = " << r << std::endl <<
-            "---- rs = " << rs << std::endl <<
-            "---- prefactor 4. * PI * pow(10., logrhos) * pow(rs, 3.) = " << prefactor << std::endl <<
-            "---- rhs (log(rs + r) - log(rs) - r/(rs + r) =" << rhs << std::endl <<
-            "----- ratio r/rs = " << ratio << std::endl));
-        mass = res;
+        float x = r/HaloRadius;
+
+	    float res = 4. * PI * pow(HaloRadius, 3.) * HaloRhos * (log(1. + x) - x/(1+x));
+
+	    if(x/(1+x) > log(1. + x)) res = 0.0; // At very low radii, can return negative.
+
+	    if (isinf(abs(res)) || isnan(res))
+	    {
+            assert(false || assert_msg("Halo Analytic Mass, NFW profile, returned " << res << std::endl <<
+                "---x (r/HaloRadius) = " << x << std::endl <<
+                "---- r = " << r << std::endl <<
+                "---- HaloRadius = " << HaloRadius << std::endl <<
+                "---HaloRhos = " << HaloRhos << std::endl));
+	    }
+	    mass = res;
+	}
+    else if(profile_name == "None" || profile_name == "none" || profile_name == "")
+    {
+        mass = 0.;
     }
-    
+    else assert(false || assert_msg("Unrecognised Halo Profile: " << profile_name));
+
+    assert(mass >= 0 || assert_msg("Mass < 0"));
+	
     return mass;
 }
 
@@ -611,6 +496,7 @@ void Galaxy::Construct_Black_Hole(float bhMass)
     BHMass = bhMass;
 }
 
+
 // //////////////////////////
 // //// Member Functions ////
 // //////////////////////////
@@ -621,13 +507,14 @@ float GetVelocityDispersion(float Aperture,
                             float bulge_radius,
                             float bulge_beta,
                             float bulge_sersicIndex,
+                            float rem_prefactor,
                             int * componentFlag,
                             float disk_mass,
                             float disk_inclination,
                             float disk_scale_length,
-                            float Halo_mass,
                             char * profile_name,
-                            float halo_concentration,
+			                float haloRs,
+			                float haloRhos,
                             float BlackHole_mass,
                             int mode)
 {
@@ -646,11 +533,15 @@ float GetVelocityDispersion(float Aperture,
     Galaxy aGalaxy(Aperture, redshift);
 
     // Construct the mass and/or bulge
-    if(bulge_mass > 0.) aGalaxy.ConstructBulge(bulge_mass, bulge_beta, bulge_radius, bulge_sersicIndex);
+    if(bulge_mass > 0.)
+    {
+        aGalaxy.ConstructBulge(bulge_mass, bulge_beta, bulge_radius, bulge_sersicIndex);
+        aGalaxy.set_rem_prefac(rem_prefactor);
+    }
     if(disk_mass > 0.) aGalaxy.ConstructDisk(disk_mass, disk_inclination, disk_scale_length);
 
     // Construct the halo and black hole
-    aGalaxy.ConstructHalo(Halo_mass, profile_name, halo_concentration);
+    aGalaxy.ConstructHalo(profile_name, haloRs, haloRhos);
     aGalaxy.Construct_Black_Hole(BlackHole_mass);
 
     // Set the contributions to the bulge velocity dispersion. Primarily for comparison with Mamon&Lokas2
@@ -692,7 +583,6 @@ float GetVelocityDispersion(float Aperture,
     {
         assert((false) || assert_msg( "Unknown mode : "  << mode));
     }
-
 
 
     return res;
