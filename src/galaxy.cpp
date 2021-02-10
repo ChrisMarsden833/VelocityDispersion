@@ -440,7 +440,7 @@ float Galaxy::disk_bessel(float x)
 float Galaxy::disk_Vcirc2(float R)
 {
     if(R == 0.) R += zero_perturbation;
-    float x = R/disk_scale_length;
+    float x = R/(disk_scale_length);
 
     float B_term;
 
@@ -450,14 +450,31 @@ float Galaxy::disk_Vcirc2(float R)
     }
     else
     {
-        B_term = disk_bessel(1.6 * x) / disk_bessel(1.6);
+        B_term = disk_bessel(1.6 *x)/disk_bessel(1.6);
     }
 
-    float kappa = 0.5;
+    float MLr = 0.01;
+    float mass = mass_disk;
+
+    float luminosityI = pow(mass, 10.)/MLr;
+
+    float mag = -2.5 * log10(luminosityI);
+
+    float Ltilda = pow(10., -(mag + 21.9)/2.5);
+    float kappa = 0.656 + 0.369 * log10(Ltilda) - 0.072 * pow((log10(Ltilda)), 2.);
+
+
+    kappa = 0.5;
 
     float res = kappa * ((GR * pow(10., mass_disk))/(disk_scale_length)) * x * x * B_term;
 
-    res += HaloVcirc2(R); //(1. - kappa) * HaloVcirc2(R);
+            //4. * PI * GR * disk_projected_density(R) * disk_scale_length * x*x * B_term;
+
+            //kappa * ((GR * pow(10., mass_disk))/(disk_scale_length)) * x * x * B_term;
+
+    if(kappa < 1) {
+        res += HaloVcirc2(R);
+    }
 
     return res;
 }
@@ -465,11 +482,15 @@ float Galaxy::disk_Vcirc2(float R)
 float Galaxy::disk_mass(float R)
 {
     return (pow(10., mass_disk)/(disk_scale_length*disk_scale_length)) * (disk_scale_length * (-exp(-R/disk_scale_length)) * (disk_scale_length + R) + (disk_scale_length*disk_scale_length) );
+    //return 2. * PI * disk_projected_density(0.) * pow(disk_scale_length, 2.) * ( (1. - exp(-R/disk_scale_length)*(1.+R/disk_scale_length)) );
+
+    //2pow(10., mass_disk) * (1. - (exp(R/disk_scale_length)*(disk_scale_length + R)/h));
+
 }
 
 float Galaxy::disk_integrand(float R)
 {
-    return 2. * PI * R * disk_projected_density(R) * disk_Vcirc2(R);
+    return 2. * PI * R * disk_projected_density(R) * disk_Vcirc2(R) ;
 }
 
 float Galaxy::disk_velocity_dispersion2()
@@ -482,8 +503,8 @@ float Galaxy::disk_velocity_dispersion2()
     float integral_term = AdaptiveRichardsonExtrapolate(numfp, 0., aperture_size, accuracy);
     //float integral_term = SimpsonsRule(numfp, 0., aperture_size, 1000);
     float constant = (sin(disk_inclination) * sin(disk_inclination))/disk_mass(aperture_size);
-
     return constant * integral_term;
+
 }
 
 // //////////////////////////
@@ -564,6 +585,20 @@ float GetVelocityDispersion(float Aperture,
 
         // Combine these values in quadrature.
         res = pow(bulge_sigma*bulge_sigma + disk_sigma2, 0.5);
+
+        /**
+        #pragma omp critical
+        {
+            std::cout << std::endl << "================" << std::endl;
+            std::cout << "Bulge sigma contribution (2): " << bulge_sigma*bulge_sigma << std::endl;
+            std::cout << "Disk sigma contribution (2): " << disk_sigma2 << std::endl;
+            std::cout << " Disk mass = " << disk_mass << " (" << log10(disk_mass) << ")" << std::endl;
+            std::cout << " Disk Scale Length = " << disk_scale_length << std::endl;
+            std::cout << "Res : " << res << std::endl;
+        };
+        **/
+
+
 
         // Stop in the case that inf or nan is returned, this should never have to happen.
         assert( (!isnan(res) && !isinf(res)) ||
