@@ -1,11 +1,10 @@
 #include "galaxy.h"
 
-Galaxy::Galaxy(float input_aperture_size, float z)
+Galaxy::Galaxy(float input_aperture_size)
 {
     // Constructor. This all happens when the class is initialized.
     // I've stripped this back so we can have more control.
 	aperture_size = input_aperture_size;
-	redshift = z;
 }
 
 // ///////////////////////////
@@ -523,7 +522,6 @@ void Galaxy::Construct_Black_Hole(float bhMass)
 // //////////////////////////
 
 float GetVelocityDispersion(float Aperture,
-                            float redshift,
                             float bulge_mass,
                             float bulge_radius,
                             float bulge_beta,
@@ -540,18 +538,16 @@ float GetVelocityDispersion(float Aperture,
                             int mode)
 {
     assert( ((Aperture > 0.) &
-            (redshift >= 0.) &
             (bulge_radius >= 0) &
             (disk_scale_length >= 0))
             || assert_msg("Input validation.\nInvalid negative value suppled.\n" <<
             "Values:\n" <<
             "Aperture: " << Aperture <<
-            "\nredshift: " << redshift <<
             "\nbulge_radius: " << bulge_radius <<
             "\ndisk_scale_length: " << disk_scale_length));
 
     // Construct galaxy object
-    Galaxy aGalaxy(Aperture, redshift);
+    Galaxy aGalaxy(Aperture);
 
     // Construct the mass and/or bulge
     if(bulge_mass > 0.)

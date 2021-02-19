@@ -14,7 +14,6 @@
 extern "C"
 {
     float * ParallelSigma(float * Aperture,
-                           float * redshift,
                            float * bulge_mass,
                            float * bulge_radius,
                            float * bulge_beta,
@@ -53,11 +52,11 @@ extern "C"
 
         // Shedulding is set to schedule(dynamic, 1). This is because tasks can be very asymmetric.
         // Loop back through array as often the last elements can take the longest, so this results in better load management with the above schedule
-        #pragma omp parallel for default(none) shared(progress, res, Aperture, redshift, bulge_mass, bulge_radius, bulge_beta, bulge_sersicIndex, rem_prefactor, componentFlag, disk_mass, disk_inclination, disk_scale_length, profile_name, haloRs, haloRhos, BlackHole_mass, mode, threads, debug, size, stdout) schedule(dynamic, 1)
+        #pragma omp parallel for default(none) shared(progress, res, Aperture, bulge_mass, bulge_radius, bulge_beta, bulge_sersicIndex, rem_prefactor, componentFlag, disk_mass, disk_inclination, disk_scale_length, profile_name, haloRs, haloRhos, BlackHole_mass, mode, threads, debug, size, stdout) schedule(dynamic, 1)
         for (int i = size-1; i >= 0; i--)
         {
             // Call function itself.
-        	res[i] = GetVelocityDispersion(Aperture[i], redshift[i], bulge_mass[i], bulge_radius[i], bulge_beta[i], bulge_sersicIndex[i], rem_prefactor[i], componentFlag,
+        	res[i] = GetVelocityDispersion(Aperture[i], bulge_mass[i], bulge_radius[i], bulge_beta[i], bulge_sersicIndex[i], rem_prefactor[i], componentFlag,
                     disk_mass[i], disk_inclination[i], disk_scale_length[i], profile_name, haloRs[i], haloRhos[i], BlackHole_mass[i], mode);
 	
 		if(debug == 1)

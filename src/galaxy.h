@@ -32,8 +32,7 @@ class Galaxy
 {
 	public:
         // Constructor
-		Galaxy(float input_aperture_size, float z);
-
+		Galaxy(float input_aperture_size);
 
         // -----------------------
         // --- Bulge functions ---
@@ -128,8 +127,6 @@ class Galaxy
         // === General Properties ===
         // ==========================
 
-        // Redshift of the galaxy
-        float redshift;
         // Aperture size [kpc]
         float aperture_size;
 
@@ -216,7 +213,6 @@ class Galaxy
 };
 
 float GetVelocityDispersion(float Aperture,
-                            float redshift,
                             float bulge_mass,
                             float bulge_radius,
                             float bulge_beta,

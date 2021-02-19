@@ -18,7 +18,6 @@ def Sigma(ApertureSize,
              Disk_mass=0.0,
      Disk_scale_length=0.0,
       Disk_inclination=0.0,
-                     z=0,
        DarkMatter_type=None,
                 HaloRs=0.0,
               HaloRhos=0.0,
@@ -27,7 +26,7 @@ def Sigma(ApertureSize,
                StarsOn=True,
                   mode=1,
                  debug=True,
-               threads=-1,
+               threads=8,
           library_path="/home/chris/Files/ProjectSigma/VelocityDispersion/lib/libsigma.so"):
 
     """The Velocity Dispersion of a Galaxy (sigma).
@@ -120,7 +119,6 @@ def Sigma(ApertureSize,
     Disk_mass = check_make_array(Disk_mass, length).astype(np.float32).ctypes.data_as(c_float_p)
     Disk_inclination = check_make_array(Disk_inclination, length).astype(np.float32).ctypes.data_as(c_float_p)
     Disk_scale_length = check_make_array(Disk_scale_length, length).astype(np.float32).ctypes.data_as(c_float_p)
-    z = check_make_array(z, length).astype(np.float32).ctypes.data_as(c_float_p)
     HaloRs = check_make_array(HaloRs, length).astype(np.float32).ctypes.data_as(c_float_p)
     HaloRhos = check_make_array(HaloRhos, length).astype(np.float32).ctypes.data_as(c_float_p)
     BlackHoleMass = check_make_array(BlackHoleMass, length).astype(np.float32).ctypes.data_as(c_float_p)
@@ -162,7 +160,6 @@ def Sigma(ApertureSize,
 
     # Set the argument types for the function. Note the order is different here.
     ibc.ParallelSigma.argtypes = [ctypes.POINTER(ctypes.c_float),  # Aperture
-                                  ctypes.POINTER(ctypes.c_float),  # Redshift
                                   ctypes.POINTER(ctypes.c_float),  # Bulge mass
                                   ctypes.POINTER(ctypes.c_float),  # Bulge radius
                                   ctypes.POINTER(ctypes.c_float),  # Bulge beta
@@ -185,7 +182,7 @@ def Sigma(ApertureSize,
     ibc.ParallelSigma.restype = ctypes.POINTER(ctypes.c_float)
 
     # Call the function! Note argument order is different
-    res = ibc.ParallelSigma(ApertureSize, z, Bulge_mass, Bulge_Re, Bulge_Beta,
+    res = ibc.ParallelSigma(ApertureSize, Bulge_mass, Bulge_Re, Bulge_Beta,
             Bulge_n, StellarReminantPref, component_array, Disk_mass, Disk_inclination, Disk_scale_length,
             DarkMatter_type, HaloRs, HaloRhos, BlackHoleMass, mode, threads, debug_var, length)
 
