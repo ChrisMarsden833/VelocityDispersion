@@ -96,7 +96,7 @@ def SDSS_Sersic_Fit(sm, z = 0., minsm = 8, natmin = 1.6):
     res *= (1 + z)**-1
     return res
 
-def GetParameterFromMatrix(Matrix, x, y, datax, datay):
+def GetParameterFromMatrix(Matrix, x, y, datax, datay, debug = False):
     """Function to interpolate a parameter from a 2d matrix given x and y coordinates and data.
     This is really just a wrapper function around the insane formatting that scipy's griddata requires.
     params:
@@ -118,14 +118,8 @@ def GetParameterFromMatrix(Matrix, x, y, datax, datay):
     assert np.amin(datay) >= np.amin(y), "y data ({}) exists below domain ({})".format(np.amin(datay), np.amin(y) )
     assert np.amax(datay) <= np.amax(y), "y data ({}) exists above domain ({})".format(np.amax(datay), np.amax(y) )
     
-    if hasattr(datax, "__len__"):
-        K = np.ones_like(datax)
-        for i, xi in enumerate(datax):
-            sample = (xi, datay[i])
-            K[i] = griddata(domain, Matrix.ravel(), sample, method='cubic')    
-    else:
-        sample = (datax, datay)
-        K = griddata(domain, Matrix.ravel(), sample, method='cubic')   
+    sample = (datax, datay)
+    K = griddata(domain, Matrix.ravel(), sample, method='cubic')   
     
     return K
 
@@ -260,26 +254,6 @@ class NumericalSigma:
             
         print("\\end{array}")
         
-    def M_LaTeX_markup(self):
-        """Member function to print the latex markdown for displaying the M matrix as a table."""
-        
-        
-        alignment = "c|c" # label, n, value
-        
-        midpointy = int(len(self.Beta_range)/2)
-        
-        print("\\begin{array}{" + alignment + "}")
-        
-        first_row = "\\beta & \mathcal{N} \\\ "
-        print(first_row)
-        
-        for i in range(len(self.Beta_range)):
-            string = str(self.Beta_range[i]) + " & " + str(np.round(self.M[i], 2)) + " \\\ "
-            print(string)
-            
-        print("\\end{array}")
-  
-
     def L_LaTeX_markup(self):
         """Member function to print the latex markdown for displaying the M matrix as a table."""
         
@@ -411,6 +385,132 @@ class NumericalSigma:
         if self.terminal_output:
             print("L matrix generated.")
             
+              
+    def GenerateMMatrix(self, Beta_range, n_range):
+        
+        assert self.K_matrix is not None, "K matrix must be calculated first."
+        assert self.L_matrix is not None, "L matrix must be calculated first."
+        
+        if self.terminal_output:
+            print("##############################################################################")
+            print("Generating matrix for M of shape (x={}, y={}).".format(len(Beta_range), len(n_range)))
+            
+        self.Beta_range_Mx = Beta_range
+        self.n_range_My = n_range
+        
+        z = 0
+        
+        Mstar = 10.0
+        mhalo = 11.5 
+        re = SDSS_Sizes_Fit(Mstar) #*(1+z)**-0.5
+            
+        nfw  = profile_nfw.NFWProfile(M = 1E12, c = 10.0, z = z, mdef = '200c') # Just for obj
+        c = concentration.concentration((10**mhalo)*cosmo.h, '200c', z=z, model = 'ishiyama20')
+        rho, rs = nfw.fundamentalParameters( (10**mhalo)*cosmo.h, c, z, '200c')
+        rs /= cosmo.h
+        rho *= cosmo.h**2
+            
+        first = True
+        for n in tqdm(n_range):
+            
+            sigma = Sigma(self.fix_ap * re * np.ones_like(Beta_range),
+                            Bulge_mass = Mstar,
+                            Bulge_Re = re,
+                            Bulge_n = n,
+                            Bulge_Beta = Beta_range,
+                            DarkMatter_type = 'NFW',
+                            HaloRs = rs,
+                            HaloRhos = rho,
+                            debug = False,
+                            threads = 8,
+                            library_path = "./lib/libsigma.so")
+            
+            K = GetParameterFromMatrix(self.K_matrix, self.re_domain_Kx, self.n_domain_Ky, re, n)
+            L = GetParameterFromMatrix(self.L_matrix, self.c_domain_Lx, self.n_domain_Ly, c, n)
+       
+            sm = sersicMassWithin(re, Mstar, re, n)                 
+            dm = NFW_massWithin(rs, rho, re)
+            tot = sm + dm
+                
+            LHS = GR * tot/re
+            
+            M = (LHS/(sigma**2)) - (K * sm/tot)  - (L * dm/tot)
+                 
+            if first:
+                Mmatrix = M
+                first = False
+            else:
+                Mmatrix = np.vstack((Mmatrix, M))
+                 
+        self.M_matrix = Mmatrix
+        
+        if self.terminal_output:
+            print("M matrix generated.")
+            
+    def M_LaTeX_markup(self):
+        """Member function to print the latex markdown for displaying the M matrix as a table."""
+        
+        print_cols = len(self.Beta_range_Mx) + 2 # 1 for the column for the re labels, 1 for the label
+        alignment = repeat_to_length("c", print_cols) # Centre alignment
+        
+        midpointx = int(len(self.Beta_range_Mx)/2 + 2)
+        midpointy = int(len(self.n_range_My)/2)
+        xlabel = "\\\beta"
+        ylabel = "n"
+        
+        
+        print("\\begin{array}{" + alignment + "}")
+        
+        first_row = ""
+        for i in range(print_cols):
+            if i+1 == midpointx:
+                first_row += xlabel + " & "
+            elif i == print_cols-1: # Last
+                first_row += "\\\ "
+                
+            else:
+                first_row += " & "
+        
+        print(first_row)
+        
+        second_row = ""
+        for i in range(print_cols):
+            if i+1 == print_cols:
+                terminator = " \\\ "
+            else:
+                terminator = " & "
+            
+            if i == 0 or i == 1:
+                second_row += terminator
+            else:
+                second_row += str(np.round(self.Beta_range_Mx[i-2], 2)) + terminator
+                
+        print(second_row)
+        
+        for i in range(len(self.n_range_My)):
+            
+            string = ""
+            
+            if i == midpointy:
+                string += ylabel + " & " + str(np.round(self.n_range_My[i], 2))  +  " & "
+            else:
+                string += " & " + str(np.round(self.n_range_My[i], 2))  +  " & "
+            
+            for j in range(len(self.Beta_range_Mx)):
+                terminator = " & "
+                
+                if j == len(self.Beta_range_Mx)-1:
+                    terminator = "\\\ "
+                
+                string += str(np.round(self.M_matrix[i, j], 2)) + terminator
+                
+            print(string)
+        
+        print("\\end{array}")
+        
+        
+    
+
     def GenerateMVector(self, Beta_range):
         
         self.Beta_range = Beta_range
@@ -448,68 +548,89 @@ class NumericalSigma:
                 
         LHS = GR * tot/re
         
-        M = LHS/(sigma**2) - (L*dm/tot + K *sm/tot)
+        M = (LHS/(sigma**2) - L*dm/tot) - K * sm/tot
         
         self.M = M
         
+    def GenerateKLM(self, n, c, beta, DM_on = True, debug = True):
         
-        
-        
-        
+        if debug:
+            print("        Generating K")
             
-    def SigmaNumeric(self, ApertureSize, Bulge_mass, Bulge_Re, Bulge_n, Bulge_Beta, HaloMass, z, dm='NFW'):
+        K = GetParameterFromMatrix(self.K_matrix, self.re_domain_Kx, self.n_domain_Ky, 5, n, debug)
+        
+        
+        if debug:
+            print("        Generating L")
+        
+        L = GetParameterFromMatrix(self.L_matrix, self.c_domain_Lx, self.n_domain_Ly, c, n, debug)
+        
+        
+        if debug:
+            print("        Generating M")
+        
+        M = GetParameterFromMatrix(self.M_matrix, self.Beta_range_Mx, self.n_range_My, beta, n, debug)
+        
+        #beta2m = interp1d(self.Beta_range, self.M)
+        
+        #M = beta2m(beta)
+        
+        return K, L, M
+        
+    def GenerateF(self, mstar, mhalo, re, n, c, beta, z, DM_on = True, debug = False):
+    
+        if DM_on:
+            nfw = profile_nfw.NFWProfile(M = 1E12, c = 10, z = z, mdef='200c') # Just need the obj
+            rho, rs = nfw.fundamentalParameters( (10**mhalo)*cosmo.h, c, z, '200c')
+            rs /= cosmo.h
+            rho *= cosmo.h**2
+            dm = NFW_massWithin(rs, rho, re)
+        else:
+            dm = 0
+        
+        sm = sersicMassWithin(re, mstar, re, n)
+        tot = dm + sm
+        
+        K, L, M = self.GenerateKLM(n, c, beta, DM_on = DM_on, debug = False)
+        
+        return K * sm/tot + L * dm/tot + M
+            
+        
+    def SigmaNumeric(self, Bulge_mass, Bulge_Re, Bulge_n, Bulge_Beta, HaloMass, z, dm='NFW', debug = True):
         """Function to return sigma based on the numerical matricies"""
         
+        if debug:
+            print("    Assigning Concentration")
         
-        
-            
-            
-        K = GetParameterFromMatrix(self.K_matrix, self.re_domain_Kx, self.n_domain_Ky, Bulge_Re, Bulge_n)
-        
+        c = concentration.concentration((10**HaloMass)*cosmo.h, '200c', z=z, model = 'ishiyama20')
+    
         if dm == 'NFW':
-            c = concentration.concentration((10**HaloMass)*cosmo.h, '200c', z=z, model = 'ishiyama20')
-            
-            print("Haloc", c)
-            
+            if debug:
+                print("    Assigning DM parameters")
+            dm_on = True
             nfw = profile_nfw.NFWProfile(M = 1E12, c = 10, z = z, mdef='200c') # Just need the obj
             rho, rs = nfw.fundamentalParameters( (10**HaloMass)*cosmo.h, c, z, '200c')
             rs /= cosmo.h
             rho *= cosmo.h**2
-            
-            #c2L = interp1d(self.c_rangeL, self.L)
-            #L = c2L(c)
-        
-            L = GetParameterFromMatrix(self.L_matrix, self.c_domain_Lx, self.n_domain_Ly, c, Bulge_n)
             dm = NFW_massWithin(rs, rho, Bulge_Re)
         else:
-            L = 0
-            dm = 0
-            
-            
-        beta2m = interp1d(self.Beta_range, self.M)
-        M = beta2m(Bulge_Beta)
-            
-            
-        #z2m = interp1d(self.z_range, self.M)
-        #M = z2m(z)
-        
-        #print(self.M)
-        
-        #M = np.zeros_like(K)
-       # M = GetParameterFromMatrix(self.M_Matrix, self.z_range_Mx, self.mhalo_range_My, z, HaloMass)
-        #M[HaloMass > 0] = Mall[HaloMass > 0]
-        
+            dm_on = False
+            dm = 0.0
     
+        if debug:
+            print("    Generating K, L and M")
+            
+        K, L, M = self.GenerateKLM(Bulge_n, c, Bulge_Beta, dm_on, debug)
+            
+        if debug:
+            print("    Bringing it all together")
+            
         sm = sersicMassWithin(Bulge_Re, Bulge_mass, Bulge_Re, Bulge_n)
         tot = dm + sm
         
         LHS = GR * tot/Bulge_Re
         
-        RHS = (L * dm/tot + K * sm/tot + M)
-        
-        
-        
-        #RHS = (L + K)
+        RHS = (L * dm/tot + sm/tot*K + M)
         
         sigma = LHS/RHS
         
@@ -519,53 +640,53 @@ class NumericalSigma:
 if __name__ == "__main__":
     obj = NumericalSigma()
     
-    re_domain = np.arange(1, 10, 1.0)
-    n_domain = np.arange(1, 9.0, 1)
+    length = 20
     
-    obj.GenerateKmatrix(re_domain, n_domain, 0.25)
+    aperture = 1/8.
     
-   
+    show = False
     
-    c_domain = np.arange(5, 15, 1.0)
+    if show:
+        print("executing for LaTex 'show' mode")
+    else:
+        print("Executing for running mode")
+    
+    re_domain = np.linspace(0.2, 20, length)
+    
+    if show:
+        n_domain = np.arange(1, 8, 1)
+    else:
+        n_domain = np.linspace(0.2, 9.0, length)
+    
+    obj.GenerateKmatrix(re_domain, n_domain, aperture)
+    
+    if show:
+        obj.K_LaTeX_markup()
+    
+    if show:
+        c_domain = np.arange(5, 14, 1) 
+    else:
+        c_domain = np.linspace(1, 50, length)
     
     obj.GenerateLmatrix(c_domain, n_domain)
+    
+    if show:
+        obj.L_LaTeX_markup()
 
-    
-    beta_range = np.array([-0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4]) # np.linspace(-0.2, 0.49, 5)
-    obj.GenerateMVector(beta_range)
-    
-    #mhalo_range = np.linspace(8, 15.5, 20)
-    #obj.GenerateLmatrix(c_domain, mhalo_range)
-    
-    
-    
-    #mstar_range = np.linspace(7, 13, 10)
-    
-    #fixed_aperture = 1/8.
-    #fixed_beta = 0.0
-    
-    #mhalo_range = np.linspace(0, 16, 20)
-    #mstar_range = np.linspace(5, 13, 20)
-    
-    #mh_range = np.linspace(10, 15.5, 10)
-    #z_range = np.linspace(0, 4, 10)
-    #obj.GenerateLmatrix(mh_range, z_range)
-   
-    #z_domain = np.linspace(0, 5, 10)
-   
-    #obj.GenerateMMatrix(z_domain, mhalo_range)
-    
-    filehandler = open("SigmaNumeric.pkl", "wb")
-    pickle.dump(obj, filehandler)
-    filehandler.close()
-    
-
-    #obj.L_LaTeX_markup()
-    
-    #obj.K_LaTeX_markup()
-    
-    
-    
+    if show:
+        beta_range = np.array([-0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4]) 
+    else:
+        beta_range = np.linspace(-0.2, 0.49, length) # Only values of beta worth worrying about
         
+    obj.GenerateMMatrix(beta_range, n_domain)            
+    
+    if show:
+        obj.M_LaTeX_markup()
+    
+    file = open("SigmaNumeric.pkl", 'wb')
+    pickle.dump(obj, file)
+    file.close()
+    
+    print("Complete")
         
      
