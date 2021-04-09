@@ -642,9 +642,9 @@ if __name__ == "__main__":
     
     length = 20
     
-    aperture = 1/8.
+    aperture = 1.
     
-    show = False
+    show = True
     
     if show:
         print("executing for LaTex 'show' mode")
