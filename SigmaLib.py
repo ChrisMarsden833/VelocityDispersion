@@ -9,21 +9,19 @@ import os
 # openmp can sometimes be already using by a jupyter notebook. This command prevents crashing.
 os.environ['KMP_DUPLICATE_LIB_OK']='True' # Potentially dangerous.
 
-def Sigma(ApertureSize,
-            Bulge_mass,
-              Bulge_Re,
-               Bulge_n,
+def Sigma(ApertureSize=0.0,
+            Bulge_mass=0.0,
+              Bulge_Re=0.0,
+               Bulge_n=0.0,
             Bulge_Beta=0.0,
-    StellarReminantPref=1.0,
              Disk_mass=0.0,
      Disk_scale_length=0.0,
       Disk_inclination=0.0,
-       DarkMatter_type=None,
                 HaloRs=0.0,
               HaloRhos=0.0,
-           BlackHoleOn=False,
          BlackHoleMass=0.0,
-               StarsOn=True,
+          tracer_flags=[True, True],
+   gravitational_flags=[True, True, True, True],
                   mode=1,
                  debug=True,
                threads=8,
@@ -46,45 +44,47 @@ def Sigma(ApertureSize,
 
     Parameters:
     -----------
-        ApertureSize (np array or float) : This is the aperture within which sigma will be measured, measured in kpc (not 
-            arcseconds!). When the function mode is changed to mode = 2, this value is actually the radius at which sigma
+        ApertureSize (np array or float) : This is the aperture within which sigma will be measured, measured in kpc (not
+            arcseconds!). Note that when the function mode is changed to mode = 2, this value is actually the radius at which sigma
             should be measured. [kpc]
 
         Bulge_mass (np array or float) : The Stellar Mass of the bulge [log10 Msun]
         Bulge_Re (np array or float) : The value of Re for the bulge component [kpc]
-        Bulge_n (np array or float) : The Sersic Index of the bulge component [dimensionless] 
+        Bulge_n (np array or float) : The Sersic Index of the bulge component [dimensionless]
         Bulge_Beta (np array or float) : The velocity Anisotropy [dimensionless]
 
         Disk_mass (np array or float) : The Stellar Mass of the disk, default to 0 [log10 Msun]
         Disk_scale_length (np array or float) : The scale length R_D of the disk, default is 0 [kpc]
-        Disk_inclination (np array or float) : The angle at which the disk is observed relative to aperture, 
+        Disk_inclination (np array or float) : The angle at which the disk is observed relative to aperture,
             default is 0 [degrees]
 
-        z (np array or float) : The redshift of the galaxy [dimensionless]
-        
-        DarkMatter_type (String) : String description of the dark matter structure. Default is 'None', which will turn off
-            Dark Matter altogether (rendering the HaloMass and HaloC arguments redundant if assigned). The only currently 
-            implemented profile is 'NFW'. This string is case-sensitive.
-        HaloMass (np array or float) : The mass of the dark matter halo [log10 Msun]
-        HaloC (np array or float) : The halo concentration parameter [dimensionless]
         HaloRs (np array or float): The halo scale radius [kpc]
         HaloRhos (np array or float): The halo density factor [M_sun]/kpc^3
 
-        BlackHoleOn (bool) : If the gravitational effects of a black hole should be switched on. Defaults to False. If 
-            False, the variable BlackHoleMass is redundant if assigned.
         BlackHoleMass (np array or float) : The black hole mass [log10 Msun]
 
-        StarsOn (bool) : If the gravitational effects of the stars themselves should be switched on (used for testing). 
-            defaults to True.
+        tracer_flags (array of booleans) : Array that sets the (by definition, stellar) components of the galaxy that are used to
+            trace the velocity dispersion. Practically, this means the bulge and disk components of the galaxy, so array is currently
+            length 2, corresponding to the bulge and disk components. Default is [True, True], corresponding to the bulge and disk
+            respectively. If a user desires to calculate, for example, the effect of the entire gravitationaly system on the disk,
+            for example, they could set this to [False, True], which would `switch off` the bulge.
+
+        gravitational_flags (array of booleans) : Array that sets the components of the galaxy that contribute gravitationaly, in the format:
+            [bulge, disk, halo, black hole]. Default is [True, True, True, True], or all components contributing. If the user desired to neglect
+            dark matter in their calculation of sigma (for example, they would set this to [True, True, False, True]). While this is nominally the
+            same as setting the associated paramters to zero, it gets more complex ae we consider the interaction with the tracer flags, for example,
+            as a user might want to undetand the bulge's effect on the disk without tracing the bulge itself, hence the requirement for it to exist
+            gravitationaly but not be traced.
+
         mode (integer) : A backend parameter that controls how the code works. Normally, users should ignore this.
             mode = 1 (default) : Normal Behavior. Velocity dispersion is computed within an aperture.
             mode = 2 : Return LOS velocity dispersion as a function of r. In this case, ApertureSize becomes r.
         threads (integer) : The number of threads to use for multiprocessing. The default is -1, which will use the
-            maximum number of threads avaiilable. Multiprocessing is performed by assigning galaxies to cores using opm.
+            maximum number of threads avaiilable. Multiprocessing is performed by assigning galaxies to cores using openmp.
         debug (bool) : Backend variable to activate debugging print statements. Default is False.
         library_path (string) : The (full) path to the DLL file. This defaults to:
             "/Users/chris/Documents/PhD/ProjectSigma/VelocityDispersion/lib/libsigma.so"
-        
+
     Returns:
     --------
     (np array) : The velocity dispersions of the specified galaxies [kms^-1]
@@ -115,7 +115,6 @@ def Sigma(ApertureSize,
     Bulge_Re = check_make_array(Bulge_Re, length).astype(np.float32).ctypes.data_as(c_float_p)
     Bulge_n = check_make_array(Bulge_n, length).astype(np.float32).ctypes.data_as(c_float_p)
     Bulge_mass = check_make_array(Bulge_mass, length).astype(np.float32).ctypes.data_as(c_float_p)
-    StellarReminantPref = check_make_array(StellarReminantPref, length).astype(np.float32).ctypes.data_as(c_float_p)
     Disk_mass = check_make_array(Disk_mass, length).astype(np.float32).ctypes.data_as(c_float_p)
     Disk_inclination = check_make_array(Disk_inclination, length).astype(np.float32).ctypes.data_as(c_float_p)
     Disk_scale_length = check_make_array(Disk_scale_length, length).astype(np.float32).ctypes.data_as(c_float_p)
@@ -123,75 +122,61 @@ def Sigma(ApertureSize,
     HaloRhos = check_make_array(HaloRhos, length).astype(np.float32).ctypes.data_as(c_float_p)
     BlackHoleMass = check_make_array(BlackHoleMass, length).astype(np.float32).ctypes.data_as(c_float_p)
 
-    # Manage which components are gravitationally active, based on the inputs provided.
-    if StarsOn:
-        stars_component = 1
-    else:
-        stars_component = 0
-    if (DarkMatter_type is None) or (DarkMatter_type is "None"):
-        dm_component = 0
-    else:
-        dm_component = 1
-    if BlackHoleOn:
-        bh_component = 1
-    else:
-        bh_component = 0
-    # We assemble a 'component array', which will be passed to the library to manage this succinctly.
-    component_array = [stars_component, dm_component, bh_component]
-    if debug:
-        print("Component array [stars, dark_matter, black_hole] ", component_array)
-
-    # Force mode and threads into integers, just in case they are not 
+    # Force mode and threads into integers, just in case they are not
     # (prevents pointless errors if these are interpreted as floats)
     mode = int(mode)
     threads = int(threads)
+    debug = int(debug)
 
-    # Sombody might put DarkMatter_type as python None rather than the string, so we deal with that here.
-    if DarkMatter_type is None:
-        DarkMatter_type = "None"
+    tracer_flags = np.array(tracer_flags).astype(np.int32).ctypes.data_as(c_int_p)
+    gravitational_flags = np.array(gravitational_flags).astype(np.int32).ctypes.data_as(c_int_p)
 
-    DarkMatter_type = DarkMatter_type.encode('utf-8') # Encode the dm string as a c-style string.
-    component_array = np.array(component_array).astype(np.int32).ctypes.data_as(c_int_p) # Encode component array
-
-    if debug:
-        debug_var = 1
-    else:
-        debug_var = 0
-
-    # Set the argument types for the function. Note the order is different here.
+    # Set the argument types for the function.
     ibc.ParallelSigma.argtypes = [ctypes.POINTER(ctypes.c_float),  # Aperture
+
                                   ctypes.POINTER(ctypes.c_float),  # Bulge mass
                                   ctypes.POINTER(ctypes.c_float),  # Bulge radius
                                   ctypes.POINTER(ctypes.c_float),  # Bulge beta
                                   ctypes.POINTER(ctypes.c_float),  # Bulge sersic index
-                                  ctypes.POINTER(ctypes.c_float),  # Stellar Remenant Prefactor
-                                  ctypes.POINTER(ctypes.c_int),  # Bulge component flag
+
                                   ctypes.POINTER(ctypes.c_float),  # Disk Mass
                                   ctypes.POINTER(ctypes.c_float),  # Disk Inclination
                                   ctypes.POINTER(ctypes.c_float),  # Disk ScaleLength
-                                  ctypes.c_char_p, # Profile Name
+
                                   ctypes.POINTER(ctypes.c_float), # Halo Rs
                                   ctypes.POINTER(ctypes.c_float), # Halo Rhos
+
                                   ctypes.POINTER(ctypes.c_float),  # Black Hole Mass
+
+                                  ctypes.POINTER(ctypes.c_int),  # Tracer Flag
+                                  ctypes.POINTER(ctypes.c_int),  # gravitational_flags
+
                                   ctypes.c_int32, # Threads
                                   ctypes.c_int32, # Mode
                                   ctypes.c_int32, # debug
                                   ctypes.c_int32]  # Length
 
-    # Set the argument return type. 
+    # Set the argument return type.
     ibc.ParallelSigma.restype = ctypes.POINTER(ctypes.c_float)
 
-    # Call the function! Note argument order is different
-    res = ibc.ParallelSigma(ApertureSize, Bulge_mass, Bulge_Re, Bulge_Beta,
-            Bulge_n, StellarReminantPref, component_array, Disk_mass, Disk_inclination, Disk_scale_length,
-            DarkMatter_type, HaloRs, HaloRhos, BlackHoleMass, mode, threads, debug_var, length)
+    # Call the function!
+    res = ibc.ParallelSigma(ApertureSize,
+                              Bulge_mass,
+                                Bulge_Re,
+                              Bulge_Beta,
+                                 Bulge_n,
+                               Disk_mass,
+                        Disk_inclination,
+                       Disk_scale_length,
+                                  HaloRs,
+                                HaloRhos,
+                           BlackHoleMass,
+                            tracer_flags,
+                     gravitational_flags,
+                           threads, mode, debug, length)
 
     # Convert the returned variable into readable format.
     res = np.ctypeslib.as_array((ctypes.c_float * length).from_address(ctypes.addressof(res.contents)))
-
-    if debug:
-        pass
-        #print("elapsed time : ",  str(timedelta(seconds=time.time() - start_time)))
 
     return res
 
@@ -228,5 +213,3 @@ def check_make_array(subject, length):
         subject = np.array(subject)
         assert len(subject) == length, "Length not consistent."
     return subject
-
-

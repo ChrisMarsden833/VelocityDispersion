@@ -32,7 +32,7 @@ class Galaxy
 {
 	public:
         // Constructor
-		Galaxy(float input_aperture_size);
+        Galaxy(float input_aperture_size, int * tracer_flags, int * gravitational_flags);
 
         // -----------------------
         // --- Bulge functions ---
@@ -53,10 +53,7 @@ class Galaxy
         float BulgeMass(float r);
 
         // Function to return the total (contributing) mass within the bulge ar radius r [kpc]
-        float BulgeTotalMass(float r);
-
-        // set the respective contributions to bulge mass
-        void SetBulgeGravitationalContributions(bool stars, bool dark_matter, bool black_hole);
+        float TotalMassForBulge(float r);
 
 		// Function to return the value of the K_Kernal
 		float K_Kernel_DW(float u);
@@ -71,24 +68,20 @@ class Galaxy
 		float sigma_ap_integrand(float R_arg);
 
 		// The velocity dispersion within the aperture
-		float sigma_ap(void);
-
-		// Set bulge remenant prefactor
-		void set_rem_prefac(float input_prefactor);
+		float bulge_sigma_ap(void);
 
         // +++++++++++++++++++++++++
         // ++++ Halo Functions +++++
         // +++++++++++++++++++++++++
 
         // Set up Dark Matter in the galaxy.
-        void ConstructHalo(std::string input_profile_name, float haloRs, float haloRhos);
+        void ConstructHalo(float haloRs, float haloRhos);
 
-	// Halo analytic mass
-	float HaloAnalyticMass(float r);
+	    // Halo analytic mass
+        float HaloAnalyticMass(float r);
 
-
-	// Halo Circular Velocity
-	float HaloVcirc2(float r);
+	    // Halo Circular Velocity
+	    float HaloVcirc2(float r);
 
         // \\\\\\\\\\\\\\\\\\\\\\\\
         // \\\\ Disk Functions \\\\
@@ -137,11 +130,8 @@ class Galaxy
         // ++++ Halo Properties +++++
         // ++++++++++++++++++++++++++
 
-        bool halo_present = false;
-
-        // Dark Matter Profile Name
-        string profile_name;
-
+        // Flag to use the gravitational contribution of the halo.
+        bool grav_halo;
         // Halo Radius
         float HaloRadius; // [Kpc] R_vir
 	    // HaloDensity
@@ -151,22 +141,17 @@ class Galaxy
         // ---- Bulge Properties ----
         // --------------------------
 
-        // If a bulge exists or not.
-        bool bulge_present = false;
+        // Trace the bulge or not.
+        bool trace_bulge;
+        // Gravitational contribution of the bulge
+        bool grav_bulge;
+
 		// Stellar Mass of the bulge [log10 M_sun]
 		float bulge_stellar_mass = 0.;
         // Beta, The disk anisotropy parameter [dimensionless]
         float bulge_beta = 0.;
         // (bulge) Half Light Radius [kpc]
         float bulge_half_light_radius = 0.;
-
-        // -- Contribution control component influence on bulge --
-        // Switch if baryonic Matter is on or not
-        bool bulge_stars_gravitation_on = true;
-        // Switch if dark matter is on or not.
-        bool dark_matter_gravitation_on = true;
-        // Switch on black hole or not.
-        bool black_hole_gravitation_on = true;
 
 		// Sersic Index [dimensionless]
 		float bulge_sersic_index = 0.;
@@ -193,20 +178,25 @@ class Galaxy
         // \\\\ Disk Properties \\\\\\\
         // \\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-        bool disk_present = false;
+        // Trace the disk
+        bool trace_disk;
+        // Trace the bulge
+        bool grav_disk;
         // The mass of the disk [log10 M_sun]
         float mass_disk = 0.;
         // Disk Scale length [kpc]
         float disk_scale_length = 0.;
         // Disk Inclination
         float disk_inclination = 0.;
+        // Add bulge correction
+        bool disk_bulge_correction = false;
 
         // ]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
         // ]]] Black Hole Properties ]]]
         // ]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
 
         // Is there a black hole
-        bool BlackHolePresent = false;
+        bool grav_bh;
         // Black Hole Mass
         float BHMass = 0.;
 
@@ -217,15 +207,14 @@ float GetVelocityDispersion(float Aperture,
                             float bulge_radius,
                             float bulge_beta,
                             float bulge_sersicIndex,
-                            float rem_prefactor,
-                            int * componentFlag,
                             float disk_mass,
                             float disk_inclination,
                             float disk_scale_length,
-                            char * profile_name,
                             float haloRs,
                             float haloRhos,
                             float BlackHole_mass,
+                            int * tracer_flags,
+                            int * gravitational_flags,
                             int mode);
 
 #endif

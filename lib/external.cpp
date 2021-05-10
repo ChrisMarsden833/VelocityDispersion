@@ -18,28 +18,25 @@ extern "C"
                            float * bulge_radius,
                            float * bulge_beta,
                            float * bulge_sersicIndex,
-                           float * rem_prefactor,
-                           int * componentFlag,
                            float * disk_mass,
                            float * disk_inclination,
                            float * disk_scale_length,
-                           char * profile_name,
                            float * haloRs,
                            float * haloRhos,
                            float * BlackHole_mass,
-                           int mode,
+                           int * tracer_flags,
+                           int * gravitational_flags,
                            int threads,
-			   int debug,
+                           int mode,
+                           int debug,
                            int size)
     {
         // Little header so we know we've started.
-	if(debug == 1)
-	{
-        	printf("\n\n######################################## \n");
+	    if(debug == 1)
+	    {
+        	printf("  \n######################################## \n");
 	    	printf(    "Chris Marsden's Velocity dispersion code \n");
-
-
-	}
+	    }
 
         // Reserved memory for results, and progress.
 	    float * res = (float *) std::malloc(sizeof(float) * size);
@@ -52,12 +49,24 @@ extern "C"
 
         // Shedulding is set to schedule(dynamic, 1). This is because tasks can be very asymmetric.
         // Loop back through array as often the last elements can take the longest, so this results in better load management with the above schedule
-        #pragma omp parallel for default(none) shared(progress, res, Aperture, bulge_mass, bulge_radius, bulge_beta, bulge_sersicIndex, rem_prefactor, componentFlag, disk_mass, disk_inclination, disk_scale_length, profile_name, haloRs, haloRhos, BlackHole_mass, mode, threads, debug, size, stdout) schedule(dynamic, 1)
+        #pragma omp parallel for default(none) shared(progress, res, Aperture, bulge_mass, bulge_radius, bulge_beta, bulge_sersicIndex,  disk_mass, disk_inclination, disk_scale_length,  haloRs, haloRhos, BlackHole_mass, tracer_flags, gravitational_flags, mode, threads, debug, size, stdout) schedule(dynamic, 1)
         for (int i = size-1; i >= 0; i--)
         {
             // Call function itself.
-        	res[i] = GetVelocityDispersion(Aperture[i], bulge_mass[i], bulge_radius[i], bulge_beta[i], bulge_sersicIndex[i], rem_prefactor[i], componentFlag,
-                    disk_mass[i], disk_inclination[i], disk_scale_length[i], profile_name, haloRs[i], haloRhos[i], BlackHole_mass[i], mode);
+        	res[i] = GetVelocityDispersion(Aperture[i],
+                                         bulge_mass[i],
+                                         bulge_radius[i],
+                                         bulge_beta[i],
+                                         bulge_sersicIndex[i],
+                                         disk_mass[i],
+                                         disk_inclination[i],
+                                         disk_scale_length[i],
+                                         haloRs[i],
+                                         haloRhos[i],
+                                         BlackHole_mass[i],
+                                         tracer_flags,
+                                         gravitational_flags,
+                                         mode);
 	
 		if(debug == 1)
 		{
