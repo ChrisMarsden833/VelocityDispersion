@@ -17,6 +17,7 @@ def Sigma(ApertureSize=0.0,
              Disk_mass=0.0,
      Disk_scale_length=0.0,
       Disk_inclination=0.0,
+         HaloProfile="NFW",
                 HaloRs=0.0,
               HaloRhos=0.0,
          BlackHoleMass=0.0,
@@ -58,6 +59,7 @@ def Sigma(ApertureSize=0.0,
         Disk_inclination (np array or float) : The angle at which the disk is observed relative to aperture,
             default is 0 [degrees]
 
+        HaloProfile (string) : the halo mass profile type. Default is "NFW"
         HaloRs (np array or float): The halo scale radius [kpc]
         HaloRhos (np array or float): The halo density factor [M_sun]/kpc^3
 
@@ -101,9 +103,6 @@ def Sigma(ApertureSize=0.0,
     else:
         length = 1
 
-    if debug:
-        print("Length of arrays: ", length)
-
     # define some types for later use
     c_float_p = ctypes.POINTER(ctypes.c_float)
     c_int_p = ctypes.POINTER(ctypes.c_int32)
@@ -131,6 +130,8 @@ def Sigma(ApertureSize=0.0,
     tracer_flags = np.array(tracer_flags).astype(np.int32).ctypes.data_as(c_int_p)
     gravitational_flags = np.array(gravitational_flags).astype(np.int32).ctypes.data_as(c_int_p)
 
+    HaloProfile = HaloProfile.encode('utf-8')
+
     # Set the argument types for the function.
     ibc.ParallelSigma.argtypes = [ctypes.POINTER(ctypes.c_float),  # Aperture
 
@@ -143,6 +144,7 @@ def Sigma(ApertureSize=0.0,
                                   ctypes.POINTER(ctypes.c_float),  # Disk Inclination
                                   ctypes.POINTER(ctypes.c_float),  # Disk ScaleLength
 
+                                  ctypes.c_char_p, # Halo Profile
                                   ctypes.POINTER(ctypes.c_float), # Halo Rs
                                   ctypes.POINTER(ctypes.c_float), # Halo Rhos
 
@@ -168,6 +170,7 @@ def Sigma(ApertureSize=0.0,
                                Disk_mass,
                         Disk_inclination,
                        Disk_scale_length,
+                             HaloProfile,
                                   HaloRs,
                                 HaloRhos,
                            BlackHoleMass,

@@ -21,6 +21,7 @@ extern "C"
                            float * disk_mass,
                            float * disk_inclination,
                            float * disk_scale_length,
+                           const char* halo_profile,
                            float * haloRs,
                            float * haloRhos,
                            float * BlackHole_mass,
@@ -49,7 +50,7 @@ extern "C"
 
         // Shedulding is set to schedule(dynamic, 1). This is because tasks can be very asymmetric.
         // Loop back through array as often the last elements can take the longest, so this results in better load management with the above schedule
-        #pragma omp parallel for default(none) shared(progress, res, Aperture, bulge_mass, bulge_radius, bulge_beta, bulge_sersicIndex,  disk_mass, disk_inclination, disk_scale_length,  haloRs, haloRhos, BlackHole_mass, tracer_flags, gravitational_flags, mode, threads, debug, size, stdout) schedule(dynamic, 1)
+        #pragma omp parallel for default(none) shared(progress, res, Aperture, bulge_mass, bulge_radius, bulge_beta, bulge_sersicIndex,  disk_mass, disk_inclination, disk_scale_length, halo_profile, haloRs, haloRhos, BlackHole_mass, tracer_flags, gravitational_flags, mode, threads, debug, size, stdout) schedule(dynamic, 1)
         for (int i = size-1; i >= 0; i--)
         {
             // Call function itself.
@@ -61,6 +62,7 @@ extern "C"
                                          disk_mass[i],
                                          disk_inclination[i],
                                          disk_scale_length[i],
+                                         halo_profile,
                                          haloRs[i],
                                          haloRhos[i],
                                          BlackHole_mass[i],
@@ -83,7 +85,7 @@ extern "C"
 	if(debug == 1)
 	{
 		printf("\nCompleted\n");
-        	printf("\n\n######################################## \n");
+        	printf("######################################## \n");
 	}
 
 	// Return the array to the user.

@@ -34,6 +34,8 @@ class Galaxy
         // Constructor
         Galaxy(float input_aperture_size, int * tracer_flags, int * gravitational_flags);
 
+        bool getCatFail(void);
+
         // -----------------------
         // --- Bulge functions ---
         // -----------------------
@@ -75,10 +77,16 @@ class Galaxy
         // +++++++++++++++++++++++++
 
         // Set up Dark Matter in the galaxy.
-        void ConstructHalo(float haloRs, float haloRhos);
+        void ConstructHalo(float haloRs, float haloRhos, const char * halo_profile);
+
+        // Halo density
+        float HaloDensity(float r);
+
+        // Halo density * 4*pi*r^2
+        float HaloDensityIntegrand(float r);
 
 	    // Halo analytic mass
-        float HaloAnalyticMass(float r);
+        float HaloMass(float r);
 
 	    // Halo Circular Velocity
 	    float HaloVcirc2(float r);
@@ -126,12 +134,17 @@ class Galaxy
         // Take longer integrating, but (potenitally) better accuracy
         bool slow_integrate = false;
 
+        // Flag to tell us if we should just give up, due to internal failure, and return nan.
+        float catastrophic_fail = false;
+
         // ++++++++++++++++++++++++++
         // ++++ Halo Properties +++++
         // ++++++++++++++++++++++++++
 
         // Flag to use the gravitational contribution of the halo.
         bool grav_halo;
+        // Halo Profile Name
+        const char * halo_profile_name;
         // Halo Radius
         float HaloRadius; // [Kpc] R_vir
 	    // HaloDensity
@@ -210,6 +223,7 @@ float GetVelocityDispersion(float Aperture,
                             float disk_mass,
                             float disk_inclination,
                             float disk_scale_length,
+                            const char * halo_profile,
                             float haloRs,
                             float haloRhos,
                             float BlackHole_mass,
