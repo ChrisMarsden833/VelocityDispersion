@@ -415,8 +415,20 @@ float Galaxy::HaloMass(float r)
         return res;
 
     }
-    else if(strcmp(halo_profile_name, "Burkert") == 0 || strcmp(halo_profile_name, "cNFW") == 0)
+    else if(strcmp(halo_profile_name, "Burkert") == 0)
     {
+        float x = r/HaloRadius;
+
+        float tanterm = -2.*atan(x);
+        float term2 =  2.*log(1+x);
+        float term3 = log(1 + x*x);
+
+        float res = PI * HaloRhos * pow(HaloRadius, 3.) * (tanterm + term2 + term3);
+
+        if(res < 0) res = 0.0;
+
+        return res;
+        /*
         // Any function that has not been expressed in analytic form
         auto numfp = bind(&Galaxy::HaloDensityIntegrand, this, _1);
         float min = 0.;
@@ -425,6 +437,7 @@ float Galaxy::HaloMass(float r)
         float accuracy = SimpsonsRule(numfp, min, r, prepass)/multiplyer;
         float integral_term = AdaptiveRichardsonExtrapolate(numfp, min, r, accuracy);
         return integral_term;
+         */
     }
     else{
         assert(false >= 0 || assert_msg(" Unknown halo profile type: " << halo_profile_name << std::endl));
