@@ -26,7 +26,7 @@ def Sigma(ApertureSize=0.0,
                   mode=1,
                  debug=True,
                threads=8,
-          library_path="/home/chris/Files/ProjectSigma/VelocityDispersion/lib/libsigma.so"):
+          library_path="/Users/chris/Documents/ProjectSigma/VelocityDispersion/lib/libsigma.so"):
 
     """The Velocity Dispersion of a Galaxy (sigma).
 

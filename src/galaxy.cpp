@@ -665,6 +665,10 @@ float GetVelocityDispersion(float Aperture,
     {
         return sqrt(aGalaxy.disk_Vcirc2(Aperture));
     }
+    else if(mode == 4)
+    {
+        return aGalaxy.BulgeMass(Aperture) + aGalaxy.HaloMass(Aperture);
+    }
     else
     {
         assert((false) || assert_msg( "Unknown mode : "  << mode));
