@@ -1,3 +1,4 @@
+
 cmake_minimum_required(VERSION 3.10)
 
 SET(CMAKE_BUILD_TYPE Debug)
@@ -29,4 +30,3 @@ TARGET_LINK_LIBRARIES(${Executable_Name} LINK_PUBLIC
         ${Boost_FILESYSTEM_LIBRARY}
         ${Boost_SYSTEM_LIBRARY}
         )
-

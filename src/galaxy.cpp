@@ -22,7 +22,7 @@ void Galaxy::ConstructBulge(float input_bulge_mass, float input_bulge_beta, floa
     assert(input_bulge_mass < 30 || assert_msg("Bulge mass (" << input_bulge_mass << ") is unexpectedly high (>30) - are the units log10 [M_sun]?"));
     bulge_stellar_mass = input_bulge_mass;
 
-    if(bulge_stellar_mass == 0.0)
+    if( (bulge_stellar_mass == 0.0) && (Luminsoity == 0.0))
     {
         // By definition
         trace_bulge = false;
@@ -93,20 +93,28 @@ void Galaxy::ConstructBulge(float input_bulge_mass, float input_bulge_beta, floa
 
 float Galaxy::BulgeProjectedDensity(float R)
 {
-    // Equation (1)
-	float power = 1./bulge_sersic_index;
-	float internal_term = R/bulge_half_light_radius;
-	float result = sigma_e * exp(-b_n * (pow(internal_term, power) - 1.));
-    	
-	assert((!isnan(result) && !isinf(result)) || assert_msg("BulgeProjectedDensity (Sersic Profile) about to return " << result << std::endl <<
-         "----Bulge n = " << bulge_sersic_index << std::endl <<
-	 "----R = " << R << std::endl <<
-       	 "----HLR = " << bulge_half_light_radius  << std::endl <<
-	 "result = sigma_e * exp(-b_n * (pow(internal_term, power) - 1.))" << std::endl <<	 
-	 "----Power (1/n) = " << power << std::endl <<
-         "----internal term (r/R_eff) = " << internal_term << std::endl <<
-         "----Sigma_e = " << sigma_e << std::endl));
-	return result;
+    // Equation (1), sersic profile
+
+    if(!imf_on)
+    {
+        float power = 1./bulge_sersic_index;
+        float internal_term = R/bulge_half_light_radius;
+        float result = sigma_e * exp(-b_n * (pow(internal_term, power) - 1.));
+            
+        assert((!isnan(result) && !isinf(result)) || assert_msg("BulgeProjectedDensity (Sersic Profile) about to return " << result << std::endl <<
+            "----Bulge n = " << bulge_sersic_index << std::endl <<
+        "----R = " << R << std::endl <<
+            "----HLR = " << bulge_half_light_radius  << std::endl <<
+        "result = sigma_e * exp(-b_n * (pow(internal_term, power) - 1.))" << std::endl <<	 
+        "----Power (1/n) = " << power << std::endl <<
+            "----internal term (r/R_eff) = " << internal_term << std::endl <<
+            "----Sigma_e = " << sigma_e << std::endl));
+        return result;
+    }
+    else
+    {
+        return this->SersicProfileL(R) * this->ML(R);
+    }
 }
 
 float Galaxy::BulgeProjectedDensityxR(float R)
@@ -117,34 +125,48 @@ float Galaxy::BulgeProjectedDensityxR(float R)
 
 float Galaxy::BulgeDensity(float r)
 {
-    // De-projected density, equation (3)
-    float radius_ratio = r/bulge_half_light_radius;
-    if(radius_ratio == 0. && -p_n <= 0) radius_ratio += zero_perturbation;
-    float power_term = pow(radius_ratio, -p_n);
-    float inverse_n = 1./bulge_sersic_index;
-    float exp_power_term = pow(radius_ratio, inverse_n);
-    float exp_term = exp(-b_n * exp_power_term);
-    float res = rho0 * power_term * exp_term;
+    if(!imf_on)
+    {
+        // De-projected density, equation (3)
+        float radius_ratio = r/bulge_half_light_radius;
+        if(radius_ratio == 0. && -p_n <= 0) radius_ratio += zero_perturbation;
+        float power_term = pow(radius_ratio, -p_n);
+        float inverse_n = 1./bulge_sersic_index;
+        float exp_power_term = pow(radius_ratio, inverse_n);
+        float exp_term = exp(-b_n * exp_power_term);
+        float res = rho0 * power_term * exp_term;
 
-    if(res < 0.) res = 0;
+        if(res < 0.) res = 0;
 
-    assert((!isnan(res) && !isinf(res)) || assert_msg("Bulge Density (eq3) to return " << res << std::endl <<
-             "----rho0 = " << rho0 << std::endl <<
-             "----Power term (r/R_eff)^-p_n = " << power_term << std::endl <<
-             "----Exp power term (r/R_eff)^1/n = " << exp_power_term << std::endl <<
-             "----Exp term exp(-b_n (Exp_power_term)) = " << exp_power_term << std::endl <<
-             "-----r = " << r << std::endl));
-
-    return res;
+        assert((!isnan(res) && !isinf(res)) || assert_msg("Bulge Density (eq3) to return " << res << std::endl <<
+                "----rho0 = " << rho0 << std::endl <<
+                "----Power term (r/R_eff)^-p_n = " << power_term << std::endl <<
+                "----Exp power term (r/R_eff)^1/n = " << exp_power_term << std::endl <<
+                "----Exp term exp(-b_n (Exp_power_term)) = " << exp_power_term << std::endl <<
+                "-----r = " << r << std::endl));
+        return res;
+    }
+    else
+    {
+        return this->rho_IMF_interp(r);
+    }
+    
 }
 
 float Galaxy::BulgeMass(float r)
 {
-    // The total mass of stars in the bulge
-    float as = bulge_half_light_radius/pow(b_n, bulge_sersic_index);
-    float x = r/as;
-    float threemp_term = (3.-p_n) * bulge_sersic_index;
-    return pow(10., bulge_stellar_mass) * boost::math::tgamma_lower(threemp_term, pow(x, 1. / bulge_sersic_index) ) / boost::math::tgamma(threemp_term, 0.0);
+    if(!imf_on)
+    {
+        // The total mass of stars in the bulge
+        float as = bulge_half_light_radius/pow(b_n, bulge_sersic_index);
+        float x = r/as;
+        float threemp_term = (3.-p_n) * bulge_sersic_index;
+        return pow(10., bulge_stellar_mass) * boost::math::tgamma_lower(threemp_term, pow(x, 1. / bulge_sersic_index) ) / boost::math::tgamma(threemp_term, 0.0);
+    }
+    else
+    {
+        return this->Mass_IMF(r);
+    }
 }
 
 float Galaxy::TotalMassForBulge(float r)
@@ -252,11 +274,11 @@ float Galaxy::bulge_sigma_los(float R_arg)
 	if(slow_integrate)
 	{
 	    upper_limit = 100. * bulge_half_light_radius + R_arg;
-	    integral_term = SimpsonsRule(fp, R_arg, upper_limit, 1000);
+	    integral_term = SimpsonsRule(fp, R_arg, upper_limit, 100);
 	}
     else
     {
-        accuracy = 0.1; // kms^-1
+        accuracy = 1; // kms^-1
         los_accuracy = pow(accuracy, 2)/K; // Transform this into the units of the integral
 
         // Let's find a sensible upper limit for the integral.
@@ -314,10 +336,10 @@ float Galaxy::bulge_sigma_ap(void)
 	auto numfp = bind(&Galaxy::sigma_ap_integrand, this, _1);
     auto denfp = bind(&Galaxy::BulgeProjectedDensityxR, this, _1);
 
-	if(false)
+	if(slow_integrate)
 	{
-        numerator = SimpsonsRule(numfp, 0, aperture_size, 1000);
-	    denominator = SimpsonsRule(denfp, 0, aperture_size, 1000);
+        numerator = SimpsonsRule(numfp, 0, aperture_size, 100);
+	    denominator = SimpsonsRule(denfp, 0, aperture_size, 100);
 	}
 	else
     {
@@ -354,6 +376,272 @@ float Galaxy::bulge_sigma_ap(void)
 
     return res;
 
+}
+
+void Galaxy::setLuminosity(float L)
+{
+    Luminsoity = L;
+}
+
+void Galaxy::get_IMF_params(float magnitude, float logsigma)
+{
+    if(-22.5 > magnitude)
+    {
+        if(logsigma > 2.4)
+        {
+            R0 = 8., R8 = 4., R1 = 3.5;
+        }
+        else
+        {
+            R0 = 7., R8 = 3., R1  = 3.;
+        }        
+    }
+    else if( -21.5 > magnitude > -22.5)
+    {
+        if(logsigma > 2.3)
+        {
+            R0 = 5., R8 = 4., R1 = 3.;
+        }
+        else
+        {
+            R0 = 5., R8 = 3., R1 = 2.5;
+        }
+    }
+    else if(magnitude > -21.5)
+    {
+        if(logsigma > 2.2)
+        {
+            R0 = 5., R8 = 4., R1 = 3.;
+        }  
+        else
+        {
+            R0 = 3., R8 = 2.5, R1 = 2.;
+        } 
+    }
+}
+
+float Galaxy::ML(float r, bool gradient)
+{
+    float grad1 = (R8 - R0) / (0.8);
+    float intercept1 = R0;
+    float grad2 = (R1-R8) / (0.2);
+    float intercept2 = R8 - grad2 * (0.8);
+
+    float ratio = r/bulge_half_light_radius;
+    float grad, intercept;
+
+    if(ratio < 0.8)
+    {
+        grad= (R8 - R0) / (0.8);
+        if(gradient) return grad;
+        intercept = R0;
+        return grad * ratio + intercept;
+    }
+    else if(ratio < 1)
+    {
+        grad = (R1 - R8) / (0.2);
+        if(gradient) return grad;
+        intercept = R8 - grad * (0.8);
+        return grad * ratio + intercept;
+    }
+    else
+    {
+        if(gradient) return 0.0;
+        return R1;
+    }   
+}
+
+float Galaxy::SersicProfileL(float r, bool gradient)
+{
+    float b_n = 2.*bulge_sersic_index - (1./3.) + (.009876/bulge_sersic_index);
+    float gamma = boost::math::tgamma_lower(2. * bulge_sersic_index, b_n);
+    sigma_e = Luminsoity / (bulge_half_light_radius*bulge_half_light_radius * PI * 2. * 2. *
+        bulge_sersic_index * exp(b_n) * gamma / pow(b_n, (2. * bulge_sersic_index)) );
+    float power = 1./bulge_sersic_index;
+    float internal_term = r/bulge_half_light_radius;
+
+    float result = sigma_e * exp(-b_n * ( pow(internal_term, power) - 1.));
+    if(!gradient) return result;
+    else
+    {
+        result *= (-b_n * pow(internal_term, (1/bulge_sersic_index)) )/(bulge_sersic_index*r);
+        return result;
+    }
+}
+
+float Galaxy::Jprime(float R)
+{
+    // Chain rule
+    float res = this->SersicProfileL(R) * this->ML(R, true) + 
+            this->SersicProfileL(R, true) * this->ML(R);
+    return res;
+}
+
+float Galaxy::IMF_deprojection_integrand(float R)
+{
+    // IMF deprojection integrand
+    float Jp = Jprime(R);
+    
+    if((R - fixed_r) <= 0.) R += 1.;
+        
+    float den = sqrt(R*R - fixed_r*fixed_r);
+
+    float res = -(1/PI) *  Jp/den;
+
+    assert( (!isnan(res) && !isinf(res)) ||
+                    assert_msg(std::endl << "IMF_deprojection_integrand about to return " << res << std::endl <<
+                                        "This occurs during precompution" << std::endl <<
+                                         "-----R=" << R << std::endl <<
+                                         "-----Jp: " << Jp << std::endl <<
+                                         "-----den: " << den << std::endl <<
+                                         "-----fixed r: " << fixed_r << 
+                                         "(R - fixed_r) :" << (R - fixed_r) <<
+                                        std::endl  ));
+
+
+    return res;
+}
+
+double IMF_double_wrapper(double R, void * params)
+{
+    Galaxy * gal = (Galaxy *) params;
+    return (double) gal->IMF_deprojection_integrand((float) R);
+}
+
+float Galaxy::rho_IMF(float r)
+{
+    auto fp = bind(&Galaxy::IMF_deprojection_integrand, this, _1);
+
+    fixed_r = r;
+
+    float lower_limit = r + 0.0001; 
+    float upper_limit = max(20.*bulge_half_light_radius, lower_limit + 1.0);
+    
+    float multiplyer = 1e6;
+    int prepass = 100;
+    float acc  = SimpsonsRule(fp, lower_limit+0.0001, upper_limit, prepass)/multiplyer;
+    float res = AdaptiveRichardsonExtrapolate(fp, lower_limit, upper_limit, acc);
+
+    assert( (!isnan(res) && !isinf(res)) ||
+                    assert_msg(std::endl << "Rho IMF about to return " << res << std::endl <<
+                                        "This occurs during precompution" << std::endl <<
+                                         "-----r=" << r << std::endl <<
+                                         "-----Upper limit: " << upper_limit << std::endl <<
+                                         "-----Lower Limit: " << lower_limit << std::endl <<
+                                         "-----Luminosity: " << Luminsoity << std::endl << 
+                                         "-----Jprime(r+0.1) " << this->Jprime(r+0.1) << std::endl <<
+                                         "-----R0, R8, R1: " << R0 << ", " << R8 << ", " << R1 << std::endl  ));
+
+
+
+    return res;
+}
+
+float Galaxy::rho_IMF_interp(float r)
+{
+    float res;
+
+    if(r == 0.)
+    {
+        res =  density_zero;
+    }
+    else if( (r > 0.) && (r < pow(10., IMF_r_domain->front() ) ))
+    {
+        std::vector<float> * tempr = new std::vector<float>;
+        tempr->push_back(0.);
+        tempr->push_back(pow(10., (*IMF_r_domain)[0]));
+        std::vector<float> * temprho = new std::vector<float>;
+        temprho->push_back(density_zero);
+        temprho->push_back(pow(10., (*IMF_rho)[0]));
+        res =  LinearInterp(tempr, temprho, r);
+    }
+    else if(r >= pow(10., IMF_r_domain->back()))
+    {
+        res = pow(10., IMF_rho->back());
+    }
+    else
+    {
+        float r_log = log10(r);
+        float result = LinearInterp(IMF_r_domain, IMF_rho, r_log);
+        res = pow(10., result);
+    }
+
+    if (isnan(res) || isinf(res))
+    {
+        #pragma omp critical
+        {
+            std::cout << "Dumping rho domains, r, rho" << std::endl;
+            
+            for(int i = 0; i < IMF_r_domain->size(); i++)
+            {
+                std::cout << pow(10., (*IMF_r_domain)[i]) << " " << pow(10., (*IMF_rho)[i]) << std::endl;
+            }
+
+        }
+        assert( (!isnan(res) && !isinf(res)) ||
+                    assert_msg(std::endl << "rho_IMF_interp about to return " << res << std::endl <<
+                                         "-----r = " << r << std::endl <<
+                                         "-----Last element in IMF occurs at r:" << pow(10., IMF_r_domain->back()) << std::endl <<
+                                         "-----First element in IMF occurs at r: " << pow(10., IMF_r_domain->front()) << std::endl <<
+                                         std::endl ));
+
+        
+
+
+    }
+
+
+    
+    return res;
+}
+
+float Galaxy::Mass_IMF_integrand(float r)
+{
+    return 4.*PI*r*r*this->rho_IMF(r);
+}
+
+float Galaxy::Mass_IMF(float r)
+{
+    auto fp = bind(&Galaxy::rho_IMF_interp, this, _1);
+    float multiplyer = 1e6;
+    int prepass = 21.;
+    float accuracy = SimpsonsRule(fp, 0., r, prepass)/multiplyer;
+    float res = AdaptiveRichardsonExtrapolate(fp, 0., r, 10e3);
+
+    assert((!isnan(res) && !isinf(res)) ||
+                    assert_msg(std::endl << "mass IMF about to return " << res << std::endl <<
+                                         "-----r = " << r << std::endl <<
+                                         "-----Simpsons rule with 10 steps gives: " << SimpsonsRule(fp, 0., r, 10) <<
+                                          std::endl ));
+
+    return res;
+}
+
+void Galaxy::set_IMF_on(bool value)
+{
+    imf_on = value;
+}
+
+void Galaxy::set_slow_integrate(bool value)
+{
+    slow_integrate = value;
+}
+
+void Galaxy::PrecomputeDensity(void)
+{
+    IMF_r_domain = linspace(-4., 5., 1000);
+
+    density_zero = this->rho_IMF(0.);
+
+    float res, i, lowest;
+    lowest = 100;
+    for(i = 0; i < IMF_r_domain->size(); i++)
+    {
+        res = this->rho_IMF(pow(10., (*IMF_r_domain)[i]));
+        if(isnan(res)) res = lowest;
+        if(res < lowest) lowest = res;
+        IMF_rho->push_back(log10(res));
+    }
 }
 
 
@@ -604,6 +892,9 @@ float GetVelocityDispersion(float Aperture,
                            float haloRs,
                            float haloRhos,
                            float BlackHole_mass,
+                           float Luminosity,
+                           float magnitude,
+                           float pre_sigma,
                            int * tracer_flags,
                            int * gravitational_flags,
                            int mode)
@@ -640,10 +931,6 @@ float GetVelocityDispersion(float Aperture,
         {
             disk_sigma2 = aGalaxy.disk_velocity_dispersion2();
         }
-
-
-
-
         // Combine these values in quadrature.
         res = pow(bulge_sigma*bulge_sigma + disk_sigma2, 0.5);
 
@@ -668,6 +955,32 @@ float GetVelocityDispersion(float Aperture,
     else if(mode == 4)
     {
         return aGalaxy.BulgeMass(Aperture) + aGalaxy.HaloMass(Aperture);
+    }
+    else if(mode == 5)
+    {
+        // Variable IMF
+        aGalaxy.setLuminosity(Luminosity);
+        aGalaxy.get_IMF_params(magnitude, pre_sigma);
+        aGalaxy.set_IMF_on(true);
+        aGalaxy.set_slow_integrate(true);
+
+        //std::cout << "Precomputing Grid" << std::endl;
+
+        aGalaxy.PrecomputeDensity();
+
+        // Generate grid, precompute density
+
+        //std::cout << "Calculating Aperture" << std::endl;
+
+        float bulge_sigma = aGalaxy.bulge_sigma_ap();
+        return bulge_sigma;
+    }
+    else if(mode == 6)
+    {
+        aGalaxy.setLuminosity(Luminosity);
+        aGalaxy.get_IMF_params(magnitude, pre_sigma);
+        aGalaxy.set_IMF_on(true);
+        return aGalaxy.rho_IMF(Aperture);
     }
     else
     {

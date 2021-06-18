@@ -17,10 +17,13 @@ def Sigma(ApertureSize=0.0,
              Disk_mass=0.0,
      Disk_scale_length=0.0,
       Disk_inclination=0.0,
-         HaloProfile="NFW",
+         HaloProfile="None",
                 HaloRs=0.0,
               HaloRhos=0.0,
          BlackHoleMass=0.0,
+            Luminosity=0.0,
+             magnitude=0.0,
+             pre_sigma=0.0,
           tracer_flags=[True, True],
    gravitational_flags=[True, True, True, True],
                   mode=1,
@@ -120,7 +123,10 @@ def Sigma(ApertureSize=0.0,
     HaloRs = check_make_array(HaloRs, length).astype(np.float32).ctypes.data_as(c_float_p)
     HaloRhos = check_make_array(HaloRhos, length).astype(np.float32).ctypes.data_as(c_float_p)
     BlackHoleMass = check_make_array(BlackHoleMass, length).astype(np.float32).ctypes.data_as(c_float_p)
-
+    Luminosity = check_make_array(Luminosity, length).astype(np.float32).ctypes.data_as(c_float_p)
+    magnitude = check_make_array(magnitude, length).astype(np.float32).ctypes.data_as(c_float_p)
+    pre_sigma = check_make_array(pre_sigma, length).astype(np.float32).ctypes.data_as(c_float_p)
+    
     # Force mode and threads into integers, just in case they are not
     # (prevents pointless errors if these are interpreted as floats)
     mode = int(mode)
@@ -150,6 +156,10 @@ def Sigma(ApertureSize=0.0,
 
                                   ctypes.POINTER(ctypes.c_float),  # Black Hole Mass
 
+                                  ctypes.POINTER(ctypes.c_float),  # Luminosity
+                                  ctypes.POINTER(ctypes.c_float),  # Magnitude
+                                  ctypes.POINTER(ctypes.c_float),  # pre-sigma
+
                                   ctypes.POINTER(ctypes.c_int),  # Tracer Flag
                                   ctypes.POINTER(ctypes.c_int),  # gravitational_flags
 
@@ -174,6 +184,9 @@ def Sigma(ApertureSize=0.0,
                                   HaloRs,
                                 HaloRhos,
                            BlackHoleMass,
+                              Luminosity,
+                               magnitude,
+                               pre_sigma,
                             tracer_flags,
                      gravitational_flags,
                            threads, mode, debug, length)

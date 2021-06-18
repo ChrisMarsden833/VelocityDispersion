@@ -1,3 +1,4 @@
+
 cmake_minimum_required(VERSION 3.9)
 
 include_directories(${VelocityDispersion_SOURCE_DIR}/src)
@@ -7,7 +8,7 @@ FIND_PACKAGE(Boost COMPONENTS system filesystem unit_test_framework REQUIRED )
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
 find_package(OpenMP REQUIRED)
-
+find_package(GSL REQUIRED)
 
 set(CMAKE_CXX_STANDARD 14)
 
@@ -22,5 +23,5 @@ set (lib_SOURCES
 
 add_library(sigma MODULE ${lib_SOURCES})
 
-target_link_libraries(sigma PRIVATE  OpenMP::OpenMP_CXX)
+target_link_libraries(sigma GSL::gsl GSL::gslcblas OpenMP::OpenMP_CXX)
 

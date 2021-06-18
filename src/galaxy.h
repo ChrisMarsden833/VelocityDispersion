@@ -13,6 +13,7 @@
 #include "omp.h"
 #include <cassert>
 #include <algorithm>
+#include <gsl/gsl_integration.h>
 
 #define PI 3.14159265
 #define GR 4.3009125e-6 // In units of kpc M_sun^-1 (km/s)^2
@@ -35,6 +36,10 @@ class Galaxy
         Galaxy(float input_aperture_size, int * tracer_flags, int * gravitational_flags);
 
         bool getCatFail(void);
+
+        void set_IMF_on(bool value);
+
+        void set_slow_integrate(bool value);
 
         // -----------------------
         // --- Bulge functions ---
@@ -71,6 +76,33 @@ class Galaxy
 
 		// The velocity dispersion within the aperture
 		float bulge_sigma_ap(void);
+
+        // Get IMF parameters, when using Bernardi's table
+        void get_IMF_params(float magnitude, float logsigma);
+
+        void setLuminosity(float L);
+
+        // Get the mass to light ratio
+        float ML(float r, bool gradient = false);
+
+        // Sersic profile
+        float SersicProfileL(float r, bool gradient = false);
+        
+        // The gradient of the mass to light profile
+        float Jprime(float R);
+
+        // The IMF deprojected density integrand
+        float IMF_deprojection_integrand(float R);
+
+        float rho_IMF(float r);
+
+        float Mass_IMF_integrand(float r);
+
+        float Mass_IMF(float r);
+
+        void PrecomputeDensity(void);
+
+        float rho_IMF_interp(float r);
 
         // +++++++++++++++++++++++++
         // ++++ Halo Functions +++++
@@ -137,6 +169,12 @@ class Galaxy
         // Flag to tell us if we should just give up, due to internal failure, and return nan.
         float catastrophic_fail = false;
 
+        // IMF properties
+        float R0 = 0., R8 = 0., R1 = 0.;
+
+        // is IMF on?
+        bool imf_on = false;
+
         // ++++++++++++++++++++++++++
         // ++++ Halo Properties +++++
         // ++++++++++++++++++++++++++
@@ -187,6 +225,19 @@ class Galaxy
         // Reminant Prefactor  - 1.72
         float rem_prefac  = 1.; // Default is 1, which corresponds to no change.
 
+        // Only used when we do the IMF
+        float Luminsoity = 0.; // Luminsosity in the r-band, in Lsun
+
+        // variable used for the integration
+        float fixed_r;
+
+        // Arrays that define the density etc
+        std::vector<float> * IMF_r_domain;
+        std::vector<float> * IMF_rho = new std::vector<float>;
+        std::vector<float> * IMF_mass;
+
+        float density_zero;
+
         // \\\\\\\\\\\\\\\\\\\\\\\\\\\\
         // \\\\ Disk Properties \\\\\\\
         // \\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -227,8 +278,14 @@ float GetVelocityDispersion(float Aperture,
                             float haloRs,
                             float haloRhos,
                             float BlackHole_mass,
+                            float Luminosity,
+                            float magnitude,
+                            float pre_sigma,
                             int * tracer_flags,
                             int * gravitational_flags,
                             int mode);
+
+
+double IMF_double_wrapper(double R, void * params);
 
 #endif

@@ -48,7 +48,7 @@ float incompleteBeta(float a, float b, float z);
  * @param b : the value at the end of the array
  * @param N : the number of values in the array.
  * @return
- */
+ 
 template<typename T>
 std::vector<T> linspace(T start_in, T end_in, int num = 100)
 {
@@ -74,7 +74,7 @@ std::vector<T> linspace(T start_in, T end_in, int num = 100)
     linspaced.push_back(end); // I want to ensure that start and end
     // are exactly the same as the input
     return linspaced;
-}
+} */
 
 /** ++ AreSame ++
  * A simple function to test that float like variables are the same
@@ -137,5 +137,7 @@ void MaskOut(std::vector<float> * array, std::vector<bool> * mask);
  * Linear Interpolation
  */
 float LinearInterp(std::vector<float> * X, std::vector<float> * Y, float x);
+
+std::vector<float> * linspace(float start_in, float end_in, int num_in);
 
 #endif //VELOCITYDISPERSIONS_UTILLITY_H

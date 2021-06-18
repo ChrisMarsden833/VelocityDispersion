@@ -353,3 +353,28 @@ float LinearInterp(std::vector<float> * X, std::vector<float> * Y, float x)
 
 }
 
+
+std::vector<float> * linspace(float start, float end, int num)
+{
+    std::vector<float> * linspaced = new std::vector<float>;
+
+    if (num == 0) { return linspaced; }
+    if (num == 1) 
+    {
+        linspaced->push_back(start);
+        return linspaced;
+    }
+
+    float delta = (end - start) / (num - 1);
+
+    float res;
+    for(int i=0; i < num-1; ++i)
+    {
+        res = start + delta * (float) i;
+        linspaced->push_back(res) ;
+    }
+    linspaced->push_back(end); // I want to ensure that start and end
+                            // are exactly the same as the input
+
+    return linspaced;
+}
