@@ -341,7 +341,7 @@ float LinearInterp(std::vector<float> * X, std::vector<float> * Y, float x)
 	{
 		x0 = X->at(i-1);
 		x1 = X->at(i);
-		if(x < x1 && x > x0)
+		if(x <= x1 && x > x0)
 		{
 			y0 = Y->at(i-1);
 			y1 = Y->at(i);

@@ -3,46 +3,19 @@
 
 int main()
 {
-    // We don't use the main function, as we are compiling into a library
+    Bulge * aBulge = new Bulge(1e11/4., 3.0, 4.0, 0.0, true, true, nullptr, nullptr, true, 8.0, 3.5);
 
-    /*
-    std::cout << "Starting" << std::endl;
+    float mass_num = aBulge->mass_within(1000);
+    float mass_ana = aBulge->projected_mass_within(1000);
 
-    float SM = 11.1;
-    float size = 3.2;
-    float n = 3.12;
-    float beta = 0.000015;
+    cout << "Mass comparison : " << log10(mass_num) << " " << log10(mass_ana) << endl;
 
-    int compf[3] = {1, 1, 0};
-    int * compfp;
-    compfp = compf;
+    float sigma = aBulge->sigma_LOS(0.12 * 3.0);
 
-    string str = "NFW";
-    char * name = &str[0];
-
-    float sigma = GetVelocityDispersion(4., 0., 11.086, 3.2, 0.001, 3.12, compfp,
-                    0., 0., 0., 12., name, 4., 0., 1.);
-
-    std::cout << "Res = " << sigma << std::endl;
-
-
-    float GetVelocityDispersion(float Aperture,
-                            float redshift,
-                            float bulge_mass,
-                            float bulge_radius,
-                            float bulge_beta,
-                            float bulge_sersicIndex,
-                            int * componentFlag,
-                            float disk_mass,
-                            float disk_inclination,
-                            float Halo_mass,
-                            char * profile_name,
-                            float halo_concentration,
-                            float BlackHole_mass)*/
+    cout << "sigma = " << sigma << " (log10: " << log10(sigma) << ")" << endl;
 
 
 
     return 0;
-
 
 }

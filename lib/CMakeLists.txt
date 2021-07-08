@@ -17,8 +17,16 @@ set (lib_SOURCES
         ../src/utillity.cpp
         ../src/integration.h
         ../src/integration.cpp
-		../src/galaxy.h
-	../src/galaxy.cpp
+        ../src/sigmalib.h
+        ../src/sigmalib.cpp
+        ../src/bulge.h
+        ../src/bulge.cpp
+        ../src/disk.h
+        ../src/disk.cpp
+        ../src/halo.h
+        ../src/halo.cpp
+        ../src/blackhole.h
+        ../src/blackhole.cpp
         external.cpp)
 
 add_library(sigma MODULE ${lib_SOURCES})

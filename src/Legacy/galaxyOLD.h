@@ -1,5 +1,5 @@
-#ifndef GALAXY_H
-#define GALAXY_H
+#ifndef GALAXYOLD_H
+#define GALAXYOLD_H
 
 #include <stdlib.h>
 #include <string>
@@ -14,6 +14,7 @@
 #include <cassert>
 #include <algorithm>
 #include <gsl/gsl_integration.h>
+#include "bulge.h"
 
 #define PI 3.14159265
 #define GR 4.3009125e-6 // In units of kpc M_sun^-1 (km/s)^2
@@ -29,11 +30,11 @@
 using namespace std;
 using namespace std::placeholders;
 
-class Galaxy
+class Galaxy2
 {
 	public:
         // Constructor
-        Galaxy(float input_aperture_size, int * tracer_flags, int * gravitational_flags);
+        Galaxy2(float input_aperture_size, int * tracer_flags, int * gravitational_flags);
 
         bool getCatFail(void);
 
@@ -45,7 +46,11 @@ class Galaxy
         // --- Bulge functions ---
         // -----------------------
 
-        void ConstructBulge(float input_bulge_mass, float input_bulge_beta, float input_bulge_half_light_radius, float input_sersic_index);
+        void ConstructBulge(float input_bulge_mass, 
+                            float input_bulge_beta, 
+                            float input_bulge_half_light_radius, 
+                            float input_sersic_index,
+                            bool input_UsingLuminosity = false);
 
 		// Function to return the mass density at radius r - Equation (1). P824
 		float BulgeProjectedDensity(float r);
@@ -197,8 +202,11 @@ class Galaxy
         // Gravitational contribution of the bulge
         bool grav_bulge;
 
-		// Stellar Mass of the bulge [log10 M_sun]
-		float bulge_stellar_mass = 0.;
+		// Stellar Mass of the bulge
+		float bulge_stellar_mass = 0.; // M_sun
+        float bulge_luminsoity = 0.; // L_sun
+
+
         // Beta, The disk anisotropy parameter [dimensionless]
         float bulge_beta = 0.;
         // (bulge) Half Light Radius [kpc]
@@ -237,6 +245,9 @@ class Galaxy
         std::vector<float> * IMF_mass;
 
         float density_zero;
+
+        // Using Luminosity, not mass
+        float UsingLuminosity = false;
 
         // \\\\\\\\\\\\\\\\\\\\\\\\\\\\
         // \\\\ Disk Properties \\\\\\\

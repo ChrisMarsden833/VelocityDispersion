@@ -1,6 +1,6 @@
 #include "galaxy.h"
 
-Galaxy::Galaxy(float input_aperture_size, int * tracer_flags, int * gravitational_flags)
+Galaxy2::Galaxy2(float input_aperture_size, int * tracer_flags, int * gravitational_flags)
 {
     // Constructor. This all happens when the class is initialized.
 	aperture_size = input_aperture_size;
@@ -16,10 +16,14 @@ Galaxy::Galaxy(float input_aperture_size, int * tracer_flags, int * gravitationa
 // ///// Bulge Functions /////
 // ///////////////////////////
 
-void Galaxy::ConstructBulge(float input_bulge_mass, float input_bulge_beta, float input_bulge_half_light_radius, float input_sersic_index)
+void Galaxy::ConstructBulge(float input_bulge_mass, 
+                            float input_bulge_beta, 
+                            float input_bulge_half_light_radius, 
+                            float input_sersic_index,
+                            bool input_UsingLuminosity)
 {
-    // Mass
-    assert(input_bulge_mass < 30 || assert_msg("Bulge mass (" << input_bulge_mass << ") is unexpectedly high (>30) - are the units log10 [M_sun]?"));
+    UsingLuminosity = input_UsingLuminosity;
+
     bulge_stellar_mass = input_bulge_mass;
 
     if( (bulge_stellar_mass == 0.0) && (Luminsoity == 0.0))
@@ -906,6 +910,9 @@ float GetVelocityDispersion(float Aperture,
        isnan(BlackHole_mass)) return sqrt(-1);
 
     // Construct galaxy object
+
+    Bulge aBulge(bulge_mass, bulge_radius, bulge_sersicIndex);
+
     Galaxy aGalaxy(Aperture, tracer_flags, gravitational_flags);
 
     aGalaxy.ConstructBulge(bulge_mass, bulge_beta, bulge_radius, bulge_sersicIndex);
@@ -962,11 +969,11 @@ float GetVelocityDispersion(float Aperture,
         aGalaxy.setLuminosity(Luminosity);
         aGalaxy.get_IMF_params(magnitude, pre_sigma);
         aGalaxy.set_IMF_on(true);
-        aGalaxy.set_slow_integrate(true);
+        
+        //aGalaxy.set_slow_integrate(true);
 
-        //std::cout << "Precomputing Grid" << std::endl;
-
-        aGalaxy.PrecomputeDensity();
+        
+        //aGalaxy.PrecomputeDensity();
 
         // Generate grid, precompute density
 

@@ -2,7 +2,7 @@
 #include <math.h>
 #include "omp.h"
 #include <thread>
-#include "../src/galaxy.h"
+#include "../src/sigmalib.h"
 
 /* This file serves two purposes:
  * 1. To act as a `wrapper' function, written entirely in C so that it can be called by the ctypes python library
@@ -25,11 +25,11 @@ extern "C"
                            float * haloRs,
                            float * haloRhos,
                            float * BlackHole_mass,
-                           float * Luminosity,
-                           float * magnitude,
-                           float * pre_sigma,
                            int * tracer_flags,
                            int * gravitational_flags,
+                           int * use_vIMF,
+                           float * R1,
+                           float * R0,
                            int threads,
                            int mode,
                            int debug,
@@ -53,29 +53,28 @@ extern "C"
 
         // Shedulding is set to schedule(dynamic, 1). This is because tasks can be very asymmetric.
         // Loop back through array as often the last elements can take the longest, so this results in better load management with the above schedule
-        #pragma omp parallel for default(none) shared(progress, res, Aperture, bulge_mass, bulge_radius, bulge_beta, bulge_sersicIndex,  disk_mass, disk_inclination, disk_scale_length, halo_profile, haloRs, haloRhos, BlackHole_mass, Luminosity, magnitude, pre_sigma, tracer_flags, gravitational_flags, mode, threads, debug, size, stdout) schedule(dynamic, 1)
+        #pragma omp parallel for default(none) shared(progress, res, Aperture, bulge_mass, bulge_radius, bulge_beta, bulge_sersicIndex,  disk_mass, disk_inclination, disk_scale_length, halo_profile, haloRs, haloRhos, BlackHole_mass, tracer_flags, gravitational_flags, mode, R1, R0, use_vIMF, threads, debug, size, stdout) schedule(dynamic, 1)
         for (int i = size-1; i >= 0; i--)
         {
             // Call function itself.
-        	res[i] = GetVelocityDispersion(Aperture[i],
-                                         bulge_mass[i],
-                                         bulge_radius[i],
-                                         bulge_beta[i],
-                                         bulge_sersicIndex[i],
-                                         disk_mass[i],
-                                         disk_inclination[i],
-                                         disk_scale_length[i],
-                                         halo_profile,
-                                         haloRs[i],
-                                         haloRhos[i],
-                                         BlackHole_mass[i],
-                                         Luminosity[i],
-                                         magnitude[i],
-                                         pre_sigma[i],
-                                         tracer_flags,
-                                         gravitational_flags,
-                                         mode);
-	
+        	res[i] = Sigma( Aperture[i],
+                            bulge_mass[i],
+                            bulge_radius[i],
+                            bulge_sersicIndex[i],
+                            bulge_beta[i],
+                            disk_mass[i],
+                            disk_scale_length[i],
+                            disk_inclination[i],
+                            halo_profile,
+                            haloRs[i],
+                            haloRhos[i],
+                            BlackHole_mass[i],
+                            tracer_flags,
+                            gravitational_flags,
+                            use_vIMF[i],
+                            R1[i],
+                            R0[i],
+                            mode);
 		if(debug == 1)
 		{
 		// Print progress

@@ -18,8 +18,16 @@ set ( VelocityDispersion_SOURCES
         main.h
         utillity.cpp
         utillity.h
-		galaxy.h
-	galaxy.cpp)
+        Bulge.h
+        Bulge.cpp
+        disk.h
+        disk.cpp
+        halo.h
+        halo.cpp
+        blackhole.h
+        blackhole.cpp
+        sigmalib.h
+        sigmalib.cpp)
 
 set ( Executable_Name DirectExecution )
 
