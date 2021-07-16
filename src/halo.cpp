@@ -37,6 +37,7 @@ float Halo::mass_within(float r){
         res = 0.0;
     }
 
+    if(isnan(res)) return 0.1;
 
     assert((!isnan(res) && !isinf(res)) || assert_msg("mass_within (halo) about to return " << res << std::endl <<
         "-----r = " << r << std::endl <<

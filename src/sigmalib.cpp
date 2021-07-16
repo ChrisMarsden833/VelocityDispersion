@@ -54,25 +54,33 @@ float Sigma(float aperture,
 
     float res;
 
-    if(mode == 1.){
+    if(mode == 1){
         // Get bulge + disk velocity dispersion.
         res = sqrt( pow(aBulge->sigma_ap(aperture), 2.) + aDisk->VelocityDispersion(aperture) ); // add disk in quadrature
     }
-    else if(mode == 2.)
+    else if(mode == 2)
     {
         res = aBulge->sigma_LOS(aperture); // LOS velocity dispersion
     }
-    else if(mode == 3.)
+    else if(mode == 3)
     {
-        res = aBulge->get_density(aperture);  // Densities, other stuff is for testing.
+        res = aBulge->sigma_LOS_full(aperture);  // Densities, other stuff is for testing.
     }
-    else if(mode == 4.)
+    else if(mode == 4)
     {
         res = aBulge->prug_sim_profile(aperture) + aBulge->rhoX(aperture); 
     }
-    else if(mode == 5.)
+    else if(mode == 5)
     {
         res = aBulge->mass_within(aperture);
+    }
+    else if(mode == 6)
+    {
+        res = aBulge->get_density(aperture);
+    }
+    else if(mode == 7)
+    {
+        res = aBulge->sersic_profile(aperture);
     }
     else{
         cout << "Unknown mode " << mode << endl;

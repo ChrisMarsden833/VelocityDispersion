@@ -48,6 +48,8 @@ float Disk::disk_integrand(float R){
 
 float Disk::VelocityDispersion(float aperture){
 
+    if(!trace) return 0.0;
+
     auto numfp = bind(&Disk::disk_integrand, this, _1);
 
     float min = 0.;

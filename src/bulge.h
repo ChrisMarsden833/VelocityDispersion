@@ -40,8 +40,11 @@ class Bulge
 
         // The projected sersic profile
         float sersic_profile(float r);
+        // The sersic light profile, used for variable IMF
+        float sersic_light_profile(float r);
         // The deprojected prugniel and simien profile 
         float prug_sim_profile(float r);
+        float prug_sim_profile_light(float r);
 
         // The integrand for rhoX
         float rhoX_integrand(float Y);
@@ -78,6 +81,19 @@ class Bulge
         // Integrand and function for LOS sigma.
         float sigma_integrand(float r);
         float sigma_LOS(float R_arg);
+
+        // Integrands for the full Jeans equations solution
+        float Jeans_innerIntegrand_1(float r);
+        float Jeans_outerIntegrand_1(float s);
+        float Jeans_innerIntegrand_2(float r);
+        float Jeans_outerIntegrand_2(float s);
+        float Jeans_f(float r);
+        float Jeans_fprime(float r);
+        float sigma_LOS_full(float R_arg);
+        float sigma_radial_integrand(float r);
+        float sigma_radial2(float r);
+        float alt_integrand1(float r);
+        float alt_integrand2(float r);
 
         // (pair of) integrands for aperture sigma
         float sigma_ap_integrand(float R_arg);
