@@ -100,10 +100,25 @@ float Bulge::rhoX_integrand(float Y){
     // The integrand used in the calculation of the 'extra' density when a variable IMF is considered.
     float alpha = this->alpha(Y*Re);
 
-    if(Y == y) Y += 0.001;
+    if(Y == y) Y += 0.00001;
 
     float res = ( 1/(Y * sqrt(Y*Y - y*y)) ) * exp(-b_n * ( pow(Y, 1./n) - 1 )) \
          * ( (n * alpha * Y) + b_n * (alpha - alpha * Y) * pow(Y, 1./n));
+
+    if(res < 0) return 0.0;
+    return res;
+}
+
+float Bulge::rhoX_integrand_log(float log_Y){
+    // The integrand used in the calculation of the 'extra' density when a variable IMF is considered.
+    float Y = pow(10., log_Y);
+
+    float alpha = this->alpha(Y*Re);
+
+    if(abs(Y - y) < 0.001) Y += 0.001;
+
+    float res = ( 1/(Y * sqrt(Y*Y - y*y)) ) * exp(-b_n * ( pow(Y, 1./n) - 1 )) \
+         * ( (n * alpha * Y) + b_n * (alpha - alpha * Y) * pow(Y, 1./n)) * Y * log(10);
 
     if(res < 0) return 0.0;
     return res;
@@ -113,9 +128,14 @@ float Bulge::rhoX(float r){
     // The extra density when the variable imf is considered.
     y = r/Re;
     if(y < 1){
-        auto fp = bind(&Bulge::rhoX_integrand, this, _1); // An unfortunate consequence of using classes
+        //auto fp = bind(&Bulge::rhoX_integrand, this, _1); // An unfortunate consequence of using classes
+        auto fp = bind(&Bulge::rhoX_integrand_log, this, _1); // An unfortunate consequence of using classes
+        
         float accuracy  = 1e3 * (PI * Re * n) / ((IMF_R1 * Ie));
-        float integral = AdaptiveRichardsonExtrapolate(fp, y, 1., accuracy);
+        
+        //float integral = AdaptiveRichardsonExtrapolate(fp, log10(y), 0., accuracy);
+        float integral = SimpsonsRule(fp, log10(y), 0, 1000);
+        
         float res = ((IMF_R1 * Ie) / (PI * Re * n)) * integral;
 
         if(res < 0) {
@@ -137,7 +157,7 @@ float Bulge::rhoX(float r){
 
 void Bulge::precompute_eXtra_density(void){
     // Precompute the extra density
-    int len = 200; // Number of subdivisions. More will be more precise, but increase time.
+    int len = 500; // Number of subdivisions. More will be more precise, but increase time.
     float eX, massX;
     
     // Bunch of variables used for various housekeeping things
@@ -148,7 +168,7 @@ void Bulge::precompute_eXtra_density(void){
     float previous_r_val = 0.0;
     
     // The grid is spaced in log10 r/re.
-    float low = -3; // Log10
+    float low = -7; // Log10
     float lowkpc = pow(10., low) * Re;
     r_domain = linspace(low, 1., len);
 
@@ -171,8 +191,6 @@ void Bulge::precompute_eXtra_density(void){
             }
         }
 
-        
-
         assert((!isnan(eX) && !isinf(eX)) || assert_msg("Precomputed density was about to return " << eX << std::endl <<
             "-----r = " << pow(10., (*r_domain)[i]) * Re << std::endl));
 
@@ -185,7 +203,7 @@ void Bulge::precompute_eXtra_density(void){
         
         // Compute the cumulative mass by 'hand'
         if(i==0){
-            rolling_mass = 0.0; //(4./3.) * PI * lowkpc * lowkpc * lowkpc * (*extra_density)[i];
+            rolling_mass = (4./3.) * PI * lowkpc * lowkpc * lowkpc * (*extra_density)[i];
             previous_r_val = pow(10., (*r_domain)[i]) * Re;
         }
         else{
@@ -254,20 +272,25 @@ float Bulge::get_mass_long(float r){
     // Full mass calculation. Very slow, so currently unused.
     auto fp = bind(&Bulge::get_mass_long_integrand, this, _1);
 
+    float low = 0.001;
+
+    if(r <= low) low = r/2.;
+
     //float multiplyer = 1e3;
     //int prepass = 12;
     // Do a prepass to get a sense of the value of the integral
     //float accuracy = SimpsonsRule(fp, 0, r, prepass)/multiplyer;
     //float res = AdaptiveRichardsonExtrapolate(fp, 0.0, r, 1e5);
-    float res = SimpsonsRule(fp, 0., r, 500.);
+    float res = SimpsonsRule(fp, low, r, 500.);
     return res;
 }
 
 float Bulge::get_density(float r){
     // Function to get the overall density
     float res = this->prug_sim_profile(r);
+    
     if(using_variable_IMF) res += this->interpolate_eXtra_density(r);
-
+    
     assert((res != 0.) || assert_msg("Get density about to return 0" << res << endl <<
         "-----r = " << r << endl <<
         "-----Re = " << Re << endl <<
@@ -343,6 +366,7 @@ float Bulge::TotalMass(float r) {
     if(grav) res += this->mass_within(r);
     if(memberHalo) res += memberHalo->mass_within(r);
     if(memberBH) res += memberBH->getMass();
+    
 
     assert((!isnan(res) && !isinf(res)) || assert_msg("TotalMass (bulge) about to return " << res << std::endl <<
         "-----r = " << r << std::endl <<
@@ -354,9 +378,9 @@ float Bulge::TotalMass(float r) {
     return res;
 }
 
-float Bulge::sigma_integrand(float r)
+float Bulge::sigma_integrand(float log_r)
 {
-    
+    float r = pow(10., log_r);
     // Manage R, as this can be problematic if R = 0
     if(R == 0) R = 1e-7;
     float ratio = r/R;
@@ -374,7 +398,7 @@ float Bulge::sigma_integrand(float r)
     float res;
     if(r == 0) r = 1e-7;
 
-    res = Kernel * density * Mass /  r;
+    res = Kernel * density * Mass * r * log(10) /  r;
 
     assert((!isnan(res) && !isinf(res)) || assert_msg("Sigma LOS integrand (eq8) about to return " << res << std::endl <<
         "-----r = " << r << std::endl <<
@@ -409,7 +433,7 @@ float Bulge::sigma_LOS(float R_arg)
 
     float approx = sqrt( GR * this->TotalMass(R) / (R_arg * R_arg * 2.5 ) );
     
-    
+    /*
     accuracy = 0.1; //min( approx * 0.1, 1.0);
     
     los_accuracy = pow(accuracy, 2)/K; // Transform this into the units of the integral
@@ -422,10 +446,11 @@ float Bulge::sigma_LOS(float R_arg)
     {
         unit_accuracy = this->sigma_integrand(upper_limit) / (upper_limit - R_arg) ;
         upper_limit += step;
-    }
+    }*/
+    
 
-    integral_term = AdaptiveRichardsonExtrapolate(fp, R_arg, upper_limit, los_accuracy);
-    //integral_term = SimpsonsRule(fp, R_arg, 100*Re, 1000);
+    //integral_term = AdaptiveRichardsonExtrapolate(fp, log10(R_arg), log10(upper_limit), los_accuracy);
+    integral_term = SimpsonsRule(fp, log10(R_arg), 5, 100);
 
     float value = pow(K * integral_term, 0.5);
 
@@ -489,37 +514,29 @@ float Bulge::Jeans_outerIntegrand_2(float s){
     return intergral  * this->Jeans_f(s) * this->get_density(s) * this->TotalMass(s)/(s*s);
 }
 
+float Bulge::ChaeIntegrand(float log_u){
+    float u = pow(10., log_u);
+    float arg = R * sqrt(1 + u * u);
+    float res = this->prug_sim_profile_light(arg) * this->sigma_radial2(arg) * (1 + beta * arg / ( 1 + u * u)) * u * log(10);
+    return res;
+}
+
 float Bulge::sigma_LOS_full(float R_arg){
 
     //assert((R_arg < 20.*Re) || assert_msg(endl << "R_arg > 10.Re" << endl));
 
     R = R_arg;
-    auto fp = bind(&Bulge::alt_integrand1, this, _1); // An unfortunate consequence of using classes
+    auto fp = bind(&Bulge::ChaeIntegrand, this, _1); // An unfortunate consequence of using classes
 
-    float upper_lim = max((double) 20.*Re, (double) R_arg + Re);
-    //float intergral1 = SimpsonsRule(fp, R_arg, upper_lim, 10000);
+    float l10 = log10(R_arg);
+    if(R_arg == 0.0) l10 = -7.;
 
-    float red = 100.;
-
-    float prepass = SimpsonsRule(fp, R_arg, upper_lim, 10);
-    float intergral1 = AdaptiveRichardsonExtrapolate(fp, R_arg, upper_lim, prepass/red);
-
-    fp = bind(&Bulge::alt_integrand2, this, _1); // An unfortunate consequence of using classes
-
-    //float intergral2 = SimpsonsRule(fp, R_arg, upper_lim, 10000);
-    prepass = SimpsonsRule(fp, R_arg, upper_lim, 10);
-    float intergral2 = AdaptiveRichardsonExtrapolate(fp, R_arg, upper_lim, prepass/red);
-    //float intergral2 = SimpsonsRule(f)
-    
-    float res = intergral1 - R_arg * R_arg * intergral2;
-
-    res  = sqrt(res * 2. / this->sersic_light_profile(R_arg));
+    float integral = SimpsonsRule(fp, -7, 5, 100);
+    float res  = sqrt(integral * 2. * R / this->sersic_light_profile(R_arg));
 
     assert( (!isnan(res) && !isinf(res)) ||
                     assert_msg(std::endl << "Sigma LOS full full about to return " << res << endl <<
-                                        "--- Integral 1: " << intergral1 << endl <<
-                                        "--- Integral 2: " << intergral2 << endl));
-
+                                        "--- Integral 1: " << integral << endl));
     return res;
 }
 
@@ -528,23 +545,81 @@ float Bulge::sigma_radial_integrand(float r){
     return res;
 }
 
-float Bulge::sigma_radial2(float r){
-    auto fp = bind(&Bulge::sigma_radial_integrand, this, _1);
-    float up = max((double) 30.*Re, (double) r + Re);
+float Bulge::sigma_radial_integrand_log(float log_r){
+    float r = pow(10., log_r);
+    float res = GR * this->Jeans_f(r) * this->get_density(r) * this->TotalMass(r) * r * log(10) / (r * r)  ;
+    return res;
+}
 
-    float accuracy = 50.0; //kms^-1
+float Bulge::sigma_radial2(float r){
+    auto fp = bind(&Bulge::sigma_radial_integrand_log, this, _1);
+
+    float l10 = log10(r);
+
+    assert( (!isnan(l10)) & (!isinf(l10)) || assert_msg(std::endl << "sigma_radial2 l10 = " << l10 << ", r = " << r << endl));
+
+    float upper = 5.0;
+    if(l10 >= upper) upper = l10 + 0.1;
+  
+    float accuracy = 1.0; //kms^-1
     accuracy *= this->Jeans_f(r) * this->get_density(r);
-    float intergral = AdaptiveRichardsonExtrapolate(fp, r, up, accuracy); //SimpsonsRule(fp, r, up, 1000);
-    return 1/(this->Jeans_f(r) * this->get_density(r)) * intergral;
+
+    float intergral = SimpsonsRule(fp, l10, upper, 50);
+    //float intergral = AdaptiveRichardsonExtrapolate(fp, r, pow(10., upper), accuracy); //SimpsonsRule(fp, r, up, 1000);
+
+    assert( (!isnan(intergral) && !isinf(intergral)) ||
+                    assert_msg(std::endl << "sigma radial2 intergral " << intergral << endl <<
+                                        "--- r: " << r << endl <<
+                                        "--- R: " << R << endl << 
+                                        "--- l10: " << l10 << endl << 
+                                        "--- upper: " << upper << endl)); 
+ 
+    float density = this->get_density(r);
+    if(density < 1e-7) density = 1e-7;
+    
+    float res =  1/(this->Jeans_f(r) * density) * intergral;
+
+    assert( (!isnan(res) && !isinf(res)) ||
+                    assert_msg(std::endl << "sigma radial2 about to return " << res << endl <<
+                                        "--- r: " << r << endl <<
+                                        "--- R: " << R << endl << 
+                                        "--- this->Jeans_f(r): " << this->Jeans_f(r) << endl << 
+                                        "--- density (potenitally perturbed): " << density << endl <<
+                                        "--- this->get_density(r): " << this->get_density(r) << endl)); 
+
+    return res;
 }
 
 float Bulge::alt_integrand1(float r){
-    if(R == r) r += 0.001;
+    if( abs(R  - r) < 1e-7) r += 1e-7;
     float res = this->prug_sim_profile_light(r) * this->sigma_radial2(r) * r / (sqrt(r*r - R*R));
     assert( (!isnan(res) && !isinf(res)) ||
                     assert_msg(std::endl << "alt_integrand1 about to return " << res << endl <<
                                         "--- r: " << r << endl <<
                                         "--- R: " << R << endl <<
+                                        "--- this->sigma_radial2(r)" << this->sigma_radial2(r) << endl << 
+                                        "--- this->prug_sim_profile_light(r)" << this->prug_sim_profile_light(r) << endl));
+    return res;
+}
+
+float Bulge::alt_integrand1_log(float log_r){
+    float r = pow(10., log_r);
+
+    
+    float fac = 1.000001;
+    if(r < fac * R ) r = fac * R;
+    
+    assert(!isnan(r) || assert_msg(endl << "alt_integrand1_log r = nan. Log10r = " << log_r << endl));
+
+    float internal = r*r - R*R;
+    
+    float res = this->prug_sim_profile_light(r) * this->sigma_radial2(r) * r * r * log(10)/ (sqrt(internal));
+    assert( (!isnan(res) && !isinf(res)) ||
+                    assert_msg(std::endl << "alt_integrand1 log about to return " << res << endl <<
+                                        "--- r: " << r << endl <<
+                                        "--- R: " << R << endl <<
+                                        "--- r*r - R*R  = " << r*r - R*R << endl <<
+                                        "--- internal sqrt(r*r - R*R) = " << internal << endl <<
                                         "--- this->sigma_radial2(r)" << this->sigma_radial2(r) << endl << 
                                         "--- this->prug_sim_profile_light(r)" << this->prug_sim_profile_light(r) << endl));
     return res;
@@ -557,6 +632,27 @@ float Bulge::alt_integrand2(float r){
                     assert_msg(std::endl << "alt_integrand2 about to return " << res << endl <<
                                         "--- r: " << r << endl <<
                                         "--- R: " << R << endl <<
+                                        "--- this->sigma_radial2(r)" << this->sigma_radial2(r) << endl << 
+                                        "--- this->prug_sim_profile_light(r)" << this->prug_sim_profile_light(r) << endl));
+    return res;
+}
+
+float Bulge::alt_integrand2_log(float log_r){
+    float r = pow(10., log_r);
+    
+    float fac = 1.000001;
+    if(r < fac * R ) r = fac * R;
+
+    assert(!isnan(r) || assert_msg(endl << "alt_integrand2 log r = nan. Log10r = " << log_r << endl));
+
+    float internal = r*r - R*R;
+    
+    float res = beta * this->prug_sim_profile_light(r) * this->sigma_radial2(r) * r * log(10) / (r * sqrt(internal));
+    assert( (!isnan(res) && !isinf(res)) ||
+                    assert_msg(std::endl << "alt_integrand2 log about to return " << res << endl <<
+                                        "--- r: " << r << endl <<
+                                        "--- R: " << R << endl <<
+                                        "--- Denominator: " << (r * sqrt(internal)) << endl <<
                                         "--- this->sigma_radial2(r)" << this->sigma_radial2(r) << endl << 
                                         "--- this->prug_sim_profile_light(r)" << this->prug_sim_profile_light(r) << endl));
     return res;
@@ -580,11 +676,46 @@ float Bulge::sigma_ap_integrand(float R_arg){
 	return MDP * sigma * sigma * R_arg;
 }
 
+float Bulge::sigma_ap_integrand_log(float log_R_arg){
+    float R_arg = pow(10., log_R_arg);
+
+    // Integrand of sigma aperture
+    float sigma;
+    if(using_variable_IMF) sigma = this->sigma_LOS_full(R_arg);
+    else sigma = this->sigma_LOS(R_arg);
+
+	float MDP = this->sersic_light_profile(R_arg);
+	return MDP * sigma * sigma * R_arg * R_arg * log(10);
+}
+
+
 float Bulge::sersicxR(float r){
     // Just a wrapper function, sometimes we need it *r for integrals.
     float res = this->sersic_light_profile(r) * r;
     return res;
 }
+
+float Bulge::sersicxR_log(float log_r){
+    // Just a wrapper function, sometimes we need it *r for integrals.
+    float r = pow(10., log_r);
+    float res = this->sersic_light_profile(r) * r * r * log(10);
+    return res;
+}
+
+float Bulge::sersicLightWithin_integrand_log(float log_r){
+    // Just a wrapper function, sometimes we need it *r for integrals.
+    float r = pow(10., log_r);
+    float res = this->sersic_light_profile(r) * r * r * 2 * PI * log(10);
+    return res;
+}
+
+float Bulge::LightWithin(float R){
+    // Get light within for weigting of integral.
+    auto numfp = bind(&Bulge::sersicLightWithin_integrand_log, this, _1);
+    float res = SimpsonsRule(numfp, -7, log10(R), 50.);
+    return res;
+}
+
 
 float Bulge::sigma_ap(float aperture)
 {
@@ -593,24 +724,24 @@ float Bulge::sigma_ap(float aperture)
     float numerator, denominator, accuracy;
 
     // Full value of halo aperture
-	auto numfp = bind(&Bulge::sigma_ap_integrand, this, _1);
-    auto denfp = bind(&Bulge::sersicxR, this, _1);
+	auto numfp = bind(&Bulge::sigma_ap_integrand_log, this, _1);
+    auto denfp = bind(&Bulge::sersicxR_log, this, _1);
 
-    //float multiplyer = 1e5;
-    //int prepass = 12;
+    float multiplyer = 1e5;
+    int prepass = 12;
     // Do a prepass to get a sense of the value of the integral
-    //accuracy = SimpsonsRule(numfp, 0, aperture, prepass)/multiplyer;
-    //numerator =  AdaptiveRichardsonExtrapolate(numfp, 0., aperture, accuracy);
+    //accuracy = SimpsonsRule(numfp, -5, log10(aperture), prepass)/multiplyer;
+    //numerator =  AdaptiveRichardsonExtrapolate(numfp, -5, log10(aperture), accuracy);
+    
+    numerator = SimpsonsRule(numfp, -7, log10(aperture), 50.);
 
-    numerator =  SimpsonsRule(numfp, 0., aperture, 100.);
-    
     //accuracy = SimpsonsRule(denfp, 0, aperture, prepass)/multiplyer;
-    //denominator = AdaptiveRichardsonExtrapolate(denfp, 0., aperture, accuracy);
-    denominator = SimpsonsRule(denfp, 0., aperture, 100.);
-    
+    //denominator = AdaptiveRichardsonExtrapolate(denfp, -5, log10aperture, accuracy);
+    denominator = SimpsonsRule(denfp, -7, log10(aperture), 50.);
+
     if(denominator == 0.) return 0.;
 
-    float res = pow(numerator/denominator, 0.5);
+    float res = sqrt(numerator/denominator);
 
     if(isnan(res) || isinf(res))
     {

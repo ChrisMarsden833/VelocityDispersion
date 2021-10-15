@@ -34,6 +34,9 @@ class Disk
         float Mass(float R);
         float disk_integrand(float R);
         float VelocityDispersion(float aperture);
+        float projected_densityL(float R);
+        float LightProfile_integrand_log(float log_r);
+        float LightWithin(float r);
     
     private:
         float mass;
@@ -43,6 +46,7 @@ class Disk
         Halo * AssociatedHalo = nullptr;
         bool trace;
         bool grav;
+        float Lum;
     
 };
 

@@ -48,6 +48,7 @@ class Bulge
 
         // The integrand for rhoX
         float rhoX_integrand(float Y);
+        float rhoX_integrand_log(float log_Y);
         // The eXtra mass from the variable IMF
         float rhoX(float r);
 
@@ -91,14 +92,25 @@ class Bulge
         float Jeans_fprime(float r);
         float sigma_LOS_full(float R_arg);
         float sigma_radial_integrand(float r);
+        float sigma_radial_integrand_log(float log_r);
         float sigma_radial2(float r);
         float alt_integrand1(float r);
+        float alt_integrand1_log(float log_r);
         float alt_integrand2(float r);
+        float alt_integrand2_log(float log_r);
 
         // (pair of) integrands for aperture sigma
         float sigma_ap_integrand(float R_arg);
+        float sigma_ap_integrand_log(float log_R_arg);
         float sersicxR(float r);
+        float sersicxR_log(float log_r);
         float sigma_ap(float aperture);
+
+        // Chae's formula for integrating sigma
+        float ChaeIntegrand(float log_u);
+
+        float sersicLightWithin_integrand_log(float log_r);
+        float LightWithin(float R);
 
     private:
         float stellar_property; // Stellar mass [M_sun] OR Stellar Luminsoity [L_sun], in the case of a variable IMF
@@ -120,9 +132,11 @@ class Bulge
         float Ie; // The constant "at the front" of the sersic profile.
         float p_n; // p_n in the PS etc profiles.
 
-        float R = 0.0; // Rolling Constant used in integration.
+        float R = 1.0; // Rolling Constant used in integration.
 
         int count = 0; // Counter. Not sure this is used. 
+
+        float domain_size;
 
         // Arrays for the precomputed domains.
         vector<float> * r_domain; 

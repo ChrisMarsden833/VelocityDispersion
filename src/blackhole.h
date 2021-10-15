@@ -1,6 +1,13 @@
 #ifndef BH_H
 #define BH_H
 
+#include <iostream>
+#include <cstdlib>
+#include <iostream>
+#include <ctime>
+#include <math.h>
+using namespace std;
+
 // Super simple class for the black hole. It's overkill, but in the spirit of consistency, here we are.
 class BlackHole
 {
@@ -12,9 +19,9 @@ class BlackHole
         BlackHole(float Mass, bool grav, float spin = 0., float charge = 0.);
         float getMass(void);
     private:
-        bool grav;
-        float mass = 0.0;
-
+        bool internal_grav = false;
+        float black_hole_mass;
+        
 };
 
 #endif

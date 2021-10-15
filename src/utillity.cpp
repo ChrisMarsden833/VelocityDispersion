@@ -78,7 +78,13 @@ void fastLinspace(float * &grid, float &h, float a, float b, int N)
 {
     grid = (float *) malloc( (N + 1) * sizeof(float)); // Prep array
     h = (b - a)/((float) N); // Calculate the spacing of the grid, h
-    for(int i = 0; i <= N; i++) grid[i] = a + h * (float) i; // fill values
+    for(int i = 0; i <= N; i++)    {
+        grid[i] = a + h * (float) i; // fill values
+        if(isnan(grid[i])){
+            std::cout << "fastLinspace assigned nan. a = " << a << " b = " << b << " N = " << N << std::endl;
+            exit(1);
+        } 
+    } 
 }
 
 std::vector<std::vector<float>> * ReadFile(std::string path, std::vector<int> * IndexesToGrab)
@@ -96,12 +102,9 @@ std::vector<std::vector<float>> * ReadFile(std::string path, std::vector<int> * 
     fp = fopen(path.c_str(), "r");
     if(fp == NULL)
     {
-	    #pragma omp critical
-	    {
-		    std::cout << "Error, file could not be found/opened" << std::endl;
-		    std::cout << "    Path:" << path << std::endl;
-		    exit(1);
-	    }
+        std::cout << "Error, file could not be found/opened" << std::endl;
+        std::cout << "    Path:" << path << std::endl;
+        exit(1);
     }
     // Calculate size of file
     fseek(fp, 0, SEEK_END);

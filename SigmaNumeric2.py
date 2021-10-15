@@ -209,11 +209,11 @@ class NumericalSigma:
         for n in tqdm(self.n_domain_Ky, disable = not self.terminal_output): # Iterate row by row.
                         
             sigma = Sigma(fix_ap * re_domain,
-                        Bulge_mass = mstar,
+                        Bulge_mass = 10**mstar,
                         Bulge_Re = re_domain,
                         Bulge_n = n,
                         Bulge_Beta = 0.0,
-                        DarkMatter_type = 'None',
+                        HaloProfile = 'None',
                         debug = False,
                         threads = 8,
                         library_path = "./lib/libsigma.so")
@@ -348,15 +348,14 @@ class NumericalSigma:
 
             
             sigma = Sigma(self.fix_ap * re * np.ones_like(c_domain),
-                            Bulge_mass = mstar,
+                            Bulge_mass = 10**mstar,
                             Bulge_Re = re,
                             Bulge_n = n,
                             Bulge_Beta = 0.0,
-                            DarkMatter_type = 'NFW',
+                            HaloProfile = 'NFW',
                             HaloRs = rs,
                             HaloRhos = rho,
                             debug = False,
-                            StarsOn=withstars,
                             threads = 8,
                             library_path = "./lib/libsigma.so")
             
@@ -414,11 +413,11 @@ class NumericalSigma:
         for n in tqdm(n_range):
             
             sigma = Sigma(self.fix_ap * re * np.ones_like(Beta_range),
-                            Bulge_mass = Mstar,
+                            Bulge_mass = 10**Mstar,
                             Bulge_Re = re,
                             Bulge_n = n,
                             Bulge_Beta = Beta_range,
-                            DarkMatter_type = 'NFW',
+                            HaloProfile = 'NFW',
                             HaloRs = rs,
                             HaloRhos = rho,
                             debug = False,
@@ -527,11 +526,11 @@ class NumericalSigma:
         rho *= cosmo.h**2
                         
         sigma = Sigma(self.fix_ap * re * np.ones_like(Beta_range),
-                        Bulge_mass = mstar,
+                        Bulge_mass = 10**mstar,
                         Bulge_Re = re,
                         Bulge_n = n,
                         Bulge_Beta = Beta_range,
-                        DarkMatter_type = 'NFW',
+                        HaloProfile = 'NFW',
                         HaloRs = rs,
                         HaloRhos = rho,
                         debug = False,
@@ -642,7 +641,7 @@ if __name__ == "__main__":
     
     length = 20
     
-    aperture = 1.
+    aperture = 1
     
     show = True
     
@@ -654,7 +653,7 @@ if __name__ == "__main__":
     re_domain = np.linspace(0.2, 20, length)
     
     if show:
-        n_domain = np.arange(1, 8, 1)
+        n_domain = np.arange(2, 7, 1)
     else:
         n_domain = np.linspace(0.2, 9.0, length)
     
@@ -664,7 +663,7 @@ if __name__ == "__main__":
         obj.K_LaTeX_markup()
     
     if show:
-        c_domain = np.arange(5, 14, 1) 
+        c_domain = np.array([5, 7, 10, 14]) #np.arange(5, 12, 1) 
     else:
         c_domain = np.linspace(1, 50, length)
     
@@ -674,7 +673,7 @@ if __name__ == "__main__":
         obj.L_LaTeX_markup()
 
     if show:
-        beta_range = np.array([-0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4]) 
+        beta_range = np.array([-0.15, 0, 0.1, 0.25, 0.4]) 
     else:
         beta_range = np.linspace(-0.2, 0.49, length) # Only values of beta worth worrying about
         

@@ -18,6 +18,8 @@
 
 #define max_subdivisions 10000
 
+using namespace std;
+
 // General info
 /**
  * This file/library uses Richardson extrapolation, with methodology based on Dr Ian Hawke's numerical methods lecture

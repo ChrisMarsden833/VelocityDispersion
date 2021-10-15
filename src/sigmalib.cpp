@@ -52,11 +52,23 @@ float Sigma(float aperture,
     // Create disk object
     Disk * aDisk = new Disk(disk_mass, disk_h, disk_i, trace_disk, grav_disk, aBulge, aHalo);
 
+    float BT = aBulge->LightWithin(aperture) / (aBulge->LightWithin(aperture) + aDisk->LightWithin(aperture));
+
+    if(trace_bulge & !trace_disk) BT = 1.;
+    else if(!trace_bulge & trace_disk) BT = 0.;
+
     float res;
+
+
 
     if(mode == 1){
         // Get bulge + disk velocity dispersion.
-        res = sqrt( pow(aBulge->sigma_ap(aperture), 2.) + aDisk->VelocityDispersion(aperture) ); // add disk in quadrature
+        if(disk_mass > 0){
+            res = sqrt(  pow(aBulge->sigma_ap(aperture), 2.) + (1-BT) * aDisk->VelocityDispersion(aperture) ); // add disk in quadrature
+        }
+        else{
+            res =aBulge->sigma_ap(aperture);
+        }
     }
     else if(mode == 2)
     {
@@ -81,6 +93,10 @@ float Sigma(float aperture,
     else if(mode == 7)
     {
         res = aBulge->sersic_profile(aperture);
+    }
+    else if(mode == 8)
+    {
+        res = aBulge->alt_integrand1_log(aperture);        
     }
     else{
         cout << "Unknown mode " << mode << endl;

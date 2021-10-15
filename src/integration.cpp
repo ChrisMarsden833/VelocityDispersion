@@ -16,14 +16,12 @@ float SimpsonsRule(float (*f)(float, std::vector<float>), float a, float b, int 
     int N_half = N/2;
     // Term 1 in the formula.
     float sum1 = 0;
-    for(int j = 1; j <= (N_half - 1); j++)
-    {
+    for(int j = 1; j <= (N_half - 1); j++)    {
         sum1 += (*f)(grid[2*j], extraArguments);
     }
     // Term 2 in the formula
     float sum2 = 0;
-    for(int j = 1; j <= N_half; j++)
-    {
+    for(int j = 1; j <= N_half; j++)    {
         sum2 += (*f)(grid[2*j-1], extraArguments);
     }
     // Full formula

@@ -7,12 +7,30 @@ Disk::Disk(float input_mass, float input_h, float input_i, bool input_trace, boo
     i = input_i;
     trace = input_trace;
     grav = input_grav;
+    Lum =  pow(10., 2.5924279257970944 + 0.7236937315796155 * log10(mass));
 }
 
 float Disk::projected_density(float R){
     float mfactor = (1 - exp(-R/h)*(1+R/h));
     float sigma_0 = mass/(2. * PI * h * h) * mfactor;
     return sigma_0 * exp(-R/h);
+}
+
+float Disk::projected_densityL(float R){
+    float mfactor = (1 - exp(-R/h)*(1+R/h));
+    float sigma_0 = Lum/(2. * PI * h * h) * mfactor;
+    return sigma_0 * exp(-R/h);
+}
+
+float Disk::LightProfile_integrand_log(float log_r){
+    float r = pow(10., log_r);
+    return ( this->projected_densityL(r) + 2.5924279257970944) * 2. * PI * r * r * log(10);
+}
+
+float Disk::LightWithin(float r){
+    auto numfp = bind(&Disk::LightProfile_integrand_log, this, _1);
+    float res = SimpsonsRule(numfp, -7, log10(r), 50.);
+    return res;
 }
 
 float Disk::bessel(float x){
